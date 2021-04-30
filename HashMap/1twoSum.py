@@ -1,8 +1,9 @@
 import unittest
+from typing import List
 
 
 class Solution(object):
-    def twoSum(self, nums, target):
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
         """
         :type nums: List[int]
         :type target: int
@@ -22,7 +23,6 @@ class Solution(object):
 class TestTwoSum(unittest.TestCase):
     def testTwoSum1(self):
         sol = Solution()
-
         self.assertEqual(
             sol.twoSum(nums=[2, 7, 11, 15], target=9).sort(), [1, 0].sort()
         )
