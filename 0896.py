@@ -56,6 +56,8 @@ class Solution:
                 isNonDecreasing = False
             if nums[i] > nums[i-1]:
                 isNonIncreasing = False
+            if not isNonDecreasing and not isNonIncreasing:
+                return False
         return isNonDecreasing or isNonIncreasing
 
     def isMonotonic2(self, nums: List[int]) -> bool:
