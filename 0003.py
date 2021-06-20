@@ -1,4 +1,12 @@
-import unittest
+"""
+3. Longest Substring Without Repeating Characters
+Given a string, find the length of the longest substring without repeating characters.
+Examples:
+    Given "abcabcbb", the answer is "abc", which the length is 3.
+    Given "bbbbb", the answer is "b", with the length of 1.
+    Given "pwwkew", the answer is "wke", with the length of 3. 
+Note that the answer must be a substring, "pwke" is a subsequence and not a substring.
+"""
 
 """ Approach1: Naive brute force
 O(n^2) substring, each substring takes O(n) to check with a hashtable/array
@@ -18,7 +26,6 @@ reference: https://www.youtube.com/watch?v=LupZFfCCbAU&ab_channel=HuaHua
 Window (i, j) with unique characters
 1. Use a hashtable to store the last indies of each characters
 2. Keep track the valid starting point. When there is a match update the starting point to the current one
-i = max(i, m[s[j]] + 1), len = j - i + 1
 Time complexity: O(n)
 Space complexity: O(128)
 """
@@ -43,23 +50,26 @@ class Solution(object):
         return longest[1] - longest[0]
 
 
-# Testing
-class TestTwoSum(unittest.TestCase):
+# Unit Tests
+import unittest
+
+
+class TestLengthOfLongestSubstring(unittest.TestCase):
     def testLengthOfLongestSubstring1(self):
-        sol = Solution()
-        self.assertEqual(sol.lengthOfLongestSubstring(s="abcabcbb"), 3)
+        func = Solution().lengthOfLongestSubstring
+        self.assertEqual(func(s="abcabcbb"), 3)
 
     def testLengthOfLongestSubstring2(self):
-        sol = Solution()
-        self.assertEqual(sol.lengthOfLongestSubstring(s="bbbbb"), 1)
+        func = Solution().lengthOfLongestSubstring
+        self.assertEqual(func(s="bbbbb"), 1)
 
     def testLengthOfLongestSubstring3(self):
-        sol = Solution()
-        self.assertEqual(sol.lengthOfLongestSubstring(s="pwwkew"), 3)
+        func = Solution().lengthOfLongestSubstring
+        self.assertEqual(func(s="pwwkew"), 3)
 
     def testLengthOfLongestSubstring4(self):
-        sol = Solution()
-        self.assertEqual(sol.lengthOfLongestSubstring(s=""), 0)
+        func = Solution().lengthOfLongestSubstring
+        self.assertEqual(func(s=""), 0)
 
 
 if __name__ == "__main__":

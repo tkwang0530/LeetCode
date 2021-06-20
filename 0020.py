@@ -1,0 +1,72 @@
+"""
+20. Valid Parentheses
+Given a string s containing just the characters '(', ')', '[', ']', '{', '}', determine if the input string is valid.
+An input string is valid if:
+1. Open brackets must be closed by the same type of brackets.
+2. Open brackets must be closed in the correct order.
+
+
+Examples:
+    Input: s = "()"
+    Output: true
+
+    Input: s = "()[]{}"
+    Output: true
+
+    Input: s = "(]"
+    Output: false
+"""
+
+"""
+Note:
+Using Stack
+O(n) time | O(n) space
+"""
+
+
+class Solution:
+    def isValid(self, s: str) -> bool:
+        stack = []
+        for char in s:
+            if char in ["(", "[", "{"]:
+                stack.append(char)
+            else:
+                if len(stack) == 0:
+                    return False
+                if char == ")" and stack.pop() != "(":
+                    return False
+                if char == "]" and stack.pop() != "[":
+                    return False
+                if char == "}" and stack.pop() != "{":
+                    return False
+        return len(stack) == 0
+
+
+# Unit Tests
+import unittest
+
+
+class TestIsValid(unittest.TestCase):
+    def testIsValid1(self):
+        func = Solution().isValid
+        self.assertEqual(func(s="()"), True)
+
+    def testIsValid2(self):
+        func = Solution().isValid
+        self.assertEqual(func(s="()[]{}"), True)
+
+    def testIsValid3(self):
+        func = Solution().isValid
+        self.assertEqual(func(s="(]"), False)
+
+    def testIsValid4(self):
+        func = Solution().isValid
+        self.assertEqual(func(s="([)]"), False)
+
+    def testIsValid5(self):
+        func = Solution().isValid
+        self.assertEqual(func(s="{[]}"), True)
+
+
+if __name__ == "__main__":
+    unittest.main()
