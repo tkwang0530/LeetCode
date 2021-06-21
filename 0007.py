@@ -7,7 +7,15 @@ Examples:
     Given 0, the answer is 0.
 """
 
+"""
+Note:
+1. Convert to String then reverse it: O(n) time | O(1) space
+"""
 
+
+
+
+import unittest
 class Solution:
     def reverse(self, x: int) -> int:
         sign = 1 if x > 0 else -1
@@ -16,7 +24,6 @@ class Solution:
 
 
 # Unit Tests
-import unittest
 
 
 class TestReverseInteger(unittest.TestCase):
