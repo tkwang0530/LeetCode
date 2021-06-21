@@ -11,16 +11,25 @@ Constraints:
 s consist of only digits and English letters (lower-case and/or upper-case),
 """
 
+"""
+Note:
+1. Odd and even Palindrome: O(n^2) time | O(n) space
+"""
 
+
+
+
+import unittest
 class Solution(object):
     def longestPalindrome(self, s: str) -> str:  # s = "ac"
-        currentLongest = [0, 0]
+        currentLongest = [0, 0]  # [leftIdx, rightIdx]
         for i in range(1, len(s)):
             odd = self.getLongestPalindromeFrom(s, i - 1, i + 1)
             even = self.getLongestPalindromeFrom(s, i - 1, i)
             longest = max(odd, even, key=lambda x: x[1] - x[0])
-            currentLongest = max(longest, currentLongest, key=lambda x: x[1] - x[0])
-        return s[currentLongest[0] : currentLongest[1] + 1]
+            currentLongest = max(longest, currentLongest,
+                                 key=lambda x: x[1] - x[0])
+        return s[currentLongest[0]: currentLongest[1] + 1]
 
     def getLongestPalindromeFrom(self, s, leftIdx, rightIdx):  # "ac", 0, 1
         while leftIdx >= 0 and rightIdx < len(s):
@@ -31,9 +40,7 @@ class Solution(object):
 
         return [leftIdx + 1, rightIdx - 1]  # [1 , 0]
 
-
 # Unit Tests
-import unittest
 
 
 class TestLongestPalindrome(unittest.TestCase):
