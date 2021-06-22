@@ -19,14 +19,17 @@ Output: true
 
 """
 Note:
-1. Hash Table: O(n) time | O(n) space
-2. Sorting: O(nlogn) time | O(1) space
+1. Hash Table (convert to set): O(n) time | O(n) space
+2. Hash Table (via traverse): O(n) time | O(n) space
+3. Sorting: O(nlogn) time | O(1) space
 If there are duplicate numbers, they will be adjacent in a sorted array
 """
 
+
+
+
+import unittest
 from typing import List
-
-
 class Solution:
     def containsDuplicate(self, nums: List[int]) -> bool:
         return len(set(nums)) != len(nums)
@@ -48,33 +51,22 @@ class Solution:
 
 
 # Unit Tests
-import unittest
+funcs = [Solution().containsDuplicate, Solution().containsDuplicate2,
+         Solution().containsDuplicate3]
 
 
 class TestContainsDuplicate(unittest.TestCase):
     def testContainsDuplicate1(self):
-        func = Solution().containsDuplicate
-        func2 = Solution().containsDuplicate2
-        func3 = Solution().containsDuplicate3
-        self.assertEqual(func(nums=[1, 2, 3, 1]), True)
-        self.assertEqual(func2(nums=[1, 2, 3, 1]), True)
-        self.assertEqual(func3(nums=[1, 2, 3, 1]), True)
+        for func in funcs:
+            self.assertEqual(func(nums=[1, 2, 3, 1]), True)
 
     def testContainsDuplicate2(self):
-        func = Solution().containsDuplicate
-        func2 = Solution().containsDuplicate2
-        func3 = Solution().containsDuplicate3
-        self.assertEqual(func(nums=[1, 2, 3, 4]), False)
-        self.assertEqual(func2(nums=[1, 2, 3, 4]), False)
-        self.assertEqual(func3(nums=[1, 2, 3, 4]), False)
+        for func in funcs:
+            self.assertEqual(func(nums=[1, 2, 3, 4]), False)
 
     def testContainsDuplicate3(self):
-        func = Solution().containsDuplicate
-        func2 = Solution().containsDuplicate2
-        func3 = Solution().containsDuplicate3
-        self.assertEqual(func(nums=[1, 1, 1, 3, 3, 4, 3, 2, 4, 2]), True)
-        self.assertEqual(func2(nums=[1, 1, 1, 3, 3, 4, 3, 2, 4, 2]), True)
-        self.assertEqual(func3(nums=[1, 1, 1, 3, 3, 4, 3, 2, 4, 2]), True)
+        for func in funcs:
+            self.assertEqual(func(nums=[1, 1, 1, 3, 3, 4, 3, 2, 4, 2]), True)
 
 
 if __name__ == "__main__":
