@@ -8,7 +8,15 @@ Input: (2 -> 4 -> 3) + (5 -> 6 -> 4)
 Output: 7 -> 0 -> 8
 """
 
+"""
+Note:
+1. Three Pointers with carry: O(max(m, n)) time | O(max(m,n)) space
+"""
 
+
+
+
+import unittest
 class ListNode:
     def __init__(self, val=0, next=None) -> None:
         self.val = val
@@ -21,6 +29,20 @@ class ListNode:
             nums.append(self.next.val)
             self = self.next
         return "->".join(str(num) for num in nums)
+
+    @classmethod
+    def fromArray(cls, arr):
+        if arr is None:
+            return None
+        idx = 0
+        length = len(arr)
+        dummy = cls(0)
+        current = dummy
+        while idx < length:
+            current.next = cls(arr[idx])
+            current = current.next
+            idx += 1
+        return dummy.next
 
 
 class Solution:
@@ -45,26 +67,21 @@ class Solution:
 
 
 # Unit Tests
-import unittest
+funcs = [Solution().addTwoNumbers]
 
 
 class TestAddTwoNumbers(unittest.TestCase):
     def testAddTwoNumbers1(self):
-        func = Solution().addTwoNumbers
-        l1, l1.next, l1.next.next, l1.next.next.next = (
-            ListNode(2),
-            ListNode(4),
-            ListNode(7),
-            ListNode(1),
-        )
-        l2, l2.next, l2.next.next = ListNode(9), ListNode(4), ListNode(5)
-        self.assertEqual(repr(func(l1, l2)), "1->9->2->2")
+        for func in funcs:
+            l1 = ListNode.fromArray([2, 4, 7, 1])
+            l2 = ListNode.fromArray([9, 4, 5])
+            self.assertEqual(repr(func(l1, l2)), "1->9->2->2")
 
     def testAddTwoNumbers2(self):
-        func = Solution().addTwoNumbers
-        l1 = ListNode(0)
-        l2 = ListNode(0)
-        self.assertEqual(repr(func(l1, l2)), "0")
+        for func in funcs:
+            l1 = ListNode(0)
+            l2 = ListNode(0)
+            self.assertEqual(repr(func(l1, l2)), "0")
 
 
 if __name__ == "__main__":
