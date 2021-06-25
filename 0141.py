@@ -20,6 +20,9 @@ find if the fast pointer could catch up the slow pointer
 """
 
 
+
+
+import unittest
 class ListNode:
     def __init__(self, val=0, next=None) -> None:
         self.val = val
@@ -62,26 +65,27 @@ class Solution:
 
 
 # Unit Tests
-import unittest
+
+funcs = [Solution().hasCycle]
 
 
 class TestHasCycle(unittest.TestCase):
     def testHasCycle1(self):
-        func = Solution().hasCycle
-        head = ListNode.fromArray([3, 2, 0, -4])
-        head.next.next.next.next = head.next
-        self.assertEqual(func(head=head), True)
+        for func in funcs:
+            head = ListNode.fromArray([3, 2, 0, -4])
+            head.next.next.next.next = head.next
+            self.assertEqual(func(head=head), True)
 
     def testHasCycle2(self):
-        func = Solution().hasCycle
-        head = ListNode.fromArray([1, 2])
-        head.next.next = head
-        self.assertEqual(func(head=head), True)
+        for func in funcs:
+            head = ListNode.fromArray([1, 2])
+            head.next.next = head
+            self.assertEqual(func(head=head), True)
 
     def testHasCycle3(self):
-        func = Solution().hasCycle
-        head = ListNode.fromArray([1])
-        self.assertEqual(func(head=head), False)
+        for func in funcs:
+            head = ListNode.fromArray([1])
+            self.assertEqual(func(head=head), False)
 
 
 if __name__ == "__main__":
