@@ -11,17 +11,17 @@ Could you do this in one pass?
 
 """
 Note:
-O(n) time | O(1) space
-1. Brute force: 
-O(n) time | O(1) space
+1. Brute force: O(n) time | O(1) space
 first find the length of linked list, then remove the (L-n+1)th node. 
 
-2. Slow-fast pointer:
-O(n) time | O(1) space
+2. Slow-fast pointer: O(n) time | O(1) space
 when fast pointer points to the last node, slow pointer points to the previous node of the last nth node.
 """
 
 
+
+
+import unittest
 class ListNode:
     def __init__(self, val=0, next=None) -> None:
         self.val = val
@@ -73,37 +73,39 @@ class Solution:
         return dummy.next
 
     def removeNthFromEnd2(self, head: ListNode, n: int) -> ListNode:
-        fast = slow = head
-        count = 0
-        while count < n:
+        dummy = ListNode(0)
+        dummy.next = head
+        slow = fast = dummy
+        while n > 0:
             fast = fast.next
-            count += 1
-
-        if fast is None:
-            return head.next
+            n -= 1
 
         while fast.next is not None:
-            slow = slow.next
             fast = fast.next
-
+            slow = slow.next
         slow.next = slow.next.next
-        return head
+        return dummy.next
 
 
 # Unit Tests
-import unittest
+funcs = [Solution().removeNthFromEnd, Solution().removeNthFromEnd2]
 
 
 class TestRemoveNthFromEnd(unittest.TestCase):
     def testRemoveNthFromEnd1(self):
-        func = Solution().removeNthFromEnd
-        head = ListNode.fromArray([1, 2, 3, 4, 5])
-        self.assertEqual(repr(func(head=head, n=2)), "1->2->3->5")
+        for func in funcs:
+            head = ListNode.fromArray([1, 2, 3, 4, 5])
+            self.assertEqual(repr(func(head=head, n=2)), "1->2->3->5")
 
     def testRemoveNthFromEnd2(self):
-        func = Solution().removeNthFromEnd2
-        head = ListNode.fromArray([1, 2, 3, 4, 5])
-        self.assertEqual(repr(func(head=head, n=2)), "1->2->3->5")
+        for func in funcs:
+            head = ListNode.fromArray([1])
+            self.assertEqual(repr(func(head=head, n=1)), "None")
+
+    def testRemoveNthFromEnd3(self):
+        for func in funcs:
+            head = ListNode.fromArray([1, 2])
+            self.assertEqual(repr(func(head=head, n=1)), "1")
 
 
 if __name__ == "__main__":
