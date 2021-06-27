@@ -22,9 +22,11 @@ O(n) time | O(1) space
 2. if current and current.val is larger then the head.val, reset the current to dummy, otherwise, keep move current forward until its next val is larger or equal to head.val
 3. insert the head between current and current.next 
 """
-from typing import Tuple
 
 
+
+
+import unittest
 class ListNode:
     def __init__(self, val=0, next=None) -> None:
         self.val = val
@@ -78,7 +80,6 @@ class Solution:
 
 
 # Unit Tests
-import unittest
 
 
 class TestInsertionSortList(unittest.TestCase):
