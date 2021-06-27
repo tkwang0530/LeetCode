@@ -32,9 +32,6 @@ Output: [1, 2]
 """
 Note:
 1. Iterative solution: O(n) time | O(n) space
-inorder: left -> self -> right 
-do it reversely => right -> self -> left
-
 2. Recursive solution: O(n) time | O(n) space
 """
 
@@ -52,20 +49,16 @@ class TreeNode:
 
 class Solution:
     def inorderTraversal(self, root: TreeNode) -> List[int]:
-        if root is None:
-            return []
-        res, stack = [], [(root, False)]
-        while stack:
-            node, visited = stack.pop()  # the last element
-            if visited:
-                res.append(node.val)
-            else:  # inorder left -> root -> right
-                if node.right is not None:
-                    stack.append((node.right, False))
-                stack.append((node, True))
-                if node.left is not None:
-                    stack.append((node.left, False))
-        return res
+        result = []
+        stack = []
+        while root is not None or len(stack) > 0:
+            while root is not None:
+                stack.append(root)
+                root = root.left
+            root = stack.pop()
+            result.append(root.val)
+            root = root.right
+        return result
 
     def inorderTraversal2(self, root: TreeNode) -> List[int]:
         res = []
@@ -81,16 +74,16 @@ class Solution:
         if root.right is not None:
             self.dfs(root.right, res)
 
+
 # Unit Tests
+funcs = [Solution().inorderTraversal, Solution().inorderTraversal2]
 
 
 class TestInorderTraversal(unittest.TestCase):
     def testInorderTraversal1(self):
-        root = TreeNode(1, None, TreeNode(2, TreeNode(3), None))
-        func = Solution().inorderTraversal
-        func2 = Solution().inorderTraversal2
-        self.assertEqual(func(root=root), [1, 3, 2])
-        self.assertEqual(func2(root=root), [1, 3, 2])
+        for func in funcs:
+            root = TreeNode(1, None, TreeNode(2, TreeNode(3), None))
+            self.assertEqual(func(root=root), [1, 3, 2])
 
     def testInorderTraversal2(self):
         root = None
@@ -100,11 +93,9 @@ class TestInorderTraversal(unittest.TestCase):
         self.assertEqual(func2(root=root), [])
 
     def testInorderTraversal3(self):
-        root = TreeNode(1)
-        func = Solution().inorderTraversal
-        func2 = Solution().inorderTraversal2
-        self.assertEqual(func(root=root), [1])
-        self.assertEqual(func2(root=root), [1])
+        for func in funcs:
+            root = TreeNode(1)
+            self.assertEqual(func(root=root), [1])
 
     def testInorderTraversal4(self):
         root = TreeNode(1, TreeNode(2))
@@ -114,11 +105,9 @@ class TestInorderTraversal(unittest.TestCase):
         self.assertEqual(func2(root=root), [2, 1])
 
     def testInorderTraversal5(self):
-        root = TreeNode(1, None, TreeNode(2))
-        func = Solution().inorderTraversal
-        func2 = Solution().inorderTraversal2
-        self.assertEqual(func(root=root), [1, 2])
-        self.assertEqual(func2(root=root), [1, 2])
+        for func in funcs:
+            root = TreeNode(1, None, TreeNode(2))
+            self.assertEqual(func(root=root), [1, 2])
 
 
 if __name__ == "__main__":
