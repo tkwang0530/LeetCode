@@ -26,7 +26,7 @@ Output: [1, null, 3]
 """
 Note:
 1. Binary Search: O(nlogn) time | O(h) space
-2. Binary Search Tree definition: O(n) time | O(h) space
+2. Recursion (BST Definition): O(n) time | O(h) space
 Give the function a bound the maximum number it will handle.
 The left recursion will take the elements smaller than node.val
 The right recursion will take the remaining elements smaller than bound
@@ -68,18 +68,13 @@ class Solution:
         return root
 
     def bstFromPreorder2(self, preorder: List[int]) -> TreeNode:
-        # reverse the preorder so that we could pop the root directly from an array
         return self.buildTree(preorder[::-1], float('inf'))
 
     def buildTree(self, arr: List[int], upper) -> TreeNode:
         if len(arr) == 0 or arr[-1] >= upper:
             return None
         root = TreeNode(arr.pop())
-
-        # first pop out all values smaller than root.val for creating root.left
         root.left = self.buildTree(arr, root.val)
-
-        # then using the remaining for creating root.right
         root.right = self.buildTree(arr, upper)
         return root
 
