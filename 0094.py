@@ -86,11 +86,9 @@ class TestInorderTraversal(unittest.TestCase):
             self.assertEqual(func(root=root), [1, 3, 2])
 
     def testInorderTraversal2(self):
-        root = None
-        func = Solution().inorderTraversal
-        func2 = Solution().inorderTraversal2
-        self.assertEqual(func(root=root), [])
-        self.assertEqual(func2(root=root), [])
+        for func in funcs:
+            root = None
+            self.assertEqual(func(root=root), [])
 
     def testInorderTraversal3(self):
         for func in funcs:
@@ -98,11 +96,9 @@ class TestInorderTraversal(unittest.TestCase):
             self.assertEqual(func(root=root), [1])
 
     def testInorderTraversal4(self):
-        root = TreeNode(1, TreeNode(2))
-        func = Solution().inorderTraversal
-        func2 = Solution().inorderTraversal2
-        self.assertEqual(func(root=root), [2, 1])
-        self.assertEqual(func2(root=root), [2, 1])
+        for func in funcs:
+            root = TreeNode(1, TreeNode(2))
+            self.assertEqual(func(root=root), [2, 1])
 
     def testInorderTraversal5(self):
         for func in funcs:
