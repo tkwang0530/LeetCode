@@ -53,24 +53,25 @@ class Solution:
 
 
 # Unit Tests
+funcs = [Solution().hasPathSum]
 
 
 class TestHasPathSum(unittest.TestCase):
     def testHasPathSum1(self):
-        root = TreeNode(5, TreeNode(4, TreeNode(11, TreeNode(7), TreeNode(2))), TreeNode(
-            8, TreeNode(13), TreeNode(4, None, TreeNode(1))))
-        func = Solution().hasPathSum
-        self.assertEqual(func(root=root, sum=22), True)
+        for func in funcs:
+            root = TreeNode(5, TreeNode(4, TreeNode(11, TreeNode(7), TreeNode(2))), TreeNode(
+                8, TreeNode(13), TreeNode(4, None, TreeNode(1))))
+            self.assertEqual(func(root=root, sum=22), True)
 
     def testHasPathSum2(self):
-        root = TreeNode(1, TreeNode(2), TreeNode(3))
-        func = Solution().hasPathSum
-        self.assertEqual(func(root=root, sum=5), False)
+        for func in funcs:
+            root = TreeNode(1, TreeNode(2), TreeNode(3))
+            self.assertEqual(func(root=root, sum=5), False)
 
     def testHasPathSum3(self):
-        root = TreeNode(1, TreeNode(2))
-        func = Solution().hasPathSum
-        self.assertEqual(func(root=root, sum=0), False)
+        for func in funcs:
+            root = TreeNode(1, TreeNode(2))
+            self.assertEqual(func(root=root, sum=0), False)
 
 
 if __name__ == "__main__":
