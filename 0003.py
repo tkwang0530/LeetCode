@@ -8,68 +8,50 @@ Examples:
 Note that the answer must be a substring, "pwke" is a subsequence and not a substring.
 """
 
-""" Approach1: Naive brute force
-O(n^2) substring, each substring takes O(n) to check with a hashtable/array
-Time complexity: O(n^3) => O(n*128^2)
-Space complexity: O(128)
-"""
-
-""" Approach2: Optimized brute force
-For each starting index i, find the longest substring.
-O(n)*O(n) = O(n^2)
-Time complexity: O(n^2) => O(n*128)
-Space complexity: O(128)
-"""
-
-""" Approach3: HashTable/Sliding Window
-reference: https://www.youtube.com/watch?v=LupZFfCCbAU&ab_channel=HuaHua
-Window (i, j) with unique characters
-1. Use a hashtable to store the last indies of each characters
-2. Keep track the valid starting point. When there is a match update the starting point to the current one
-Time complexity: O(n)
-Space complexity: O(128)
+""" 
+1. HashTable/Sliding Window: O(n) time | O(1) space
+(1) Use a Hash Table to store the last indies of each characters
+(2) Keep track the valid starting point. When there is a match update the starting point to (current index + 1)
 """
 
 
+
+
+import unittest
 class Solution(object):
     def lengthOfLongestSubstring(self, s: str) -> int:
-        if len(s) == 0:
-            return 0
         lastSeen = {}
-        longest = [0, 1]  # [startIdx, endIdx + 1]
         startIdx = 0
+        longest = [0, 0]  # [startIdx, endIdx]
         for i, char in enumerate(s):
-            endIdx = i
             if char in lastSeen:
                 startIdx = max(startIdx, lastSeen[char] + 1)
-
-            if longest[1] - longest[0] < endIdx + 1 - startIdx:
-                longest = [startIdx, endIdx + 1]
-
-            lastSeen[char] = endIdx
-        return longest[1] - longest[0]
+            if longest[1] - longest[0] < i - startIdx:
+                longest = [startIdx, i]
+            lastSeen[char] = i
+        return longest[1] - longest[0] + 1 if len(s) > 0 else 0
 
 
 # Unit Tests
-import unittest
+funcs = [Solution().lengthOfLongestSubstring]
 
 
 class TestLengthOfLongestSubstring(unittest.TestCase):
     def testLengthOfLongestSubstring1(self):
-        func = Solution().lengthOfLongestSubstring
-        self.assertEqual(func(s="abcabcbb"), 3)
+        for func in funcs:
+            self.assertEqual(func(s="abcabcbb"), 3)
 
     def testLengthOfLongestSubstring2(self):
-        func = Solution().lengthOfLongestSubstring
-        self.assertEqual(func(s="bbbbb"), 1)
+        for func in funcs:
+            self.assertEqual(func(s="bbbbb"), 1)
 
     def testLengthOfLongestSubstring3(self):
-        func = Solution().lengthOfLongestSubstring
-        self.assertEqual(func(s="pwwkew"), 3)
+        for func in funcs:
+            self.assertEqual(func(s="pwwkew"), 3)
 
     def testLengthOfLongestSubstring4(self):
-        func = Solution().lengthOfLongestSubstring
-        self.assertEqual(func(s=""), 0)
+        for func in funcs:
+            self.assertEqual(func(s=""), 0)
 
 
 if __name__ == "__main__":
