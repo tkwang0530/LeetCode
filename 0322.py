@@ -32,12 +32,11 @@ Constraints:
 1 <= coins[i] <= 2^31 - 1
 0 <= amount <= 10^4
 
-Follow up: Squaring each element and sorting the new array is very trivial, could you find an O(n) solution using a different approach?
 """
 
 """
 Note:
-1. BFS: O(n * amount) time | O(n* amount) space
+1. BFS + caching: O(n * amount) time | O(n* amount) space
 """
 
 
