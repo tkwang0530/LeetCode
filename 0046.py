@@ -12,71 +12,84 @@ Example1:
         [3, 1, 2],
         [3, 2, 1]
     ]
+
+Constraints:
+1 <= nums.length <= 6
+-10 <= nums[i] <= 10
+All the integers of nums are unique.
 """
 
 """
 Note:
-1. Recursion with string concatenation: O(n*n!) time | O(n + n*n!) space
-2. Backtracking with same curr_list: O(n*n!) time | O(n + n*n!) space
+1. Recursion with concatenation: O(n^2*n!) time | O(n + n*n!) space
+2. Recursion (swap element + snapshot): O(n*n!) time | O(n + n*n!) space
 """
 
+
+
+
+import unittest
 from typing import List
-
-
 class Solution:
     def permute(self, nums: List[int]) -> List[List[int]]:
-        result = []
+        permutations = []
+        self.permutationsHelper(nums, [], permutations)
+        return permutations
 
-        def helper(curr_list, choices):  # everything has been chosen
-            if len(choices) == 0:
-                result.append(curr_list)
-            else:
-                for i in range(len(choices)):  # choose one from choices
-
-                    # 0 ~ i-1 elements + i+1 ~ last elements
-                    new_choices = choices[0:i] + choices[i + 1 :]
-                    helper(curr_list + [choices[i]], new_choices)
-
-        helper([], nums)
-        return result
+    def permutationsHelper(self, nums: List[int], currentPermutation: List[int], permutations: List[int]):
+        if len(nums) == 0:
+            permutations.append(currentPermutation)
+        else:
+            for i in range(len(nums)):
+                newArray = nums[:i] + nums[i+1:]
+                newPermutation = currentPermutation + [nums[i]]
+                self.permutationsHelper(
+                    newArray, newPermutation, permutations)
 
     def permute2(self, nums: List[int]) -> List[List[int]]:
-        result = []
+        permutations = []
+        self.permutationsHelper2(nums, 0, permutations)
+        return permutations
 
-        def helper(nums, i, curr_list):
-            if i == len(nums):
-                result.append(curr_list.copy())  # make a copy O(n)
-            else:
-                for j in range(i, len(nums)):
-                    self.swap(nums, i, j)  # swap i, j elements
-                    curr_list.append(nums[i])
-                    helper(nums, i + 1, curr_list)
-                    curr_list.pop()  # remove last element
-                    self.swap(nums, i, j)  # swap back
+    def permutationsHelper2(self, nums: List[int], i: int, permutations: List[List[int]]):
+        if i == len(nums) - 1:
+            permutations.append(nums[:])
+        else:
+            for j in range(i, len(nums)):
+                self.swap(nums, i, j)
+                self.permutationsHelper2(nums, i + 1, permutations)
+                self.swap(nums, i, j)
 
-        helper(nums, 0, [])
-        return result
-
-    def swap(self, arr, i, j):
+    def swap(self, arr: List[int], i: int, j: int):
         arr[i], arr[j] = arr[j], arr[i]
 
 
 # Unit Tests
-import unittest
+funcs = [Solution().permute, Solution().permute2]
 
 
 class TestPermute(unittest.TestCase):
     def testPermute1(self):
-        func = Solution().permute
-        func2 = Solution().permute2
-        self.assertEqual(
-            func(nums=[1, 2, 3]).sort(),
-            [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]].sort(),
-        )
-        self.assertEqual(
-            func2(nums=[1, 2, 3]).sort(),
-            [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]].sort(),
-        )
+        for func in funcs:
+            self.assertEqual(
+                func(nums=[1, 2, 3]).sort(),
+                [[1, 2, 3], [1, 3, 2], [2, 1, 3], [
+                    2, 3, 1], [3, 1, 2], [3, 2, 1]].sort(),
+            )
+
+    def testPermute2(self):
+        for func in funcs:
+            self.assertEqual(
+                func(nums=[0, 1]).sort(),
+                [[0, 1], [1, 0]].sort(),
+            )
+
+    def testPermute3(self):
+        for func in funcs:
+            self.assertEqual(
+                func(nums=[1]).sort(),
+                [[1]].sort(),
+            )
 
 
 if __name__ == "__main__":
