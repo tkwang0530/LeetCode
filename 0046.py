@@ -38,13 +38,14 @@ class Solution:
 
     def permutationsHelper(self, nums: List[int], currentPermutation: List[int], permutations: List[int]):
         if len(nums) == 0:
-            permutations.append(currentPermutation)
+            permutations.append(currentPermutation[:])
         else:
             for i in range(len(nums)):
                 newArray = nums[:i] + nums[i+1:]
-                newPermutation = currentPermutation + [nums[i]]
+                currentPermutation.append(nums[i])
                 self.permutationsHelper(
-                    newArray, newPermutation, permutations)
+                    newArray, currentPermutation, permutations)
+                currentPermutation.pop()
 
     def permute2(self, nums: List[int]) -> List[List[int]]:
         permutations = []
