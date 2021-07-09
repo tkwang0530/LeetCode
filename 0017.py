@@ -30,12 +30,16 @@ Note:
 1. Recursion with curr_list: O(n) time | O(1) space
 """
 
+
+
+
+import unittest
 from typing import List
-
-
 class Solution:
     def letterCombinations(self, digits: str) -> List[str]:
-        results = []
+        if digits == "":
+            return []
+
         dict = {
             "2": ["a", "b", "c"],
             "3": ["d", "e", "f"],
@@ -44,47 +48,47 @@ class Solution:
             "6": ["m", "n", "o"],
             "7": ["p", "q", "r", "s"],
             "8": ["t", "u", "v"],
-            "9": ["w", "x", "y", "z"],
+            "9": ["w", "x", "y", "z"]
         }
-        self.helper(digits, 0, [], results, dict)
+        results = []
+        self.dfs(digits, 0, [], results, dict)
         return results
 
-    def helper(self, digits, i, curr_list, results, dict):
-        if i == len(digits):
-            results.append("".join(curr_list))
+    def dfs(self, digits, i, currentList, results, dict):
+        if len(currentList) == len(digits):
+            results.append("".join(currentList))
         else:
-            letters = dict[digits[i]]
-            for letter in letters:
-                curr_list.append(letter)
-                self.helper(digits, i + 1, curr_list, results, dict)
-                curr_list.pop()
+            for letter in dict[digits[i]]:
+                currentList.append(letter)
+                self.dfs(digits, i + 1, currentList, results, dict)
+                currentList.pop()
 
 
 # Unit Tests
-import unittest
+funcs = [Solution().letterCombinations]
 
 
 class TestLetterCombinations(unittest.TestCase):
     def testLetterCombinations1(self):
-        func = Solution().letterCombinations
-        self.assertEqual(
-            func(digits="23").sort(),
-            ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"].sort(),
-        )
+        for func in funcs:
+            self.assertEqual(
+                func(digits="23").sort(),
+                ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"].sort(),
+            )
 
     def testLetterCombinations2(self):
-        func = Solution().letterCombinations
-        self.assertEqual(
-            func(digits="").sort(),
-            [].sort(),
-        )
+        for func in funcs:
+            self.assertEqual(
+                func(digits="").sort(),
+                [].sort(),
+            )
 
     def testLetterCombinations3(self):
-        func = Solution().letterCombinations
-        self.assertEqual(
-            func(digits="2").sort(),
-            ["a", "b", "c"].sort(),
-        )
+        for func in funcs:
+            self.assertEqual(
+                func(digits="2").sort(),
+                ["a", "b", "c"].sort(),
+            )
 
 
 if __name__ == "__main__":
