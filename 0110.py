@@ -34,6 +34,7 @@ Output: true
 Note:
 1. Recursion (track heights, isBalanced): O(n) time | O(h) space
 2. Iteration (track last visit node, heights): O(n) time | O(h) space
+3. Iteration (track heights with visited flag): O(n) time | O(h) space
 """
 
 
@@ -85,9 +86,29 @@ class Solution:
                     node = node.right
         return True
 
+    def isBalanced3(self, root: TreeNode) -> bool:
+        if not root:
+            return True
+        stack, heights = [(root, False)], {}
+        while stack:
+            node, visited = stack.pop()
+            if visited:
+                leftHeight, rightHeight = heights.get(
+                    node.left, 0), heights.get(node.right, 0)
+                if abs(leftHeight - rightHeight) > 1:
+                    return False
+                heights[node] = 1 + max(leftHeight, rightHeight)
+            else:
+                stack.append((node, True))
+                if node.right:
+                    stack.append((node.right, False))
+                if node.left:
+                    stack.append((node.left, False))
+        return True
+
 
 # Unit Tests
-funcs = [Solution().isBalanced, Solution().isBalanced2]
+funcs = [Solution().isBalanced, Solution().isBalanced2, Solution().isBalanced3]
 
 
 class TestIsBalanced(unittest.TestCase):
