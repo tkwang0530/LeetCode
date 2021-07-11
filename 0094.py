@@ -33,6 +33,7 @@ Output: [1, 2]
 Note:
 1. Iterative solution: O(n) time | O(n) space
 2. Recursive solution: O(n) time | O(n) space
+3. Morris traversal: O(n) time | O(1) space
 """
 
 
@@ -74,9 +75,33 @@ class Solution:
         if root.right is not None:
             self.dfs(root.right, res)
 
+    def inorderTraversal3(self, root: TreeNode) -> List[int]:
+        current = root
+        result = []
+        while current is not None:
+            if current.left is None:
+                result.append(current.val)
+                current = current.right
+            else:
+                # find the predecessor
+                predecessor = current.left
+                while predecessor.right != current and predecessor.right is not None:
+                    predecessor = predecessor.right
+
+                # if right node is None then go left after establishing link from predecessor to current
+                if predecessor.right is None:
+                    predecessor.right = current
+                    current = current.left
+                else:  # left is already visit. Go right after visiting current.
+                    predecessor.right = None
+                    result.append(current.val)
+                    current = current.right
+        return result
+
 
 # Unit Tests
-funcs = [Solution().inorderTraversal, Solution().inorderTraversal2]
+funcs = [Solution().inorderTraversal, Solution().inorderTraversal2,
+         Solution().inorderTraversal3]
 
 
 class TestInorderTraversal(unittest.TestCase):
