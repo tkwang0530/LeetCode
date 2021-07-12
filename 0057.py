@@ -72,84 +72,56 @@ class Solution:
 
 # Unit Tests
 import unittest
-
+funcs = [Solution().insert, Solution().insert2]
 
 class TestInsert(unittest.TestCase):
     def testInsert1(self):
-        func = Solution().insert
-        func2 = Solution().insert2
-        self.assertEqual(
-            func(intervals=[[1, 3], [6, 9]], newInterval=[2, 5]), [[1, 5], [6, 9]]
-        )
-        self.assertEqual(
-            func2(intervals=[[1, 3], [6, 9]], newInterval=[2, 5]), [[1, 5], [6, 9]]
-        )
+        for func in funcs:
+            self.assertEqual(
+                func(intervals=[[1, 3], [6, 9]], newInterval=[2, 5]), [[1, 5], [6, 9]]
+            )
+
 
     def testInsert2(self):
-        func = Solution().insert
-        func2 = Solution().insert2
-        self.assertEqual(
-            func(
-                intervals=[[1, 2], [3, 5], [6, 7], [8, 10], [12, 16]],
-                newInterval=[4, 8],
-            ),
-            [[1, 2], [3, 10], [12, 16]],
-        )
+        for func in funcs:
+            self.assertEqual(
+                func(
+                    intervals=[[1, 2], [3, 5], [6, 7], [8, 10], [12, 16]],
+                    newInterval=[4, 8],
+                ),
+                [[1, 2], [3, 10], [12, 16]],
+            )
 
     def testInsert3(self):
-        func = Solution().insert
-        func2 = Solution().insert2
-        self.assertEqual(
-            func(
-                intervals=[],
-                newInterval=[5, 7],
-            ),
-            [[5, 7]],
-        )
-        self.assertEqual(
-            func2(
-                intervals=[],
-                newInterval=[5, 7],
-            ),
-            [[5, 7]],
-        )
+        for func in funcs:
+            self.assertEqual(
+                func(
+                    intervals=[],
+                    newInterval=[5, 7],
+                ),
+                [[5, 7]],
+            )
+
 
     def testInsert4(self):
-        func = Solution().insert
-        func2 = Solution().insert2
-        self.assertEqual(
-            func(
-                intervals=[[1, 5]],
-                newInterval=[2, 3],
-            ),
-            [[1, 5]],
-        )
-        self.assertEqual(
-            func2(
-                intervals=[[1, 5]],
-                newInterval=[2, 3],
-            ),
-            [[1, 5]],
-        )
+        for func in funcs:
+            self.assertEqual(
+                func(
+                    intervals=[[1, 5]],
+                    newInterval=[2, 3],
+                ),
+                [[1, 5]],
+            )
 
     def testInsert5(self):
-        func = Solution().insert
-        func2 = Solution().insert2
-        self.assertEqual(
-            func(
-                intervals=[[1, 5]],
-                newInterval=[2, 7],
-            ),
-            [[1, 7]],
-        )
-        self.assertEqual(
-            func2(
-                intervals=[[1, 5]],
-                newInterval=[2, 7],
-            ),
-            [[1, 7]],
-        )
-
+        for func in funcs:
+            self.assertEqual(
+                func(
+                    intervals=[[1, 5]],
+                    newInterval=[2, 7],
+                ),
+                [[1, 7]],
+            )
 
 if __name__ == "__main__":
     unittest.main()
