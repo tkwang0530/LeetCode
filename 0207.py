@@ -27,7 +27,7 @@ prerequisites[i].length == 2
 
 """
 Note:
-1. DFS Topological Sort: O(n) time | O(n) space 
+1. DFS Topological Sort: O(V+E) time | O(V+E) space 
 """
 
 
