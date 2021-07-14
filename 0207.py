@@ -41,7 +41,7 @@ class Solution(object):
         for _ in range(numCourses):
             graph.append([])
         for course, prerequisite in prerequisites:
-            graph[prerequisite].append(course)
+            graph[course].append(prerequisite)
 
         visited = [0] * numCourses
         for i in range(numCourses):
