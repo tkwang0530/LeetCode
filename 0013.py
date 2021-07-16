@@ -30,42 +30,48 @@ The trick is that the last letter is always added. Except the last one, if one l
 """
 
 
+
+
+import unittest
 class Solution:
     def romanToInt(self, s: str) -> int:
-        roman = {"M": 1000, "D": 500, "C": 100, "L": 50, "X": 10, "V": 5, "I": 1}
-        z = 0
+        roman = {"M": 1000, "D": 500, "C": 100,
+                 "L": 50, "X": 10, "V": 5, "I": 1}
+        result = 0
         for i in range(len(s) - 1):
-            if roman[s[i]] < roman[s[i + 1]]:
-                z -= roman[s[i]]
+            number, nextNumber = roman[s[i]], roman[s[i+1]]
+            if number < nextNumber:
+                result -= number
             else:
-                z += roman[s[i]]
-        return z + roman[s[-1]]
+                result += number
+        result += roman[s[-1]]
+        return result
 
 
 # Unit Tests
-import unittest
+funcs = [Solution().romanToInt]
 
 
 class TestRomanToInt(unittest.TestCase):
     def testRomanToInt1(self):
-        func = Solution().romanToInt
-        self.assertEqual(func(s="III"), 3)
+        for func in funcs:
+            self.assertEqual(func(s="III"), 3)
 
     def testRomanToInt2(self):
-        func = Solution().romanToInt
-        self.assertEqual(func(s="IV"), 4)
+        for func in funcs:
+            self.assertEqual(func(s="IV"), 4)
 
     def testRomanToInt3(self):
-        func = Solution().romanToInt
-        self.assertEqual(func(s="IX"), 9)
+        for func in funcs:
+            self.assertEqual(func(s="IX"), 9)
 
     def testRomanToInt4(self):
-        func = Solution().romanToInt
-        self.assertEqual(func(s="LVIII"), 58)
+        for func in funcs:
+            self.assertEqual(func(s="LVIII"), 58)
 
     def testRomanToInt5(self):
-        func = Solution().romanToInt
-        self.assertEqual(func(s="MCMXCIV"), 1994)
+        for func in funcs:
+            self.assertEqual(func(s="MCMXCIV"), 1994)
 
 
 if __name__ == "__main__":
