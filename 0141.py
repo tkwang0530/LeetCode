@@ -62,11 +62,20 @@ class Solution:
             if fast == slow:
                 return True
         return False
+    
+    def hasCycle2(self, head: ListNode) -> bool:
+        node_set = set()
+        while head:
+            if head in node_set:
+                return True
+            node_set.add(head)
+            head = head.next
+        return False
 
 
 # Unit Tests
 
-funcs = [Solution().hasCycle]
+funcs = [Solution().hasCycle, Solution().hasCycle2]
 
 
 class TestHasCycle(unittest.TestCase):
