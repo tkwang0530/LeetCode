@@ -18,6 +18,8 @@ Output: [0]
 """
 Note:
 1. Three Pointers: O(n) time | O(1) space
+2. Recursion: O(n) time | O(n) space
+if l1.val < l2.val: l1.next = self.mergeTwoList(l1.next, l2)
 """
 
 
@@ -70,10 +72,20 @@ class Solution:
             prev.next = l1 or l2
         return dummy.next
 
+    def mergeTwoLists2(self, l1: ListNode, l2: ListNode) -> ListNode:
+        if not l1 or not l2:
+            return l1 or l2
+        if l1.val < l2.val:
+            l1.next = self.mergeTwoLists(l1.next, l2)
+            return l1
+        else:
+            l2.next= self.mergeTwoLists(l1, l2.next)
+            return l2
+
 # Unit Tests
 
 
-funcs = [Solution().mergeTwoLists]
+funcs = [Solution().mergeTwoLists, Solution().mergeTwoLists2]
 
 
 class TestMergeTwoLists(unittest.TestCase):
