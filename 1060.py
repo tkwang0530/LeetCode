@@ -36,14 +36,14 @@ from typing import List
 import unittest
 class Solution:
     def missingElement(self, nums: List[int], k: int) -> int:
-        left, right = 0, len(nums) - 1
-        while left <= right:
+        left, right = 0, len(nums)
+        while left < right:
             mid = (left + right) // 2
             numOfMissingNumbers = nums[mid] - nums[0] - mid
             if numOfMissingNumbers < k:
                 left = mid + 1
             else:
-                right = mid - 1
+                right = mid
         return nums[0] + k + left - 1
 
 
