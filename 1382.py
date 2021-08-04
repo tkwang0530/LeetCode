@@ -21,7 +21,7 @@ Explanation: This is not the only correct answer, [3,1,4,null,2,null,null] is al
 
 """
 Note:
-1. DFS inorder traverse + binary search: O(n) time | O(n) space
+1. DFS inorder traverse + recursion: O(n) time | O(n) space
 """
 
 
