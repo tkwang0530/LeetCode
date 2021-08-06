@@ -24,7 +24,7 @@ Constraints:
 
 """
 Note:
-1. 3 pointers (idx, left, right): O(n^2) time | O(1) space
+1. Two Pointers: O(n^2) time | O(1) space
 """
 
 
