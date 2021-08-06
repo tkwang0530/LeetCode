@@ -24,7 +24,7 @@ Note:
 import unittest
 from  typing import List
 class Solution:
-    def ThreeSumClosest(self, nums: List[int], target: int) -> int:
+    def threeSumClosest(self, nums: List[int], target: int) -> int:
         nums.sort()
         diff = float("inf")
         for i in range(len(nums) - 2):
@@ -44,7 +44,7 @@ class Solution:
 
 # Unit Tests
 
-funcs = [Solution().ThreeSumClosest]
+funcs = [Solution().threeSumClosest]
 
 
 class TestThreeSumClosest(unittest.TestCase):
