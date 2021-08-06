@@ -41,7 +41,6 @@ class Solution:
                     right -= 1
         return result
 
-
 # Unit Tests
 funcs = [Solution().threeSumSmaller]
 
@@ -54,26 +53,26 @@ class TestThreeSumSmaller(unittest.TestCase):
             self.assertEqual(
                 func(nums=nums, target=target), 2)
 
-    # def testThreeSumSmaller2(self):
-    #     for func in funcs:
-    #         nums = []
-    #         target = 0
-    #         self.assertEqual(
-    #             func(nums=nums, target=target), 0)
+    def testThreeSumSmaller2(self):
+        for func in funcs:
+            nums = []
+            target = 0
+            self.assertEqual(
+                func(nums=nums, target=target), 0)
 
-    # def testThreeSumSmaller3(self):
-    #     for func in funcs:
-    #         nums = []
-    #         target = 0
-    #         self.assertEqual(
-    #             func(nums=nums, target=target), 0)
+    def testThreeSumSmaller3(self):
+        for func in funcs:
+            nums = []
+            target = 0
+            self.assertEqual(
+                func(nums=nums, target=target), 0)
 
-    # def testThreeSumSmaller4(self):
-    #     for func in funcs:
-    #         nums = [-2, 0, 1, 3]
-    #         target = 3
-    #         self.assertEqual(
-    #             func(nums=nums, target=target), 3)
+    def testThreeSumSmaller4(self):
+        for func in funcs:
+            nums = [-2, 0, 1, 3]
+            target = 3
+            self.assertEqual(
+                func(nums=nums, target=target), 3)
 
 
 if __name__ == "__main__":
