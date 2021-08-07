@@ -1,96 +1,82 @@
 """
 18. 4Sum
-Given an array nums with n objects colored red, white, or blue, sort them in-place so that objects of the same color are adjacent, with the colors in the order red, white, and blue.
+Given an array nums of n integers, return an array of all the unique quadruplets [nums[a], nums[b], nums[c], nums[d]] such that:
+- 0 <= a, b, c, d < n
+- a, b, c and d are distinct
+- nums[a] + nums[b] + nums[c] + nums[d] == target
+
+You may return the answer in any order.
 
 Example1:
-Input: nums = [2,0,2,1,1,0]
-Output: [0,0,1,1,2,2]
+Input: nums = [1,0,-1,0,-2,2], target = 0
+Output: [[-2,-1,1,2],[-2,0,0,2],[-1,0,0,1]]
 
 
 Example2:
-Input: nums = [2,0,1]
-Output: [0,1,2]
-
-Example3:
-Input: nums = [0]
-Output: [0]
-
-Example4:
-Input: nums = [1]
-Output: [1]
+Input: nums = [2,2,2,2,2], target = 8
+Output: [[2,2,2,2]]
 
 Constraints:
-n == nums.length
-1 <= n <= 300
-nums[i] is 0, 1, or 2
-
-Follow up: Could you come up with a one-pass algorithm using only constant extra space?
+1 <= nums.length <= 200
+-10^9 <= nums[i] <= 10^9
+-10^9 <= target <= 10^9
 """
 
 """
 Note:
-1. Two Pointers: O(n) time | O(1) space
-(1) Focus on 0 and 2: move 0 to the left, move 2 to the right, so that if there is 1, it must be in the middle
+1. Two Pointers: O(n^3) time | O(1) space
+nested 3Sum
 """
 
 import unittest
 from  typing import List
 class Solution:
-    def sortColors(self, nums: List[int]) -> None:
-        left, right = 0, len(nums) - 1
-        while left < len(nums) - 1 and nums[left] == 0:
-            left += 1
-        while right > 0 and nums[right] == 2:
-            right -= 1
-        i = left
-        while i <= right:
-            if nums[i] == 2:
-                self.swap(nums, i, right)
-                right -= 1
-            elif nums[i] == 0:
-                self.swap(nums, i, left)
-                left += 1
-                i += 1
-            else:
-                i += 1
-            
-    def swap(self, nums: List[int], i: int, j: int) -> None:
-        nums[i], nums[j] = nums[j], nums[i]
-
-            
+    def fourSum(self, nums: List[int], target: int) -> List[List[int]]:
+        result = []
+        if len(nums) < 4:
+            return result
+        nums.sort()
+        for i in range(len(nums) - 3):
+            if i > 0 and nums[i] == nums[i-1]:
+                continue
+            for j in range(i+1, len(nums) - 2):
+                if j > i+1 and nums[j] == nums[j-1]:
+                    continue
+                left, right = j + 1, len(nums) - 1
+                while left < right:
+                    currSum = nums[i] + nums[j] + nums[left] + nums[right]
+                    if currSum > target:
+                        right -= 1
+                    elif currSum < target:
+                        left += 1
+                    else:
+                        result.append([nums[i], nums[j], nums[left], nums[right]])
+                        right -= 1
+                        while right > left and nums[right] == nums[right+1]:
+                            right -= 1
+                        left += 1
+                        while right > left and nums[left] == nums[left - 1]:
+                            left += 1
+        return result
 
 # Unit Tests
-funcs = [Solution().sortColors]
+funcs = [Solution().fourSum]
 
 
-class TestSortColors(unittest.TestCase):
-    def testSortColors1(self):
+class TestFourSum(unittest.TestCase):
+    def testFourSum1(self):
         for func in funcs:
-            nums = [2,0,2,1,1,0]
-            func(nums=nums)
+            nums = [1,0,-1,0,-2,2]
+            target = 0
             self.assertEqual(
-                nums, [0,0,1,1,2,2])
+                func(nums=nums, target=target), [[-2,-1,1,2],[-2,0,0,2],[-1,0,0,1]])
 
-    def testSortColors2(self):
+    def testFourSum2(self):
         for func in funcs:
-            nums = [2,0,1]
-            func(nums=nums)
+            nums = [2,2,2,2,2]
+            target = 8
             self.assertEqual(
-                nums, [0,1,2])
-
-    def testSortColors3(self):
-        for func in funcs:
-            nums = [0]
-            func(nums=nums)
-            self.assertEqual(
-                nums, [0])
-
-    def testSortColors4(self):
-        for func in funcs:
-            nums = [1]
-            func(nums=nums)
-            self.assertEqual(
-                nums, [1])
+                func(nums=nums, target=target), [[2,2,2,2]])
 
 if __name__ == "__main__":
     unittest.main()

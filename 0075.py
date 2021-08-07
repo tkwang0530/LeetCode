@@ -50,10 +50,13 @@ class Solution:
             elif nums[i] == 0:
                 self.swap(nums, i, left)
                 left += 1
-            i += 1
-
-    def swap(self, nums: List[int], i: int, j: int):
-        nums[i], nums[j] = nums[j], nums[i] 
+                i += 1
+            else:
+                i += 1
+            
+    
+    def swap(self, nums: List[int], i: int, j: int) -> None:
+        nums[i], nums[j] = nums[j], nums[i]
 
             
 
