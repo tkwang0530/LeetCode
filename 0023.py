@@ -37,7 +37,7 @@ The sum of lists[i].length won't exceed 10^4.
 Note:
 1. Brute Force: O(nk) time | O(1) space
 Merge two linked list (extend)
-2. Merge sort: O(nk*logk) time | O(logk) space
+2. Merge sort: O(nlogk) time | O(logk) space
 3. Use Heap: O(nlogk) time | O(k) space
 """
 
