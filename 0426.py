@@ -24,9 +24,10 @@ Outputs: [1, 2, 3, 4, 5] (circular doubly linked list) (5 should connect to 1)
 
 """
 Note:
-1. DFS (Boundary Walk): O(n) time | O(h) space
-param(pred): 
-pred to store the predeccessor
+1. Recursive DFS: O(n) time | O(h) space
+use prev to store the predeccessor
+2. Iterative DFS: O(n) time | O(h) space
+3. Morris traversal: O(n) time | O(1) space
 """
 
 
@@ -46,36 +47,84 @@ class Solution:
         if root is None:
             return
         dummy = TreeNode(None)
-        pred = [dummy]
-        self.dfs(root, pred)
-        pred[0].right = dummy.right  # head
-        dummy.right.left = pred[0]
+        prev = [dummy]
+        self.dfs(root, prev)
+        prev[0].right = dummy.right  # head
+        dummy.right.left = prev[0]
         return dummy.right
 
-    def dfs(self, treeNode: TreeNode, pred: List[TreeNode]):
+    def dfs(self, treeNode: TreeNode, prev: List[TreeNode]):
         if treeNode.left is not None:
-            self.dfs(treeNode.left, pred)
-        treeNode.left = pred[0]
-        pred[0].right = treeNode
-        pred[0] = treeNode
+            self.dfs(treeNode.left, prev)
+        treeNode.left = prev[0]
+        prev[0].right = treeNode
+        prev[0] = treeNode
         if treeNode.right is not None:
-            self.dfs(treeNode.right, pred)
+            self.dfs(treeNode.right, prev)
+
+    def treeToDoublyList2(self, root: TreeNode) -> TreeNode:
+        if not root:
+            return
+        prev = dummy = TreeNode(0)
+        stack = []
+        node = root
+        while stack or node:
+            while node:
+                stack.append(node)
+                node = node.left
+            node = stack.pop()
+            prev.right = node
+            node.left = prev
+
+            prev = node
+            node = node.right
+        dummy.right.left = prev
+        prev.right = dummy.right
+        return dummy.right
+
+    def treeToDoublyList3(self, root: TreeNode) -> TreeNode:
+        current = root
+        prev = dummy = TreeNode(0)
+        while current is not None:
+            if current.left is None:
+                prev.right = current
+                current.left = prev
+                prev = current
+                current = current.right
+            else:
+                # find the predecessor
+                predecessor = current.left
+                while predecessor.right != current and predecessor.right is not None:
+                    predecessor = predecessor.right
+
+                # if right node is None then go left after establishing link from predecessor to current
+                if predecessor.right is None:
+                    predecessor.right = current
+                    current = current.left
+                else:  # left is already visit. Go right after visiting current.
+                    predecessor.right = None
+                    prev.right = current
+                    current.left = prev
+                    prev = current
+                    current = current.right
+        dummy.right.left = prev
+        prev.right = dummy.right
+        return dummy.right
 
 
 # Unit Tests
-
-
+funcs = [Solution().treeToDoublyList, Solution().treeToDoublyList2, Solution().treeToDoublyList3]
 class TestTreeToDoublyList(unittest.TestCase):
     def testTreeToDoublyList1(self):
-        root = TreeNode(4, TreeNode(2, TreeNode(1), TreeNode(3)), TreeNode(5))
-        func = Solution().treeToDoublyList
-        newRoot = func(root=root)
-        self.assertEqual(newRoot.val, 1)
-        self.assertEqual(newRoot.right.val, 2)
-        self.assertEqual(newRoot.right.right.val, 3)
-        self.assertEqual(newRoot.right.right.right.val, 4)
-        self.assertEqual(newRoot.right.right.right.right.val, 5)
-        self.assertEqual(newRoot.right.right.right.right.right.val, 1)
+        for func in funcs:
+            root = TreeNode(4, TreeNode(2, TreeNode(1), TreeNode(3)), TreeNode(5))
+            newRoot = func(root=root)
+            self.assertEqual(newRoot.val, 1)
+            self.assertEqual(newRoot.right.val, 2)
+            self.assertEqual(newRoot.right.right.val, 3)
+            self.assertEqual(newRoot.right.right.right.val, 4)
+            self.assertEqual(newRoot.right.right.right.right.val, 5)
+            self.assertEqual(newRoot.right.right.right.right.right.val, 1)
 
 
 if __name__ == "__main__":
