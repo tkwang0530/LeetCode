@@ -29,14 +29,6 @@ myLinkedList.deleteAtIndex(1);    // now the linked list is 1->3
 myLinkedList.get(1);              // return 3
 """
 
-"""
-Note:
-1. 
-"""
-
-
-
-
 import unittest
 class ListNode:
     def __init__(self, val=0, next=None) -> None:
