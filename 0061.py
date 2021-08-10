@@ -28,13 +28,7 @@ class ListNode:
 
     # TEST ONLY
     def __repr__(self):
-        if self is None:
-            return "None"
-        nums = [self.val]
-        while self.next:
-            nums.append(self.next.val)
-            self = self.next
-        return "->".join(str(num) for num in nums)
+        return f"{self.val}->{self.next}"
 
     @classmethod
     def fromArray(cls, arr):
@@ -84,12 +78,12 @@ class TestRotateRight(unittest.TestCase):
     def testRotate1(self):
         func = Solution().rotateRight
         head = ListNode.fromArray([1, 2, 3, 4, 5])
-        self.assertEqual(repr(func(head=head, k=2)), "4->5->1->2->3")
+        self.assertEqual(repr(func(head=head, k=2)), "4->5->1->2->3->None")
 
     def testRotate2(self):
         func = Solution().rotateRight
         head = ListNode.fromArray([0, 1, 2])
-        self.assertEqual(repr(func(head=head, k=4)), "2->0->1")
+        self.assertEqual(repr(func(head=head, k=4)), "2->0->1->None")
 
 
 if __name__ == "__main__":
