@@ -27,13 +27,7 @@ class ListNode:
 
     # TEST ONLY
     def __repr__(self):
-        if self is None:
-            return "None"
-        nums = [self.val]
-        while self.next:
-            nums.append(self.next.val)
-            self = self.next
-        return "->".join(str(num) for num in nums)
+        return f"{self.val}->{self.next}"
 
     @classmethod
     def fromArray(cls, arr):
@@ -78,7 +72,7 @@ class TestReverseList(unittest.TestCase):
     def testReverseList1(self):
         for func in funcs:
             head = ListNode.fromArray([1, 2, 3, 4, 5])
-            self.assertEqual(repr(func(head=head)), "5->4->3->2->1")
+            self.assertEqual(repr(func(head=head)), "5->4->3->2->1->None")
 
 
 if __name__ == "__main__":
