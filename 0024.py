@@ -29,13 +29,7 @@ class ListNode:
 
     # TEST ONLY
     def __repr__(self):
-        if self is None:
-            return "None"
-        nums = [self.val]
-        while self.next:
-            nums.append(self.next.val)
-            self = self.next
-        return "->".join(str(num) for num in nums)
+        return f"{self.val}->{self.next}"
 
     @classmethod
     def fromArray(cls, arr):
@@ -83,7 +77,7 @@ class TestSwapPairs(unittest.TestCase):
     def testSwapPairs1(self):
         for func in funcs:
             head = ListNode.fromArray([1, 2, 3, 4])
-            self.assertEqual(repr(func(head=head)), "2->1->4->3")
+            self.assertEqual(repr(func(head=head)), "2->1->4->3->None")
 
     def testSwapPairs2(self):
         for func in funcs:
@@ -93,7 +87,7 @@ class TestSwapPairs(unittest.TestCase):
     def testSwapPairs3(self):
         for func in funcs:
             head = ListNode(1)
-            self.assertEqual(repr(func(head=head)), "1")
+            self.assertEqual(repr(func(head=head)), "1->None")
 
 
 if __name__ == "__main__":
