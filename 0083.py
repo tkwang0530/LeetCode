@@ -19,6 +19,7 @@ The list is guaranteed to be sorted in ascending order.
 """
 Note:
 1. Two Pointers(current, nextDistinct): O(n) time | O(1) space
+2. Recursion: O(n) time | O(n) space
 """
 
 
@@ -60,9 +61,15 @@ class Solution:
             currentNode = currentNode.next
         return head
 
+    def deleteDuplicates2(self, head: ListNode) -> ListNode:
+        if not head or not head.next:
+            return head
+        head.next = self.deleteDuplicates2(head.next)
+        return head.next if head.val == head.next.val else head
+
 
 # Unit Tests
-funcs = [Solution().deleteDuplicates]
+funcs = [Solution().deleteDuplicates, Solution().deleteDuplicates2]
 
 
 class TestDeleteDuplicates(unittest.TestCase):
