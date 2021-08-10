@@ -32,13 +32,7 @@ class ListNode:
 
     # TEST ONLY
     def __repr__(self):
-        if self is None:
-            return "None"
-        nums = [self.val]
-        while self.next:
-            nums.append(self.next.val)
-            self = self.next
-        return "->".join(str(num) for num in nums)
+        return f"{self.val}->{self.next}"
 
     @classmethod
     def fromArray(cls, arr):
@@ -75,12 +69,12 @@ class TestDeleteDuplicates(unittest.TestCase):
     def testDeleteDuplicates1(self):
         for func in funcs:
             head = ListNode.fromArray([1, 1, 2])
-            self.assertEqual(repr(func(head=head)), "1->2")
+            self.assertEqual(repr(func(head=head)), "1->2->None")
 
     def testDeleteDuplicates2(self):
         for func in funcs:
             head = ListNode.fromArray([1, 1, 2, 3, 3])
-            self.assertEqual(repr(func(head=head)), "1->2->3")
+            self.assertEqual(repr(func(head=head)), "1->2->3->None")
 
     def testDeleteDuplicates3(self):
         for func in funcs:
@@ -90,7 +84,7 @@ class TestDeleteDuplicates(unittest.TestCase):
     def testDeleteDuplicates4(self):
         for func in funcs:
             head = ListNode.fromArray([1])
-            self.assertEqual(repr(func(head=head)), "1")
+            self.assertEqual(repr(func(head=head)), "1->None")
 
 
 if __name__ == "__main__":
