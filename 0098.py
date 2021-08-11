@@ -30,6 +30,7 @@ Note:
 1. Recursive solution: O(n) time | O(n) space
 validateBstHelper(root, minValue, maxValue)
 2. Iterative solution: O(n) time | O(n) space
+3. Morris Traversal: O(n) time | O(1) space
 """
 
 
@@ -69,9 +70,36 @@ class Solution:
             root = root.right
         return True
 
+    def isValidBST3(self, root: TreeNode) -> bool:
+        if not root:
+            return True
+
+        current, prev = root, None
+        while current:
+            if not current.left:
+                if prev and prev.val >= current.val:
+                    return False
+                prev = current
+                current = current.right
+            else:
+                predecessor = current.left
+                while predecessor.right != current and predecessor.right:
+                    predecessor = predecessor.right
+                if not predecessor.right:
+                    predecessor.right = current
+                    current = current.left
+                else:
+                    predecessor.right = None
+                    if prev and prev.val >= current.val:
+                        return False
+                    prev = current
+                    current = current.right
+        return True
+    
+
 
 # Unit Tests
-funcs = [Solution().isValidBST, Solution().isValidBST2]
+funcs = [Solution().isValidBST, Solution().isValidBST2, Solution().isValidBST3]
 
 
 class TestIsValidBST(unittest.TestCase):
