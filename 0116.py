@@ -27,10 +27,6 @@ Note:
 keep track the startNode
 """
 
-
-
-
-from collections import deque
 import unittest
 class TreeNode:
     def __init__(self, val=0, left=None, right=None, next=None):
@@ -41,7 +37,7 @@ class TreeNode:
 
 
 class Solution:
-    def connect(self, root: TreeNode) -> bool:
+    def connect(self, root: TreeNode) -> TreeNode:
         if not root or not root.left:
             return root
         root.left.next = root.right
@@ -51,7 +47,7 @@ class Solution:
         self.connect(root.right)
         return root
 
-    def connect2(self, root: TreeNode) -> bool:
+    def connect2(self, root: TreeNode) -> TreeNode:
         startNode = root
         while startNode:
             current = startNode
@@ -80,6 +76,12 @@ class TestConnect(unittest.TestCase):
             self.assertEqual(root.left.right.next, root.right.left)
             self.assertEqual(root.right.left.next, root.right.right)
             self.assertEqual(root.right.right.next, None)
+
+    def testConnect2(self):
+        for func in funcs:
+            root = None
+            root = func(root)
+            self.assertEqual(root, None)
 
 if __name__ == "__main__":
     unittest.main()
