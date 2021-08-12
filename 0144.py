@@ -20,9 +20,8 @@ Note:
 1. DFS (Iterative Boundary Walk): O(n) time | O(n) space
 use explicit stack (LIFO)
 2. Morris Traversal: O(n) time | O(1) space
+3. Recursion: O(n) time | O(n) space
 """
-
-
 
 
 from typing import List
@@ -69,10 +68,23 @@ class Solution:
                     current = current.right
         return result
 
+    def preorderTraversal3(self, root: TreeNode) -> List[int]:
+        if not root:
+            return []
+        result = []
+        self.dfs(root, result)
+        return result
+
+    def dfs(self, root: TreeNode, result: List[int]) -> List[int]:
+        result.append(root.val)
+        if root.left:
+            self.dfs(root.left, result)
+        if root.right:
+            self.dfs(root.right, result)
 # Unit Tests
 
 
-funcs = [Solution().preorderTraversal, Solution().preorderTraversal2]
+funcs = [Solution().preorderTraversal, Solution().preorderTraversal2, Solution().preorderTraversal3]
 
 
 class TestPreorderTraversal(unittest.TestCase):
