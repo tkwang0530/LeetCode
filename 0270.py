@@ -19,14 +19,15 @@ Output: 4
 
 """
 Note:
-1. Iterative (DFS): O(n) time | O(n) space
-2. Iterative (Binary Search): O(logn) time | O(1) space
-3. Recursive (Binary Search): O(logn) time | O(logn) space
+1. Iterative (DFS inorder traversal): O(n) time | O(n) space
+2. Iterative (Binary Search): O(h) time | O(1) space
+3. Recursive (Binary Search): O(h) time | O(h) space
 """
 
 
 
 
+from typing import List
 import unittest
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
@@ -39,8 +40,8 @@ class Solution:
     def closestValue(self, root: TreeNode, target: float) -> int:
         stack = []
         closest = float("inf")
-        while root is not None or len(stack) > 0:
-            while root is not None:
+        while root or len(stack) > 0:
+            while root:
                 stack.append(root)
                 root = root.left
             root = stack.pop()
@@ -64,18 +65,19 @@ class Solution:
         return closest
 
     def closestValue3(self, root: TreeNode, target: float) -> int:
-        return self.closestValueHelper(root, target, float("inf"))
+        closest = [root.val]
+        self.closestValueHelper(root, target, closest)
+        return closest[0]
 
-    def closestValueHelper(self, root: TreeNode, target: float, closest: int) -> int:
-        if abs(root.val - target) < abs(closest - target):
-            closest = root.val
+    def closestValueHelper(self, root: TreeNode, target: float, closest: List[int]) -> None:
+        if abs(root.val - target) < abs(closest[0] - target):
+            closest[0] = root.val
 
-        if root.val < target and root.right is not None:
-            closest = self.closestValueHelper(root.right, target, closest)
+        if root.val < target and root.right:
+            self.closestValueHelper(root.right, target, closest)
 
-        if root.val > target and root.left is not None:
-            closest = self.closestValueHelper(root.left, target, closest)
-        return closest
+        if root.val > target and root.left:
+            self.closestValueHelper(root.left, target, closest)
 
 
 # Unit Tests
