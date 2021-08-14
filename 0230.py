@@ -26,14 +26,13 @@ Output: 3
 
 """
 Note:
-1. Iterative solution: O(n) time | O(n) space
-2. Recursive solution: O(n) time | O(n) space
+1. Iterative (DFS Inorder Traveral): O(n) time | O(h) space
+2. Recursive (DFS Inorder Traveral): O(n) time | O(h) space
+3. Morris Traversal: O(n) time | O(1) space
 """
 
 
-
-
-from typing import List, Tuple
+from typing import List
 import unittest
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
@@ -45,37 +44,62 @@ class TreeNode:
 class Solution:
     def kthSmallest(self, root: TreeNode, k: int) -> int:
         stack = []
-        while root is not None or len(stack) > 0:
-            while root is not None:
-                stack.append(root)
-                root = root.left
-            root = stack.pop()
+        node = root
+        while len(stack) > 0 or node:
+            while node:
+                stack.append(node)
+                node = node.left
+            node = stack.pop()
             k -= 1
             if k == 0:
                 break
-            root = root.right
-        return root.val
+            node = node.right
+        return node.val
 
     def kthSmallest2(self, root: TreeNode, k: int) -> int:
-        result = [0, k]  # [result, current k]
-        self.dfs(root, k, result)
+        result = [0, k] # [value, curretK]
+        self.dfs(root, result)
         return result[0]
-
-    def dfs(self, root: TreeNode, k: int, result: List[int]):
-        if root.left is not None:
-            self.dfs(root.left, k, result)
-
-        if result[1] == 0:
+    
+    def dfs(self, node: TreeNode, result: List[int]) -> None:
+        if result[1] < 0:
             return
+        if node.left:
+            self.dfs(node.left, result)
+        
         result[1] -= 1
-        result[0] = root.val
+        if result[1] == 0:
+            result[0] = node.val
+        
+        if node.right:
+            self.dfs(node.right, result)
 
-        if root.right is not None:
-            self.dfs(root.right, k, result)
+    def kthSmallest3(self, root: TreeNode, k: int) -> int:
+        node = root
+        while node:
+            if not node.left:
+                k -= 1
+                if k == 0:
+                    break
+                node = node.right
+            else:
+                predecessor = node.left
+                while predecessor.right and predecessor.right != node:
+                    predecessor = predecessor.right
+                if not predecessor.right:
+                    predecessor.right = node
+                    node = node.left
+                else:
+                    predecessor.right = None
+                    k -= 1
+                    if k == 0:
+                        break
+                    node = node.right
+        return node.val
 
 
 # Unit Tests
-funcs = [Solution().kthSmallest, Solution().kthSmallest2]
+funcs = [Solution().kthSmallest, Solution().kthSmallest2, Solution().kthSmallest3]
 
 
 class TestKthSmallestl(unittest.TestCase):
