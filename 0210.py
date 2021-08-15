@@ -32,45 +32,105 @@ ai != bi
 
 """
 Note:
-1. DFS Topological Sort: O(V+E) time | O(V+E) space 
+1. DFS Topological Sort: O(V+E) time | O(V+E) space
+2. BFS Topological Sort: O(V+E) time | O(V+E) space
+3. BFS Topological Sort (improved): O(V+E) time | O(V+E) space
 """
 
 
-
-
+from collections import defaultdict, deque
 import unittest
 from typing import List
 class Solution(object):
     def findOrder(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
-        graph = []
-        for _ in range(numCourses):
-            graph.append([])
+        graph = [[] for course in range(numCourses)]
         for course, prerequisite in prerequisites:
             graph[course].append(prerequisite)
 
         visited = [0] * numCourses
         order = []
-        for i in range(numCourses):
-            if self.dfs(i, graph, visited, order):
+        for course in range(numCourses):
+            if self.dfs(course, graph, visited, order):
                 return []
         return order
 
-    def dfs(self, i, graph, visited, order):
-        if visited[i] == 1:
+    def dfs(self, course: int, graph: List[List[int]], visited: List[int], order: List[int]) -> bool:
+        if visited[course] == 1:
             return True
-        if visited[i] == 2:
+        if visited[course] == 2:
             return False
-        visited[i] = 1
-        for j in graph[i]:
-            if self.dfs(j, graph, visited, order):
+        visited[course] = 1
+        for prerequisite in graph[course]:
+            if self.dfs(prerequisite, graph, visited, order):
                 return True
-        visited[i] = 2
-        order.append(i)
+        visited[course] = 2
+        order.append(course)
         return False
+
+    def findOrder2(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
+        # Create a prerequisite dict. (containing courses that need to be taken (visit))
+        # before we can visit the key itself
+        prerequisitesDict = { course: set() for course in range(numCourses)}
+        graph = defaultdict(set)
+        for course, prerequisite in prerequisites:
+            # prerequisitesDict store requiements as their given
+            prerequisitesDict[course].add(prerequisite)
+            # Graph stores courses and its neighbor
+            graph[prerequisite].add(course)
+
+        queue = deque([])
+
+        # we need to find a starting location, aka courses that have no prerequisites
+        for course, preCourses in prerequisitesDict.items():
+            if len(preCourses) == 0:
+                queue.append(course)
+        
+        # Keep track of which courses have been taken.
+        taken = []
+        while len(queue) > 0:
+            course = queue.popleft()
+            taken.append(course)
+
+            # If we have visited the numCourses we're done.
+            if len(taken) == numCourses:
+                return taken
+            
+            # For neighboring courses
+            for neighbor in graph[course]:
+                # If the course we've just taken was a preCourse for the next course, remove it from its preCourses list
+                prerequisitesDict[neighbor].remove(course)
+                # If we've taken all of the preCourses for the new course, we'll visit it.
+                if len(prerequisitesDict[neighbor]) == 0:
+                    queue.append(neighbor)
+        return [] 
+
+    def findOrder3(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
+        preCourseCounts = [ 0 for course in range(numCourses) ]
+        graph = [[] for course in range(numCourses)]
+        for course, prerequisite in prerequisites:
+            preCourseCounts[course] += 1
+            graph[prerequisite].append(course)
+        queue = deque([])
+        for course, counts in enumerate(preCourseCounts):
+            if counts == 0:
+                queue.append(course)     
+        taken = []
+        while len(queue) > 0:
+            course = queue.popleft()
+            taken.append(course)
+            if len(taken) == numCourses:
+                return taken
+            for neighbor in graph[course]:
+                preCourseCounts[neighbor] -= 1
+                if preCourseCounts[neighbor] == 0:
+                    queue.append(neighbor)
+        return []
+
+
 
 
     # Unit Tests
-funcs = [Solution().findOrder]
+funcs = [Solution().findOrder, Solution().findOrder2, Solution().findOrder3]
 
 
 class TestFindOrder(unittest.TestCase):
@@ -94,6 +154,13 @@ class TestFindOrder(unittest.TestCase):
             prerequisites = []
             self.assertEqual(
                 func(numCourses=numCourses, prerequisites=prerequisites), [0])
+
+    def testFindOrder4(self):
+        for func in funcs:
+            numCourses = 2
+            prerequisites = [[0,1]]
+            self.assertEqual(
+                func(numCourses=numCourses, prerequisites=prerequisites), [1,0])
 
 
 if __name__ == "__main__":
