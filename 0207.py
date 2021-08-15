@@ -27,14 +27,15 @@ prerequisites[i].length == 2
 
 """
 Note:
-1. DFS Topological Sort: O(V+E) time | O(V+E) space 
+1. DFS Topological Sort: O(V+E) time | O(V+E) space
+Detect Loop in the graph
+
+2. DFS: O(V+E) time | O(V+E) space
+remove finish course from the prerequisites list
 """
 
-
-
-
 import unittest
-from typing import List
+from typing import List, Dict, Set
 class Solution(object):
     def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
         graph = []
@@ -43,26 +44,59 @@ class Solution(object):
         for course, prerequisite in prerequisites:
             graph[course].append(prerequisite)
 
+        # mark all the course as 0 (unknown) as a start
         visited = [0] * numCourses
-        for i in range(numCourses):
-            if self.dfs(i, graph, visited):
+        for course in range(numCourses):
+            if self.dfs(course, graph, visited):
                 return False
         return True
 
-    def dfs(self, i, graph, visited):
-        if visited[i] == 1:
+    def dfs(self, course: int, graph: List[List[int]], visited: Set[int]):
+        # because we are visiting the course, and we meet the course again, meaning we have a loop
+        if visited[course] == 1:
             return True
-        if visited[i] == 2:
+
+        # because we have visited the course, return False
+        # that is, there is no Loop start from that course
+        if visited[course] == 2:
             return False
-        visited[i] = 1
-        for j in graph[i]:
-            if self.dfs(j, graph, visited):
+        visited[course] = 1
+        for prerequisite in graph[course]:
+            if self.dfs(prerequisite, graph, visited):
                 return True
-        visited[i] = 2
+        
+        # after finish dfs on the course we mark the course as 2, meaning we have visited the course
+        visited[course] = 2
         return False
 
+    def canFinish2(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
+        # map each course to prerequisites List
+        graph = { course:[] for course in range(numCourses)}
+        for course, prerequisite in prerequisites:
+            graph[course].append(prerequisite)
+        
+        # visited = all courses along the current DFS path
+        visited = set()
+        for course in range(numCourses):
+            if not self.dfs2(course, graph, visited):
+                return False
+        return True
+    
+    def dfs2(self, course: int, graph: Dict[int, List[int]], visited: Set[int]) -> bool:
+        if course in visited:
+            return False
+        if len(graph[course]) == 0:
+            return True
+        visited.add(course)
+        for prerequisite in graph[course]:
+            if not self.dfs2(prerequisite, graph, visited):
+                return False
+        visited.remove(course)
+        graph[course] = []
+        return True
+
     # Unit Tests
-funcs = [Solution().canFinish]
+funcs = [Solution().canFinish, Solution().canFinish2]
 
 
 class TestCanFinish(unittest.TestCase):
