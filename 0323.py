@@ -12,6 +12,8 @@ Note:
 1. DFS: O(V+E) time | O(V+E) space
 do a dfs/bfs and put all visited nodes into a set.
 count how many dfs/bfs we have to do to visit all nodes.
+
+2. UnionFind: O(V+E) time | O(V) space
 """
 
 
@@ -22,29 +24,58 @@ import collections
 from typing import List
 class Solution(object):
     def countComponents(self, n: int, edges: List[List[int]]) -> int:  # dfs
-        hmap = collections.defaultdict(list)  # adj. list
+        graph = collections.defaultdict(list)  # adj. list
         for u, v in edges:
-            hmap[u].append(v)
-            hmap[v].append(u)
+            graph[u].append(v)
+            graph[v].append(u)
         count = 0
         visited = set()
 
         for node in range(n):
             if node not in visited:
-                self.dfs(node, visited, hmap)
+                self.dfs(node, visited, graph)
                 count += 1
         return count
 
-    def dfs(self, node, visited, hmap):
-        if node in hmap:  # if node has no edges, it won't be in hmap
-            for neighbor in hmap[node]:
+    def dfs(self, node, visited, graph):
+        if node in graph:  # if node has no edges, it won't be in graph
+            for neighbor in graph[node]:
                 if neighbor not in visited:
                     visited.add(neighbor)
-                    self.dfs(neighbor, visited, hmap)
+                    self.dfs(neighbor, visited, graph)
+
+    def countComponents2(self, n: int, edges: List[List[int]]) -> int:
+        parents = [i for i in range(n)]
+        ranks = [1] * n
+
+        def find(u):
+            while u != parents[u]:
+                parents[u] = parents[parents[u]]
+                u = parents[u]
+            return u
+        
+        def union(u, v):
+            pu, pv = find(u), find(v)
+            if pu == pv:
+                return 0
+            if ranks[pu] < ranks[pv]:
+                parents[pu] = pv
+            elif ranks[pv] < ranks[pu]:
+                parents[pv] = pu
+            else:
+                parents[pv] = pu
+                ranks[pu] += 1
+            return 1
+
+        result = n
+        for source, target in edges:
+            result -= union(source, target)
+        return result
+    
 
 
     # Unit Tests
-funcs = [Solution().countComponents]
+funcs = [Solution().countComponents, Solution().countComponents2]
 
 
 class TestCountComponents(unittest.TestCase):
