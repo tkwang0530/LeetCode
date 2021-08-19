@@ -33,20 +33,20 @@ class Solution(object):
     def validTree(self, n: int, edges: List[List[int]]) -> bool:
         if len(edges) != n - 1:
             return False
-        hmap = collections.defaultdict(list)  # adj. list
+        graph = collections.defaultdict(list)  # adjacency list
         for u, v in edges:  # edge = [0, 1]
-            hmap[u].append(v)  # u -> v
-            hmap[v].append(u)  # v -> u
-        visited = [False] * n
-        self.dfs(0, hmap, visited)
-        return False not in visited  # check graph is connected
+            graph[u].append(v)  # u -> v
+            graph[v].append(u)  # v -> u
+        visited = set()
+        self.dfs(0, graph, visited)
+        return len(visited) == n # check graph is connected
 
-    def dfs(self, curr, hmap, visited):
-        if visited[curr]:
+    def dfs(self, node, graph, visited):
+        if node in visited:
             return
-        visited[curr] = True
-        for neighbor in hmap[curr]:
-            self.dfs(neighbor, hmap, visited)
+        visited.add(node)
+        for neighbor in graph[node]:
+            self.dfs(neighbor, graph, visited)
 
 
     # Unit Tests
