@@ -24,7 +24,8 @@ Explanation: The order is invalid, so return "".
 
 """
 Note:
-1. Recursive DFS (post order graph traversal):
+1. Recursive DFS (post order graph traversal): O(n) time | O(n) space
+where n is the number of characters in the dictionary (including duplicates)
 (1) use set as value because the duplication of char
 (2) use post order traversal in dfs
 (3) return the reverse version of the result we build during the graph traversal
