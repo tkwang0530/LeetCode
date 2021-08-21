@@ -23,8 +23,13 @@ strings[i] consists of lowercase English letters.
 
 """
 Note:
-1. HashMap: O(n) time | O(n) space
+1. Hash Table: O(n^2) time | O(n) space
+where n is the sum of the characters in the given strings
 {(0, 1, 2): ["abc", "bcd"], (0, 2, 3,5): ["acef"]}
+key contains all the distances between the char[i] and the char[0]
+use % 26 so that  the range of differece will be [0, 25]
+
+2. Hash Table + Tuple Comprehension: O(n) time | O(n) space
 """
 
 
@@ -42,10 +47,17 @@ class Solution:
             result[key].append(string)
         return result.values()
 
+    def groupStrings2(self, strings: List[str]) -> List[List[str]]:
+        result = defaultdict(list)
+        for string in strings:
+            key = ((ord(char) - ord(string[0])) % 26 for char in string)
+            result[key].append(string)
+        return result.values()
+
 
 
 # Unit Tests
-funcs = [Solution().groupStrings]
+funcs = [Solution().groupStrings, Solution().groupStrings2]
 
 
 class TestGroupStrings(unittest.TestCase):
