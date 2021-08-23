@@ -16,6 +16,11 @@ Explanation: Intervals [1,4] and [4,5] are considered overlapping.
 """
 Note:
 1. Sort + one pass: O(nlogn) time | O(n) space
+(1) Sort the intervals with key = lambda x: x[0]
+(2) initiate currentInterval = sortedIntervals[0] and mergeIntervals to [currentInterval]
+(3) if the head of next interval <= current tail:
+currentInterval's tail = max(currentInterval's tail, nextInterval's tail)
+otherwise, update currentInterval to nextInterval and then append the currentInterval to the mergeIntervals list
 """
 
 
