@@ -54,10 +54,7 @@ class Solution:
     ) -> List[List[int]]:
         start, end = newInterval[0], newInterval[1]
         res = []
-        for (
-            i,
-            interval,
-        ) in enumerate(intervals):
+        for i, interval in enumerate(intervals):
             if interval[1] < start:
                 res.append(interval)
             elif interval[0] > end:
