@@ -30,8 +30,9 @@ num consists of only digits
 
 """
 Note:
-1. DFS: O(n* 4^(n-1)) time | O(n) space
-
+1. DFS: O(n^2* 4^(n-1)) time | O(n^2) space
+2. DFS (imporve): O(n * 4^(n-1)) time | O(n) space
+TODO
 """
 
 from typing import List
@@ -65,7 +66,6 @@ class Solution:
                 self.dfs(result, num, path + "+" + currStr, target, i + 1, curr + currNum, currNum)
                 self.dfs(result, num, path + '-' + currStr, target, i + 1, curr - currNum, -currNum)
                 self.dfs(result, num, path + "*" + currStr, target, i + 1, curr - prev + prev * currNum, prev * currNum)
-            
 
 # Unit Tests
 import unittest
