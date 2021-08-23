@@ -14,24 +14,32 @@ Output: true
 
 """
 Note:
-1. Sorting first: O(nlogn) time | O(1) space
+1. Sort + One pass: O(nlogn) time | O(n) space
 Sort by start time, check if two adjacent meetings overlapped.
 They overlapped if the first meeting end time > the second meeting start time.
+
+2. Sort + One pass (use while): O(nlogn) time | O(n) space
 """
-
-
-
 
 import unittest
 from typing import List
 class Solution(object):
     def canAttendMeetings(self, intervals: List[List[int]]) -> bool:
-        intervals.sort(key=lambda x: x[1])
+        intervals.sort(key=lambda x: x[0])
         prevEnd = float("-inf")
         for interval in intervals:
             if interval[0] < prevEnd:
                 return False
             prevEnd = interval[1]
+        return True
+
+    def canAttendMeetings2(self, intervals: List[List[int]]) -> bool:
+        intervals.sort(key = lambda x: x[0])
+        i = 1
+        while i < len(intervals):
+            if intervals[i-1][1] > intervals[i][1]:
+                return False
+            i += 1
         return True
 
 
