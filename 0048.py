@@ -102,9 +102,3 @@ class TestRotate(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
-"""
-123        147       369
-456   => 258 => 258
-789         369      147
-"""
