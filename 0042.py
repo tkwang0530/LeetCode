@@ -29,6 +29,8 @@ Note:
 (2) 0 - highestIdx, highestIdx - len(), compute the trap water from tart to center and from end to center
 (3) track the left highest point's index, water += left highest height - current height
 (4) track the right highest point's index, water += right highest height - current height
+
+2. One pass (only track leftHighest and rightHighest): O(n) time | O(1) space
 """
 
 from typing import List
@@ -57,9 +59,27 @@ class Solution:
         
         return water
 
+    def trap2(self, height: List[int]) -> int:
+        leftHighest = rightHighest = water = 0
+        left, right = 0, len(height) - 1
+        while left <= right:
+            if height[left] <= height[right]:
+                if height[left] > leftHighest:
+                    leftHighest = height[left]
+                else:
+                    water += leftHighest - height[left]
+                left += 1
+            else:
+                if height[right] > rightHighest:
+                    rightHighest = height[right]
+                else:
+                    water += rightHighest - height[right]
+                right -= 1
+        return water
+
 
 # Unit Tests
-funcs = [Solution().trap]
+funcs = [Solution().trap, Solution().trap2]
 
 
 class TestTrap(unittest.TestCase):
