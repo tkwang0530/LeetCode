@@ -24,6 +24,8 @@ Follow up: Squaring each element and sorting the new array is very trivial, coul
 Note:
 1. square and sort: O(nlogn) time | O(n) space
 2. Two pointers: O(n) time | O(n) space
+(1) if abs(left) > abs(right): result.append(nums[left] * nums[left]) and left = left + 1
+(2) finally, return result[::-1]
 """
 
 
