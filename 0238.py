@@ -27,7 +27,8 @@ Follow up: Can you solve the problem in O(1) extra space complexity?
 """
 Note:
 1. Brute Force: O(n^2) time | O(1) space
-2. leftRunningProduct + rightRunningProduct: O(n) space | O(1) space
+2. leftProducts + rightProducts: O(n) space | O(n) space
+3. leftRunningProduct + rightRunningProduct: O(n) space | O(1) space
 """
 
 
@@ -47,6 +48,18 @@ class Solution:
         return products
 
     def productExceptSelf2(self, nums: List[int]) -> List[int]:
+        products = [1] * len(nums)
+        leftProducts, rightProducts = [1] * len(nums), [1] * len(nums)
+        for i in range(1, len(nums)):
+            leftProducts[i] = nums[i-1] * leftProducts[i-1]
+        for i in range(len(nums) - 2, -1, -1):
+            rightProducts[i] = nums[i+1] * rightProducts[i+1]
+        for i in range(len(nums)):
+            products[i] = leftProducts[i] * rightProducts[i]
+        return products
+
+
+    def productExceptSelf3(self, nums: List[int]) -> List[int]:
         products = [1 for _ in range(len(nums))]
         leftRunningProduct = rightRunningProduct = 1
         for i in range(len(nums)):
@@ -61,7 +74,7 @@ class Solution:
 
 # Unit Tests
 
-funcs = [Solution().productExceptSelf, Solution().productExceptSelf2]
+funcs = [Solution().productExceptSelf, Solution().productExceptSelf2, Solution().productExceptSelf3]
 
 
 class TestProductExceptSelf(unittest.TestCase):
