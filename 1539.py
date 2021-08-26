@@ -22,10 +22,14 @@ arr[i] < arr[j] for 1 <= i < j <= arr.length
 
 """
 Note:
-1. Using set: O(n) time | O(n) space
+1. Using Set: O(n) time | O(n) space
 2. Binary Search: O(logn) time | O(1) space
 How many missing number between 1 and arr[mid]?
 arr[mid] - (mid + 1)
+
+after binary search, there exist two conditions: in either case left = existing numbers
+(1) arr[left] - (left + 1) = k, meaning there are k missing numbers between 1 - arr[left], in this case, 0 ~ left - 1 -> total left existing number
+(2) left > right (left == len(arr)), meaning the missing numbers between 1 - arr[len(arr) - 1] is less than k, in this case left is the length of the arr (left = len(arr) = existing number)
 """
 
 from typing import List
@@ -42,7 +46,7 @@ class Solution:
             if k == 0:
                 return i
             i += 1
-        return i + k - 1
+        return i - 1 + k
 
     def findKthPositive2(self, arr: List[int], k: int) -> int:
         if k < arr[0]:
