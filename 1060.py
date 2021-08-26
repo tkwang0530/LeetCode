@@ -29,7 +29,7 @@ Note:
 1. Binary Search: O(logn) time | O(1) space
 How many missing number between index 0 and index mid?
 nums[mid] - nums[0] - mid
-numOfMissingNumbers < k: left = mid + 1, otherwise right = mid - 1
+numOfMissingNumbers < k: left = mid + 1, otherwise right = mid
 """
 
 from typing import List
