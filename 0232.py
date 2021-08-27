@@ -38,7 +38,8 @@ All the calls to pop and peek are valid.
 
 """
 Note:
-1. inStack and outStack
+1. pushStack and popStack: O(1) time | O(n) space
+The time complexity is amortized
 """
 
 
@@ -46,28 +47,50 @@ Note:
 
 import unittest
 class MyQueue:
+
     def __init__(self):
-        self.inStack = []
-        self.outStack = []
+        """
+        Initialize your data structure here.
+        """
+        self.pushStack = []
+        self.popStack = []
+        
 
     def push(self, x: int) -> None:
-        self.inStack.append(x)
+        """
+        Push element x to the back of queue.
+        """
+        self.pushStack.append(x)
+        
 
     def pop(self) -> int:
-        self.move()
-        return self.outStack.pop()
+        """
+        Removes the element from in front of queue and returns that element.
+        """
+        if len(self.popStack) == 0:
+            self.move()
+        return self.popStack.pop()
+        
 
     def peek(self) -> int:
-        self.move()
-        return self.outStack[-1]
+        """
+        Get the front element.
+        """
+        if len(self.popStack) == 0:
+            self.move()
+        return self.popStack[len(self.popStack) - 1]
+            
+        
 
     def empty(self) -> bool:
-        return not self.inStack and not self.outStack
-
-    def move(self):
-        if not self.outStack:
-            while self.inStack:
-                self.outStack.append(self.inStack.pop())
+        """
+        Returns whether the queue is empty.
+        """
+        return len(self.pushStack) == 0 and len(self.popStack) == 0
+    
+    def move(self) -> None:
+        while len(self.pushStack) > 0:
+            self.popStack.append(self.pushStack.pop())
 
 
 # Unit Tests
