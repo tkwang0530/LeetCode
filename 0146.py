@@ -37,10 +37,15 @@ Constraints:
 """
 Note:
 1. Doubly linked list + Hash Table:
-(1) addNode
-(2) removeNode
-(3) get
-(4) put
+Because we need to remove a data (recently used) from head or from the center and append this data to the tail, I would use doubly linked list to store the key value pairs.
+
+Also we need to return the value accociate with the key efficiently, dictionary will be our choice. And the dictionary will be like lookup<key, node>
+
+for the doublely linked list, I would use two dummy nodes to handle the edge cases
+
+2. OrderedDict
+OrderedDict.move_to_end(key)
+OrderedDict.popitem(last=False)
 """
 
 import unittest
@@ -55,58 +60,94 @@ class LRUCache:
     def __init__(self, capacity: int):
         self.capacity = capacity
         self.lookup = {}
-        self.head = ListNode(None, None)
-        self.tail = ListNode(None, None)
-        self.head.next = self.tail
-        self.tail.prev = self.head
+        self.dummyHead = ListNode(None, None)
+        self.dummyTail = ListNode(None, None)
+        self.dummyHead.next, self.dummyTail.prev = self.dummyTail, self.dummyHead
+    
+    def removeNode(self, node):
+        next = node.next
+        prev = node.prev
+        next.prev, prev.next = prev, next
+        
     
     def addNode(self, node):
-        prev = self.tail.prev
-        prev.next = node
+        prev = self.dummyTail.prev
         node.prev = prev
-        node.next = self.tail
-        self.tail.prev = node
+        node.next = self.dummyTail
+        prev.next = node
+        self.dummyTail.prev = node
 
-    def removeNode(self, node):
-        prev = node.prev
-        prev.next = node.next
-        node.next.prev = prev
-    
     def get(self, key: int) -> int:
         if key not in self.lookup:
             return -1
+        # remove the node
         node = self.lookup[key]
         self.removeNode(node)
+        
+        # add node to Tail
         self.addNode(node)
-        return node.val
+        
+        # return the value
+        return self.lookup[key].val
 
     def put(self, key: int, value: int) -> None:
         if key in self.lookup:
-            self.removeNode(self.lookup[key])
-        elif self.capacity == len(self.lookup):
-            lru = self.head.next
-            self.removeNode(lru)
-            del self.lookup[lru.key]
-        
-        newNode = ListNode(key, value)
-        self.addNode(newNode)
-        self.lookup[newNode.key] = newNode
-        
+            node = self.lookup[key]
+            self.removeNode(node)
+            
+            # modify the node's val before add to the linkedlist
+            node.val = value
+            self.addNode(node)
+        else:
+            if len(self.lookup) == self.capacity:
+                # in this case, we have to evict the least recently used key
+                nodeToRemove = self.dummyHead.next
+                self.removeNode(nodeToRemove)
+                
+                # and we have to delete that key
+                del self.lookup[nodeToRemove.key]
+            
+            # finally we add the key value pair in to our LinkedList and dictionary
+            newNode = ListNode(key, value)
+            self.addNode(newNode)
+            self.lookup[key] = newNode
+
+from collections import OrderedDict
+class LRUCache2:
+    def __init__(self, capacity):
+        self.capacity = capacity
+        self.cache = OrderedDict()
+    
+    def get(self, key):
+        if key not in self.cache: return -1
+        val = self.cache[key]
+        self.cache.move_to_end(key)
+        return val
+
+    def put(self, key, value):
+        if key in self.cache: del self.cache[key]
+        self.cache[key] = value
+        if len(self.cache) > self.capacity:
+            self.cache.popitem(last=False)
+    
+
 
 # Unit Tests
+classes = [LRUCache, LRUCache2]
 
 class TestLRUCache(unittest.TestCase):
     def testLRUCache1(self):
-        lRUCache = LRUCache(2)
-        lRUCache.put(1, 1)
-        lRUCache.put(2, 2)
-        self.assertEqual(lRUCache.get(1), 1)
-        lRUCache.put(3, 3)
-        self.assertEqual(lRUCache.get(2), -1)
-        lRUCache.put(4, 4)
-        self.assertEqual(lRUCache.get(1), -1)
-        self.assertEqual(lRUCache.get(3), 3)
-        self.assertEqual(lRUCache.get(4), 4)
+        for myclass in classes:
+            lRUCache = myclass(2)
+            lRUCache.put(1, 1)
+            lRUCache.put(2, 2)
+            self.assertEqual(lRUCache.get(1), 1)
+            lRUCache.put(3, 3)
+            self.assertEqual(lRUCache.get(2), -1)
+            lRUCache.put(4, 4)
+            self.assertEqual(lRUCache.get(1), -1)
+            self.assertEqual(lRUCache.get(3), 3)
+            self.assertEqual(lRUCache.get(4), 4)
         
 
 
