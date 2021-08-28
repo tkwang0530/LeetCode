@@ -31,17 +31,14 @@ myLinkedList.get(1);              // return 3
 
 import unittest
 class ListNode:
-    def __init__(self, val=0, next=None) -> None:
+    def __init__(self, val=0, next=None, prev=None):
         self.val = val
         self.next = next
+        self.prev = prev
 
     # TEST ONLY
     def __repr__(self):
-        nums = [self.val]
-        while self.next:
-            nums.append(self.next.val)
-            self = self.next
-        return "->".join(str(num) for num in nums)
+        return f"{self.val}->{self.next}"
 
     @classmethod
     def fromArray(cls, arr):
@@ -59,55 +56,90 @@ class ListNode:
 
 
 class MyLinkedList:
+
     def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.dummyHead = ListNode(0)
+        self.dummyTail = ListNode(0)
+        self.dummyHead.next, self.dummyTail.prev = self.dummyTail, self.dummyHead
         self.length = 0
-        self.dummy = ListNode(0)
-    
-    def get(self, index: int):
-        if index < 0 or index > self.length -1 :
+        
+        
+
+    def get(self, index: int) -> int:
+        """
+        Get the value of the index-th node in the linked list. If the index is invalid, return -1.
+        """
+        if index < 0 or index >= self.length:
             return -1
-        curr = self.dummy.next
+        node = self.dummyHead.next
         while index > 0:
-            curr = curr.next
             index -= 1
-        return curr.val
-    
-    def addAtHead(self, val: int):
-        newNode = ListNode(val)
-        newNode.next = self.dummy.next
-        self.dummy.next = newNode
-        self.length += 1
+            node = node.next
+        return node.val
+        
 
-    def addAtTail(self, val: int):
-        newNode = ListNode(val)
-        curr = self.dummy
-        for _ in range(self.length):
-            curr = curr.next
-        curr.next = newNode
+    def addAtHead(self, val: int) -> None:
+        """
+        Add a node of value val before the first element of the linked list. After the insertion, the new node will be the first node of the linked list.
+        """
+        next = self.dummyHead.next
+        newNode = ListNode(val, next, self.dummyHead)
+        self.dummyHead.next = next.prev = newNode
         self.length += 1
+        
 
-    def addAtIndex(self, index: int, val: int):
+    def addAtTail(self, val: int) -> None:
+        """
+        Append a node of value val to the last element of the linked list.
+        """
+        prev = self.dummyTail.prev
+        newNode = ListNode(val, self.dummyTail, prev)
+        prev.next = self.dummyTail.prev = newNode
+        self.length += 1
+        
+
+    def addAtIndex(self, index: int, val: int) -> None:
+        """
+        Add a node of value val before the index-th node in the linked list. If index equals to the length of linked list, the node will be appended to the end of linked list. If index is greater than the length, the node will not be inserted.
+        """
+        if index == self.length:
+            self.addAtTail(val)
+            return
+        
         if index < 0 or index > self.length:
             return
-
-        newNode = ListNode(val)
-        curr = self.dummy
-        for _ in range(index):
-            curr = curr.next
-        newNode.next = curr.next
-        curr.next = newNode
-        self.length += 1
-    
-    def deleteAtIndex(self, index: int):
-        if index < 0 or index > self.length - 1:
-            return
-        curr = self.dummy
+            
+        node = self.dummyHead.next
         while index > 0:
-            curr = curr.next
             index -= 1
-        curr.next = curr.next.next
+            node = node.next
+        prev = node.prev
+        newNode = ListNode(val, node, prev)
+        prev.next = node.prev = newNode
+        self.length += 1
+
+    def deleteAtIndex(self, index: int) -> None:
+        """
+        Delete the index-th node in the linked list, if the index is valid.
+        """
+        if index < 0 or index >= self.length:
+            return
+        
+        node = self.dummyHead.next
+        while index > 0:
+            index -= 1
+            node = node.next
+        self.removeNode(node)
         self.length -= 1
         
+        
+        
+    def removeNode(self, node: ListNode) -> None:
+        node.prev.next, node.next.prev = node.next, node.prev
+        node.next = node.prev = None
 
 # Unit Tests
 classes = [MyLinkedList]
@@ -119,10 +151,10 @@ class TestMyLinkedList(unittest.TestCase):
             myLinkedList.addAtHead(1)
             myLinkedList.addAtTail(3)
             myLinkedList.addAtIndex(1, 2)
-            self.assertEqual(repr(myLinkedList.dummy.next), "1->2->3")
+            self.assertEqual(repr(myLinkedList.dummyHead.next), "1->2->3->0->None")
             self.assertEqual(myLinkedList.get(1), 2)
             myLinkedList.deleteAtIndex(1)
-            self.assertEqual(repr(myLinkedList.dummy.next), "1->3")
+            self.assertEqual(repr(myLinkedList.dummyHead.next), "1->3->0->None")
             self.assertEqual(myLinkedList.get(1), 3)
 
 
