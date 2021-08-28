@@ -95,8 +95,8 @@ class MyQueue:
 
 # Unit Tests
 
-class TestNextGreaterElements(unittest.TestCase):
-    def testNextGreaterElements1(self):
+class TestMyQueue(unittest.TestCase):
+    def testMyQueue1(self):
         myQueue = MyQueue()
         myQueue.push(1)
         myQueue.push(2)
