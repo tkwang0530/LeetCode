@@ -16,7 +16,7 @@ Constraints:
 
 """
 Note:
-1. DFS (append to result when index == len(nums)): O(2^(2n)) time | O(n) space
+1. DFS (append to result when index == len(nums)): O(n * 2^(2n)) time | O(n) space
 The time complexity is upper bound
 
 (1) Definition
