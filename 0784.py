@@ -27,8 +27,12 @@ Constraints:
 
 """
 Note:
-1. Recursion with string concatenation: O(n*2^n) time | O(n + 2^n) space
-2. Recursion with List[str]: O(n*2^n) time | O(n + 2^n) space
+1. DFS with string concatenation: O(n^2 * 2^n) time | O(n * 2^n) space
+2. DFS with List[str]: O(n * 2^n) time | O(n * 2^n) space
+3. Iteration: O(n * 2^n) time | O(n * 2^n) space
+(0) initiate result = [s]
+(1) use index i to traverse the input string s, if the char is alphabet do the (2)
+(2) for each permutation in result: swapcase the letter in position i and append it to the result
 """
 
 from typing import List
@@ -54,52 +58,50 @@ class Solution:
 
     def letterCasePermutation2(self, s: str) -> List[str]:
         result = []
-
-        def helper(list, i):
-            if i == len(list):
-                result.append("".join(list))  # O(n)
+        self.dfs(list(s), result, 0)
+        return result
+    
+    def dfs(self, chars: List[str], result: List[str], index: int) -> None:
+        if index == len(chars):
+            result.append("".join(chars))
+        else:
+            if chars[index].isalpha():
+                self.dfs(chars, result, index + 1)
+                chars[index] = chars[index].swapcase()
+                self.dfs(chars, result, index + 1)
             else:
-                if list[i].isalpha():
-                    list[i] = list[i].lower()
-                    helper(list, i + 1)
-                    list[i] = list[i].upper()
-                    helper(list, i + 1)
-                else:
-                    helper(list, i + 1)
+                self.dfs(chars, result, index + 1)
 
-        helper(list(s), 0)  # list("abc") => ["a", "b", "c"]
+    def letterCasePermutation3(self, s: str) -> List[str]:
+        result = [s]
+        for i in range(len(s)):
+            if s[i].isalpha():
+                for j in range(len(result)):
+                    permutation = result[j]
+                    result.append(permutation[0:i] + permutation[i].swapcase() + permutation[i+1:])
         return result
 
 
 # Unit Tests
 import unittest
-
+funcs = [Solution().letterCasePermutation, Solution().letterCasePermutation2, Solution().letterCasePermutation3]
 
 class TestLetterCasePermutation(unittest.TestCase):
     def testLetterCasePermutation1(self):
-        func = Solution().letterCasePermutation
-        func2 = Solution().letterCasePermutation2
-        self.assertEqual(func(s="a1b2"), ["a1b2", "a1B2", "A1b2", "A1B2"])
-        self.assertEqual(func2(s="a1b2"), ["a1b2", "a1B2", "A1b2", "A1B2"])
+        for func in funcs:
+            self.assertEqual(sorted(func(s="a1b2")), sorted(["a1b2", "a1B2", "A1b2", "A1B2"]))
 
     def testLetterCasePermutation1(self):
-        func = Solution().letterCasePermutation
-        func2 = Solution().letterCasePermutation2
-        self.assertEqual(func(s="3z4"), ["3z4", "3Z4"])
-        self.assertEqual(func2(s="3z4"), ["3z4", "3Z4"])
+        for func in funcs:
+            self.assertEqual(sorted(func(s="3z4")), sorted(["3z4", "3Z4"]))
 
     def testLetterCasePermutation3(self):
-        func = Solution().letterCasePermutation
-        func2 = Solution().letterCasePermutation2
-        self.assertEqual(func(s="12345"), ["12345"])
-        self.assertEqual(func2(s="12345"), ["12345"])
+        for func in funcs:
+            self.assertEqual(sorted(func(s="12345")), sorted(["12345"]))
 
     def testLetterCasePermutation4(self):
-        func = Solution().letterCasePermutation
-        func2 = Solution().letterCasePermutation2
-        self.assertEqual(func(s="0"), ["0"])
-        self.assertEqual(func2(s="0"), ["0"])
-
+        for func in funcs:
+            self.assertEqual(sorted(func(s="0")), sorted(["0"]))
 
 if __name__ == "__main__":
     unittest.main()
