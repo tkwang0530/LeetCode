@@ -91,7 +91,7 @@ class TestLetterCasePermutation(unittest.TestCase):
         for func in funcs:
             self.assertEqual(sorted(func(s="a1b2")), sorted(["a1b2", "a1B2", "A1b2", "A1B2"]))
 
-    def testLetterCasePermutation1(self):
+    def testLetterCasePermutation2(self):
         for func in funcs:
             self.assertEqual(sorted(func(s="3z4")), sorted(["3z4", "3Z4"]))
 
