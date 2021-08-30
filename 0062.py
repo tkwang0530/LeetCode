@@ -59,20 +59,20 @@ class Solution(object):
 
     def uniquePaths3(self, m: int, n: int) -> int:
         dp = []
-        for _ in range(m):  # prefill
+        for row in range(m):  # prefill all elements in matrix with 1
             dp.append([1] * n)
-        for i in range(1, m):
-            for j in range(1, n):
-                dp[i][j] = dp[i-1][j] + dp[i][j-1]
+        for row in range(1, m):
+            for col in range(1, n):
+                dp[row][col] = dp[row-1][col] + dp[row][col-1]
         return dp[-1][-1]
 
     def uniquePaths4(self, m: int, n: int) -> int:
         if n > m:
             n, m = m, n
         dp = [1] * n
-        for i in range(1, m):
-            for j in range(1, n):
-                dp[j] += dp[j-1]
+        for row in range(1, m):
+            for col in range(1, n):
+                dp[col] += dp[col-1]
         return dp[-1]
 
 
