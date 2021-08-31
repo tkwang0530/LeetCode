@@ -53,45 +53,49 @@ class Solution(object):
         return grid[i][j] + min(self.minPathSumHelper(grid, i, j-1), self.minPathSumHelper(grid, i-1, j))
 
     def minPathSum2(self, grid: List[List[int]]) -> int:
-        memo = {(0, 0): grid[0][0]}
-        return self.minPathSum2Helper(grid, len(grid) - 1, len(grid[0]) - 1, memo)
-
-    def minPathSum2Helper(self, grid, i, j, memo):
-        if (i, j) not in memo:
-            if i == 0:
-                memo[(i, j)] = grid[i][j] + \
-                    self.minPathSum2Helper(grid, i, j-1, memo)
-            elif j == 0:
-                memo[(i, j)] = grid[i][j] + \
-                    self.minPathSum2Helper(grid, i-1, j, memo)
-            else:
-                memo[(i, j)] = grid[i][j] + \
-                    min(self.minPathSum2Helper(grid,
-                                               i, j-1, memo), self.minPathSum2Helper(grid, i-1, j, memo))
-        return memo[(i, j)]
+        memo = {(0,0): grid[0][0]}
+        return self.minPathSumHelper2(grid, len(grid)-1, len(grid[0])-1, memo)
+    
+    def minPathSumHelper2(self, grid, row, col, memo) -> int:
+        if (row, col) in memo:
+            return memo[(row, col)]
+        
+        if row == 0:
+            memo[(row, col)] = grid[row][col] + self.minPathSumHelper2(grid, row, col-1, memo)
+        elif col == 0:
+            memo[(row, col)] = grid[row][col] + self.minPathSumHelper2(grid, row - 1, col, memo)
+        else:
+            memo[(row, col)] = grid[row][col] + min(self.minPathSumHelper2(grid, row, col - 1, memo), self.minPathSumHelper2(grid, row - 1, col, memo))
+        
+        return memo[(row, col)]
 
     def minPathSum3(self, grid: List[List[int]]) -> int:
-        row, col = len(grid), len(grid[0])
+        rows, cols = len(grid), len(grid[0])
         cost = []
-        for _ in range(row):
-            cost.append([0] * col)
+        for _ in range(rows):
+            cost.append([0] * cols)
         cost[0][0] = grid[0][0]
-        for i in range(1, row):  # first col
-            cost[i][0] = grid[i][0] + cost[i-1][0]
-        for j in range(1, col):  # first row
-            cost[0][j] = grid[0][j] + cost[0][j-1]
-        for i in range(1, row):
-            for j in range(1, col):
-                cost[i][j] = grid[i][j] + min(cost[i-1][j], cost[i][j-1])
+        for row in range(1, rows):  # first col
+            cost[row][0] = grid[row][0] + cost[row-1][0]
+        for col in range(1, cols):  # first row
+            cost[0][col] = grid[0][col] + cost[0][col-1]
+        for row in range(1, rows):
+            for col in range(1, cols):
+                cost[row][col] = grid[row][col] + min(cost[row-1][col], cost[row][col-1])
         return cost[-1][-1]
 
     def minPathSum4(self, grid: List[List[int]]) -> int:
-        row, col = len(grid), len(grid[0])
-        cost = [float("inf")] * col
-        for i in range(row):
-            cost[0] = grid[0][0] if i == 0 else cost[0] + grid[i][0]
-            for j in range(1, col):
-                cost[j] = grid[i][j] + min(cost[j-1], cost[j])
+        rows, cols = len(grid), len(grid[0])
+        cost = [0] * cols
+
+        cost[0] = grid[0][0]
+        for col in range(1, cols):
+            cost[col] = cost[col-1] + grid[0][col]
+
+        for row in range(1, rows):
+            cost[0] += grid[row][0]
+            for col in range(1, cols):
+                cost[col] = grid[row][col] + min(cost[col-1], cost[col])
         return cost[-1]
 
 
