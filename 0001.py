@@ -24,16 +24,16 @@ class Solution(object):
 
 # Unit Tests
 import unittest
-
+funcs = [Solution().twoSum]
 
 class TestTwoSum(unittest.TestCase):
     def testTwoSum1(self):
-        func = Solution().twoSum
-        self.assertEqual(sorted(func(nums=[2, 7, 11, 15], target=9)), sorted([1, 0]))
+        for func in funcs:
+            self.assertEqual(sorted(func(nums=[2, 7, 11, 15], target=9)), sorted([1, 0]))
 
     def testTwoSum2(self):
-        func = Solution().twoSum
-        self.assertEqual(sorted(func(nums=[3, 2, 4], target=6)), sorted([1, 2]))
+        for func in funcs:
+            self.assertEqual(sorted(func(nums=[3, 2, 4], target=6)), sorted([1, 2]))
 
 
 if __name__ == "__main__":
