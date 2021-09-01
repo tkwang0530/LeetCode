@@ -33,8 +33,8 @@ All the integers in s are in the range [1, 300].
 
 """
 Notes:
-1. Using Stack 1: O(n) time | O(n) space
-2. Using Stack 2: O(n) time | O(n) space
+1. Using Stack 1: O(n^2) time | O(n) space
+2. Using Stack 2: O(n^2) time | O(n) space
 """
 
 class Solution(object):
