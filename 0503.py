@@ -20,10 +20,12 @@ Output: [2,3,4,-1,4]
 """
 Note:
 1. Using Stack: O(n) time | O(n) space
+Tip: idx % len(nums) + range(2 * len(nums)) to traverse the nums two times
+(1) Traverse the list two times
+(2) During the traversal if stack is not None and the top number is less than the currentNum: 
+    result[stack.pop()] = nums[circularIdx]
+(3) store number's index into the stack
 """
-
-
-
 
 from typing import List
 import unittest
