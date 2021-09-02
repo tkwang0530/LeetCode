@@ -20,6 +20,10 @@ Constraints:
 """
 Note:
 1. Remove prime and prime * n in one time: O(n) time | O(n) space
+(0) corner case if n < 3: return 0
+(1) initiate a list "primes" with 1 ([1] * n), primes[0] = primes[1] = 0
+(2) from 1 to n^0.5, if primes[1] == 1: remove  set all positions with primes * n to zero
+(3) return sum of the list primes
 2. Brute-Force: O(n^2) time | O(n) space
 """
 
