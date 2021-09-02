@@ -13,6 +13,7 @@ Note:
 1. convert to string, and compare it with reversed one: O(n) time | O(n) space
 2. recreate a new number in reverse order: O(n) time | O(1) space
 3. recreate a new number in reverse order (improve): O(n) time | O(1) space
+edge case: x < 0 or (x > 0 and x % 10 == 0)
 """
 
 
