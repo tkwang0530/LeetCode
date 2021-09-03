@@ -14,10 +14,10 @@ The number of nodes in the list is in the range [0, 500].
 
 """
 Note:
-O(n) time | O(1) space
-1. find the old tail and new tail
-2. connect the new tail to the head of the linked list
-3. assign None to the new tail.next
+1. Two Pointers: O(n) time | O(1) space
+(1) find the old tail and new tail
+(2) connect the new tail to the head of the linked list
+(3) assign None to the new tail.next
 """
 
 
