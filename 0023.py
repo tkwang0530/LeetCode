@@ -35,10 +35,14 @@ The sum of lists[i].length won't exceed 10^4.
 
 """
 Note:
-1. Brute Force: O(nk) time | O(1) space
-Merge two linked list (extend)
-2. Merge sort: O(nlogk) time | O(logk) space
-3. Use Heap: O(nlogk) time | O(k) space
+1. Brute Force: O(nk) time | O(1) space - where n is the total number of nodes
+Merge two linked list (extend) - where n is the total number of nodes
+2. Merge sort: O(nlogk) time | O(logk) space - where n is the total number of nodes
+3. Use Heap: O(nlogk) time | O(k) space - where n is the total number of nodes
+
+Extra:
+heapreplace(a, x) returns the smallest value originally in a regardless of the value of x
+heappushpop(a, x) pushes x onto a before popping the smallest value
 """
 
 from typing import Optional, List
@@ -51,11 +55,7 @@ class ListNode:
 
     # TEST ONLY
     def __repr__(self):
-        nums = [self.val]
-        while self.next:
-            nums.append(self.next.val)
-            self = self.next
-        return "->".join(str(num) for num in nums)
+        return f"{self.val}->{self.next}"
 
     @classmethod
     def fromArray(cls, arr):
@@ -147,7 +147,7 @@ class TestMergeKLists(unittest.TestCase):
     def testMergeKLists1(self):
         for func in funcs:
             lists = [ListNode.fromArray([1, 4, 5]),ListNode.fromArray([1, 3, 4]),ListNode.fromArray([2, 6])]
-            self.assertEqual(repr(func(lists=lists)), "1->1->2->3->4->4->5->6")
+            self.assertEqual(repr(func(lists=lists)), "1->1->2->3->4->4->5->6->None")
 
     def testMergeKLists2(self):
         for func in funcs:
