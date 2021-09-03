@@ -33,13 +33,7 @@ class ListNode:
 
     # TEST ONLY
     def __repr__(self):
-        if self is None:
-            return "None"
-        nums = [self.val]
-        while self.next:
-            nums.append(self.next.val)
-            self = self.next
-        return "->".join(str(num) for num in nums)
+        return f"{self.val}->{self.next}"
 
     @classmethod
     def fromArray(cls, arr):
@@ -93,7 +87,7 @@ class TestMergeTwoLists(unittest.TestCase):
         for func in funcs:
             l1 = ListNode.fromArray([1, 2, 4])
             l2 = ListNode.fromArray([1, 3, 4])
-            self.assertEqual(repr(func(l1=l1, l2=l2)), "1->1->2->3->4->4")
+            self.assertEqual(repr(func(l1=l1, l2=l2)), "1->1->2->3->4->4->None")
 
     def testMergeTwoLists2(self):
         for func in funcs:
@@ -105,7 +99,7 @@ class TestMergeTwoLists(unittest.TestCase):
         for func in funcs:
             l1 = ListNode.fromArray([])
             l2 = ListNode.fromArray([0])
-            self.assertEqual(repr(func(l1=l1, l2=l2)), "0")
+            self.assertEqual(repr(func(l1=l1, l2=l2)), "0->None")
 
 
 if __name__ == "__main__":
