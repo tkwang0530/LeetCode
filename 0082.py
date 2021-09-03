@@ -57,7 +57,7 @@ class Solution:
         while head and head.next:
             if head.val == head.next.val:
                 # Loop until head point to the last duplicates
-                while head and head.next and head.val == head.next.val:
+                while head.next and head.val == head.next.val:
                     head = head.next
 
                 # prev.next and head will be the new no duplicate node
