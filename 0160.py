@@ -14,11 +14,10 @@ Follow up: Could you write a solution that runs in O(n) time and use only O(1) m
 
 """
 Note:
-O(n) time | O(1) space
-1. two pointer: currentA and currentB (start from headA and headB)
-2. for the first round, keep move forward until hit the Null, and then reset to the other head
-3. for the second round, keep move forward until they points to the same node.
-4. if the two linked lists have no intersection at all, then the meeting pointer in second iteration must be the tail node of both lists, which is null.
+1. Two pointer: O(n) time | O(1) space
+(1) for the first round, keep move forward until hit the Null, and then reset to the other head
+(2) for the second round, keep move forward until they points to the same node.
+(3) if the two linked lists have no intersection at all, then the meeting pointer in second iteration must be the tail node of both lists, which is null.
 """
 
 
@@ -29,13 +28,7 @@ class ListNode:
 
     # TEST ONLY
     def __repr__(self):
-        if self is None:
-            return "None"
-        nums = [self.val]
-        while self.next:
-            nums.append(self.next.val)
-            self = self.next
-        return "->".join(str(num) for num in nums)
+        return f"{self.val}->{self.next}"
 
     @classmethod
     def fromArray(cls, arr):
@@ -51,8 +44,6 @@ class ListNode:
             idx += 1
         return dummy.next
 
-
-# O(n) time | O(1) space
 class Solution:
     def getIntersectionNode(self, headA: ListNode, headB: ListNode) -> ListNode:
         if not headA or not headB:
@@ -66,28 +57,28 @@ class Solution:
 
 # Unit Tests
 import unittest
-
+funcs = [Solution().getIntersectionNode]
 
 class TestGetIntersectionNode(unittest.TestCase):
     def testGetIntersectionNode1(self):
-        func = Solution().getIntersectionNode
-        headA = ListNode.fromArray([4, 1, 8, 4, 5])
-        headB = ListNode.fromArray([5, 6, 1])
-        headB.next.next.next = headA.next.next
-        self.assertEqual(repr(func(headA=headA, headB=headB)), "8->4->5")
+        for func in funcs:
+            headA = ListNode.fromArray([4, 1, 8, 4, 5])
+            headB = ListNode.fromArray([5, 6, 1])
+            headB.next.next.next = headA.next.next
+            self.assertEqual(repr(func(headA=headA, headB=headB)), "8->4->5->None")
 
     def testGetIntersectionNode2(self):
-        func = Solution().getIntersectionNode
-        headA = ListNode.fromArray([1, 9, 1, 2, 4])
-        headB = ListNode.fromArray([3])
-        headB.next = headA.next.next.next
-        self.assertEqual(repr(func(headA=headA, headB=headB)), "2->4")
+        for func in funcs:
+            headA = ListNode.fromArray([1, 9, 1, 2, 4])
+            headB = ListNode.fromArray([3])
+            headB.next = headA.next.next.next
+            self.assertEqual(repr(func(headA=headA, headB=headB)), "2->4->None")
 
     def testGetIntersectionNode3(self):
-        func = Solution().getIntersectionNode
-        headA = ListNode.fromArray([1, 9, 1, 2, 4])
-        headB = ListNode.fromArray([3, 4, 0, 1, 7])
-        self.assertEqual(repr(func(headA=headA, headB=headB)), "None")
+        for func in funcs:
+            headA = ListNode.fromArray([1, 9, 1, 2, 4])
+            headB = ListNode.fromArray([3, 4, 0, 1, 7])
+            self.assertEqual(repr(func(headA=headA, headB=headB)), "None")
 
 
 if __name__ == "__main__":
