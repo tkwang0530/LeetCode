@@ -71,6 +71,16 @@ class Solution:
             node_set.add(head)
             head = head.next
         return False
+    
+    def hasCycle3(self, head: ListNode) -> bool:
+        if not head:
+            return False
+        while head:
+            if head.val == "#":
+                return True
+            head.val = "#"
+            head = head.next
+        return False
 
 
 # Unit Tests
