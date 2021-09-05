@@ -18,7 +18,8 @@ Follow up: Could you solve it in O(1) space complexity and O(nodes) time complex
 
 """
 Note:
-O(n) time | O(1) space
+1. Two Pointers: O(n) time | O(1) space
+2. Two Pointers2: O(n) time | O(1) space
 """
 
 
@@ -29,13 +30,7 @@ class ListNode:
 
     # TEST ONLY
     def __repr__(self):
-        if self is None:
-            return "None"
-        nums = [self.val]
-        while self.next:
-            nums.append(self.next.val)
-            self = self.next
-        return "->".join(str(num) for num in nums)
+        return f"{self.val}->{self.next}"
 
     @classmethod
     def fromArray(cls, arr):
@@ -51,8 +46,6 @@ class ListNode:
             idx += 1
         return dummy.next
 
-
-# O(n) time | O(1) space
 class Solution:
     def oddEvenList(self, head: ListNode) -> ListNode:
         if not head or not head.next:
@@ -74,31 +67,49 @@ class Solution:
         currentOdd.next = dummy.next
         return head
 
+    def oddEvenList2(self, head: ListNode) -> ListNode:
+        odd = dummyOdd = ListNode(0)
+        even = dummyEven  = ListNode(0)
+        
+        toggle = False
+        while head:
+            if toggle:
+                even.next = head
+                even, head = head, head.next
+                even.next = None
+            else:
+                odd.next = head
+                odd, head = head, head.next
+                odd.next = None
+            toggle = not toggle
+        
+        odd.next = dummyEven.next
+        return dummyOdd.next
 
 # Unit Tests
 import unittest
-
+funcs = [Solution().oddEvenList, Solution().oddEvenList2]
 
 class TestOddEvenList(unittest.TestCase):
     def testOddEvenList1(self):
-        func = Solution().oddEvenList
-        head = ListNode.fromArray([1, 2, 3, 4, 5])
-        self.assertEqual(repr(func(head=head)), "1->3->5->2->4")
+        for func in funcs:
+            head = ListNode.fromArray([1, 2, 3, 4, 5])
+            self.assertEqual(repr(func(head=head)), "1->3->5->2->4->None")
 
     def testOddEvenList2(self):
-        func = Solution().oddEvenList
-        head = ListNode.fromArray([2, 1, 3, 5, 6, 4, 7])
-        self.assertEqual(repr(func(head=head)), "2->3->6->7->1->5->4")
+        for func in funcs:
+            head = ListNode.fromArray([2, 1, 3, 5, 6, 4, 7])
+            self.assertEqual(repr(func(head=head)), "2->3->6->7->1->5->4->None")
 
     def testOddEvenList3(self):
-        func = Solution().oddEvenList
-        head = None
-        self.assertEqual(repr(func(head=head)), "None")
+        for func in funcs:
+            head = None
+            self.assertEqual(repr(func(head=head)), "None")
 
     def testOddEvenList4(self):
-        func = Solution().oddEvenList
-        head = ListNode.fromArray([2])
-        self.assertEqual(repr(func(head=head)), "2")
+        for func in funcs:
+            head = ListNode.fromArray([2])
+            self.assertEqual(repr(func(head=head)), "2->None")
 
 
 if __name__ == "__main__":
