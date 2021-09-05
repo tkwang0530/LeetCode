@@ -17,19 +17,16 @@ One possible answer is: [0, -3, 9, -10, null, 5]
 
 """
 Note:
-1. Tree Construction - Slow-Fast Pointers: O(n) time | O(n) space
+1. Tree Construction - Slow-Fast Pointers: O(nlogn) time | O(logn) space
+2. DFS (track head and tail of each sub tree): O(nlogn) time | O(logn) space
+3. Convert linked list to array then do PreOrder Traversal: O(n) time | O(n) space
 """
 
-
-
-
 from typing import List
-import unittest
 class ListNode:
     def __init__(self, val=0, next=None):
         self.val = val
         self.next = next
-
 
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
@@ -56,16 +53,51 @@ class Solution:
         root.right = self.sortedListToBST(slow.next)
         return root
 
+    def sortedListToBST2(self, head: ListNode) -> TreeNode:
+        if not head:
+            return head
+        return self.dfs(head, None)
+    
+    def dfs(self, head: ListNode, tail: ListNode) -> TreeNode:
+        fast = slow = head
+        if head == tail:
+            return None
+        while fast != tail and fast.next != tail:
+            fast = fast.next.next
+            slow = slow.next
+        
+        root = TreeNode(slow.val)
+        root.left = self.dfs(head, slow)
+        root.right = self.dfs(slow.next, tail)
+        return root
+
+    def sortedListToBST3(self, head: ListNode) -> TreeNode:
+        arr = self.convertToArray(head)
+        return self.dfs2(arr, 0, len(arr) - 1)
+    
+    def convertToArray(self, head) -> List[int]:
+        result = []
+        if not head:
+            return result
+        while head:
+            result.append(head.val)
+            head = head.next
+        return result
+    
+    def dfs2(self, arr, left, right) -> TreeNode:
+        if left > right:
+            return None
+        mid = left + (right - left) // 2
+        root = TreeNode(arr[mid])
+        root.left = self.dfs2(arr, left, mid-1)
+        root.right = self.dfs2(arr, mid + 1, right)
+        return root
 
 # Unit Tests
-
-
+import unittest
 class TestSortedListToBST(unittest.TestCase):
     # TODO: UNITTEST
     def testSortedListToBST1(self):
-        head = ListNode(-10, ListNode(-3,
-                        ListNode(0, ListNode(5, ListNode(9)))))
-        func = Solution().sortedListToBST
         pass
 
 
