@@ -32,8 +32,9 @@ Constraints:
 
 """
 Note:
-1. one while loop: O(2^n) time | O(2^n) space
-2. Nested while loop: O(2^n) time | O(2^n) space
+1. one while loop: O(2^n) time | O(1) space
+2. Nested while loop: O(2^n) time | O(1) space
+3. Recursion: O(2^n) time | O(n) space
 """
 
 
@@ -78,9 +79,14 @@ class Solution(object):
             idx += 1
         return "".join(chars)
 
+    def countAndSay3(self, n: int) -> str:
+        if n == 1:
+            return "1"
+        return self.say(self.countAndSay3(n-1))
+
 
 # Unit Tests
-funcs = [Solution().countAndSay, Solution().countAndSay2]
+funcs = [Solution().countAndSay, Solution().countAndSay2, Solution().countAndSay3]
 
 
 class TestCountAndSay(unittest.TestCase):
