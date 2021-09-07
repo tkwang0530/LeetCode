@@ -27,12 +27,13 @@ Example3:
 
 """
 Note:
-1. Recursion with curr_list: O(n) time | O(1) space
+1. DFS: O(4^n * n) time | O(n) space
+2. BFS: O(4^n * n^2) time | O(4^n * n) space
 """
 
 
 
-
+from collections import deque
 import unittest
 from typing import List
 class Solution:
@@ -63,31 +64,54 @@ class Solution:
                 self.dfs(digits, i + 1, currentList, results, dict)
                 currentList.pop()
 
+    def letterCombinations2(self, digits: str) -> List[str]:
+        if not digits or len(digits) == 0:
+            return []
+        result = []
+        letters = {
+            "2": ["a", "b", "c"],
+            "3": ["d", "e", "f"],
+            "4": ["g", "h", "i"],
+            "5": ["j", "k", "l"],
+            "6": ["m", "n", "o"],
+            "7": ["p", "q", "r", "s"],
+            "8": ["t", "u", "v"],
+            "9": ["w", "x", "y", "z"]
+        }
+        queue = deque([""])
+        while queue:
+            current = queue.popleft()
+            if len(current) == len(digits):
+                result.append(current)
+            else:
+                for letter in letters[digits[len(current)]]:
+                    queue.append(current + letter)
+        return result
 
 # Unit Tests
-funcs = [Solution().letterCombinations]
+funcs = [Solution().letterCombinations, Solution().letterCombinations2]
 
 
 class TestLetterCombinations(unittest.TestCase):
     def testLetterCombinations1(self):
         for func in funcs:
             self.assertEqual(
-                func(digits="23").sort(),
-                ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"].sort(),
+                sorted(func(digits="23")),
+                sorted(["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"]),
             )
 
     def testLetterCombinations2(self):
         for func in funcs:
             self.assertEqual(
-                func(digits="").sort(),
-                [].sort(),
+                sorted(func(digits="")),
+                sorted([]),
             )
 
     def testLetterCombinations3(self):
         for func in funcs:
             self.assertEqual(
-                func(digits="2").sort(),
-                ["a", "b", "c"].sort(),
+                sorted(func(digits="2")),
+                sorted(["a", "b", "c"]),
             )
 
 
