@@ -39,12 +39,9 @@ class Solution:
             return True
         elif n <= 2:
             return False
-        while n > 3:
-            if n % 3 == 0:
-                n /= 3
-            else:
-                return False
-        return n == 3
+        while n % 3 == 0:
+            n = n // 3
+        return n == 1
     
     def isPowerOfThree2(self, n: int) -> bool:
         return n > 0 and (n == 1 or (n % 3 == 0 and self.isPowerOfThree2(n // 3)))
