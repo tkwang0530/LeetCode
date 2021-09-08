@@ -26,8 +26,8 @@ Constraints:
 
 """
 Note:
-1. Recursion with backtracking (1): O(k*n!) time | O(k + k*n!) space
-2. Recursion with backtracking (2): O(k*n!) time | O(k + k*n!) space
+1. Recursion with backtracking (1): O(k * C(n,k)) time | O(k) space
+2. Recursion with backtracking (2): O(k * C(n,k)) time | O(k) space
 """
 
 
@@ -78,22 +78,22 @@ class TestCombine(unittest.TestCase):
     def testCombine1(self):
         for func in funcs:
             self.assertEqual(
-                func(n=4, k=2).sort(),
-                [
+                sorted(func(n=4, k=2)),
+                sorted([
                     [2, 4],
                     [3, 4],
                     [2, 3],
                     [1, 2],
                     [1, 3],
                     [1, 4],
-                ].sort(),
+                ]),
             )
 
     def testCombine2(self):
         for func in funcs:
             self.assertEqual(
-                func(n=1, k=1).sort(),
-                [[1]].sort(),
+                sorted(func(n=1, k=1)),
+                sorted([[1]]),
             )
 
 
