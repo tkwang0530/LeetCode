@@ -33,10 +33,12 @@ All the integers in s are in the range [1, 300].
 
 """
 Notes:
-1. Using Stack 1: O(n^2) time | O(n) space
-2. Using Stack 2: O(n^2) time | O(n) space
+1. Using Stack 1: O(n^2) time | O(n) space - where n is the length of the decode string
+2. Using Stack 2: O(n^2) time | O(n) space - where n is the length of the decode string
+3. Recursion with queue: O(n^2) time | O(n) space - where n is the length of the decode string
 """
 
+from collections import deque
 class Solution(object):
     def decodeString(self, s: str) -> str:
         stack = []
@@ -75,9 +77,32 @@ class Solution(object):
                 currChars.append(char)
         return "".join(currChars)
 
+    def decodeString3(self, s: str) -> str:
+        queue = deque()
+        for char in s:
+            queue.append(char)
+        return self.decodeStringHelper(queue)
+
+    def decodeStringHelper(self, queue: deque) -> str:
+        chars = []
+        num = 0
+        while len(queue) > 0:
+            char = queue.popleft()
+            if char.isdigit():
+                num = 10 * num + (ord(char) - ord("0"))
+            elif char == "[":
+                sub = self.decodeStringHelper(queue)
+                chars.append(num * sub)
+                num = 0
+            elif char == "]":
+                break
+            else:
+                chars.append(char)
+        return "".join(chars)
+
 # Unit Tests
 import unittest
-funcs = [Solution().decodeString, Solution().decodeString2]
+funcs = [Solution().decodeString, Solution().decodeString2, Solution().decodeString3]
 
 class TestDecodeString(unittest.TestCase):
     def testDecodeString1(self):
