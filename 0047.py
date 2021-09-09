@@ -20,8 +20,9 @@ Constraints:
 
 """
 Note:
-1. Recursion with concatenation: O(n*n!) time | O(n + n*n!) space
-2. Recursion (swap element + snapshot + set): O(n*n!) time | O(n + n*n!) space
+1. Recursion with concatenation: O(n*n!) time | O(n^2) space
+2. Recursion (swap element + snapshot + set): O(n*n!) time | O(n) space
+3. Recursion (number count + backtracking): O(n*n!) time | O(n) space
 """
 
 
@@ -63,12 +64,32 @@ class Solution:
                     self.helper2(nums, i + 1, permutations)
                     self.swap(nums, i, j)
 
+    def permuteUnique3(self, nums: List[int]) -> List[List[int]]:
+        result = []
+        count = {num: 0 for num in nums}
+        for num in nums:
+            count[num] += 1
+        self.dfs(nums, [], result, count)
+        return result
+
+    def dfs(self, nums, current, result, count) -> None:
+        if len(current) == len(nums):
+            result.append(current[:])
+            return
+        for num in count:
+            if count[num] > 0:
+                current.append(num)
+                count[num] -= 1
+                self.dfs(nums, current, result, count)
+                count[num] += 1
+                current.pop()
+
     def swap(self, arr, i, j):
         arr[i], arr[j] = arr[j], arr[i]
 
 
 # Unit Tests
-funcs = [Solution().permuteUnique, Solution().permuteUnique2]
+funcs = [Solution().permuteUnique, Solution().permuteUnique2, Solution().permuteUnique3]
 
 
 class TestPermuteUnique(unittest.TestCase):
