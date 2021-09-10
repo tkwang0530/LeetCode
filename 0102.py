@@ -20,7 +20,8 @@ Outputs:
 
 """
 Note:
-1. Iterative solution: O(n) time | O(n) space
+1. Iterative BFS: O(n) time | O(n) space
+2. Recursive DFS (PreOrder Traversal): O(n) time | O(n) space
 """
 
 
@@ -54,27 +55,43 @@ class Solution:
                     q.append(treeNode.right)
             results.append(temp)
         return results
+    
+    def levelOrder2(self, root: TreeNode) -> List[List[int]]:
+        if not root:
+            return []
+        result = []
+        self.dfs(root, 0, result)
+        return result
+    
+    def dfs(self, root: TreeNode, level: int, result: List[int]) -> None:
+        if len(result) < level+1:
+            result.append([])
+        result[level].append(root.val)
+        if root.left:
+            self.dfs(root.left, level+1, result)
+        if root.right:
+            self.dfs(root.right, level+1, result)
 
 
 # Unit Tests
 
-
+funcs = [Solution().levelOrder, Solution().levelOrder2]
 class TestLevelOrder(unittest.TestCase):
     def testLevelOrder1(self):
-        root = TreeNode(3, TreeNode(9), TreeNode(
-            20, TreeNode(15), TreeNode(7)))
-        func = Solution().levelOrder
-        self.assertEqual(func(root=root), [[3], [9, 20], [15, 7]])
+        for func in funcs:
+            root = TreeNode(3, TreeNode(9), TreeNode(
+                20, TreeNode(15), TreeNode(7)))
+            self.assertEqual(func(root=root), [[3], [9, 20], [15, 7]])
 
     def testLevelOrder2(self):
-        root = TreeNode(1)
-        func = Solution().levelOrder
-        self.assertEqual(func(root=root), [[1]])
+        for func in funcs:
+            root = TreeNode(1)
+            self.assertEqual(func(root=root), [[1]])
 
     def testLevelOrder3(self):
-        root = None
-        func = Solution().levelOrder
-        self.assertEqual(func(root=root), [])
+        for func in funcs:
+            root = None
+            self.assertEqual(func(root=root), [])
 
 
 if __name__ == "__main__":
