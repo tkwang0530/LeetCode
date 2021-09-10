@@ -31,12 +31,12 @@ Note:
 validateBstHelper(root, minValue, maxValue)
 2. Iterative solution: O(n) time | O(n) space
 3. Morris Traversal: O(n) time | O(1) space
+4. DFS: O(n) time | O(n) space
 """
 
 
 
-
-import unittest
+from typing import Optional
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
         self.val = val
@@ -96,10 +96,28 @@ class Solution:
                     current = current.right
         return True
     
-
+    def isValidBST4(self, root: Optional[TreeNode]) -> bool:
+        if not root:
+            return True
+        
+        result = [None, True] # [prevNode, isValid]
+        self.dfs(root, result)
+        return result[1]
+    
+    def dfs(self, root, result):
+        if not root or not result[1]:
+            return
+        
+        self.dfs(root.left, result)
+        if result[0] and result[0].val >= root.val:
+            result[1] = False
+            return
+        result[0] = root
+        self.dfs(root.right, result)
 
 # Unit Tests
-funcs = [Solution().isValidBST, Solution().isValidBST2, Solution().isValidBST3]
+import unittest
+funcs = [Solution().isValidBST, Solution().isValidBST2, Solution().isValidBST3, Solution().isValidBST4]
 
 
 class TestIsValidBST(unittest.TestCase):
