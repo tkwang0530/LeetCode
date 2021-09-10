@@ -37,12 +37,12 @@ there are two main cases:
 (1) swap happened on adjacent nodes => 1, 2, 4, 3, 5. In this case, we have only one oddity: 4 and 3 => candidates = [(4, 3)]
 (2)swap happened on not adjacent nodes =>  1, 2, 5, 4, 3. In this case we have two oddities: 5 and 4; 4 and 3. => candidates = [(5, 4), (4, 3)]
 But in both cases, it's okay to run candidates[0][0].val, candidates[-1][1].val = candidates[-1][1].val, candidates[0][0].val
+2. Recursion (inorder traversal): O(n) time | O(n) space
 """
 
 
 
-
-import unittest
+from typing import Optional
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
         self.val = val
@@ -74,9 +74,28 @@ class Solution:
                     current = current.right
         candidates[0][0].val, candidates[-1][1].val = candidates[-1][1].val, candidates[0][0].val
 
+    def recoverTree2(self, root: Optional[TreeNode]) -> None:
+        """
+        Do not return anything, modify root in-place instead.
+        """
+        candidates = []
+        temp = [None] # prev
+        self.dfs(root, temp, candidates)
+        candidates[0][0].val, candidates[-1][1].val = candidates[-1][1].val, candidates[0][0].val
+        
+    def dfs(self, root, temp, candidates) -> None:
+        if not root or len(candidates) == 2:
+            return
+        self.dfs(root.left, temp, candidates)
+        if temp[0] and temp[0].val >= root.val:
+            candidates.append((temp[0], root))
+        
+        temp[0] = root
+        self.dfs(root.right, temp, candidates)
 
 # Unit Tests
-funcs = [Solution().recoverTree]
+import unittest
+funcs = [Solution().recoverTree, Solution().recoverTree2]
 
 
 class TestRecoverTree(unittest.TestCase):
