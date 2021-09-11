@@ -68,17 +68,17 @@ class Solution:
             value = preorder[i]
             node = TreeNode(value)
 
-            if lookup[value] < lookup[stack[0].val]:
+            if lookup[value] < lookup[stack[-1].val]:
                 # the new node is on the left of the last node,
                 # so it must be its left child (that's the way inorder works)
-                stack[0].left = node
+                stack[-1].left = node
             else:
                 # the new node is on the right of the last node,
                 # so it must be the right child of either the last node or one of the last node's ancestors.
                 # pop the stack until we either run out of ancestors
                 # or the node at the top of the stack is to the right of the new node
                 parent = None
-                while len(stack) > 0 and lookup[value] > lookup[stack[0].val]:
+                while len(stack) > 0 and lookup[value] > lookup[stack[-1].val]:
                     parent = stack.pop()
                 parent.right = node
             stack.append(node)
@@ -98,6 +98,17 @@ class TestBuildTree(unittest.TestCase):
             self.assertEqual(buildedTreeRoot.right.val, 20)
             self.assertEqual(buildedTreeRoot.right.left.val, 15)
             self.assertEqual(buildedTreeRoot.right.right.val, 7)
+
+    def testBuildTree2(self):
+        for func in funcs:
+            preorder = [1, 2, 3]
+            inorder = [3, 2, 1]
+            buildedTreeRoot = func(preorder=preorder, inorder=inorder)
+            self.assertEqual(buildedTreeRoot.val, 1)
+            self.assertEqual(buildedTreeRoot.left.val, 2)
+            self.assertEqual(buildedTreeRoot.right, None)
+            self.assertEqual(buildedTreeRoot.left.left.val, 3)
+            self.assertEqual(buildedTreeRoot.left.right, None)
 
 
 if __name__ == "__main__":
