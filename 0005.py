@@ -16,7 +16,6 @@ Note:
 1. Odd and even Palindrome: O(n^2) time | O(1+n) space
 """
 
-from typing import Dict
 import unittest
 class Solution(object):
     def longestPalindrome(self, s: str) -> str:
