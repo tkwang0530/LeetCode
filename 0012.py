@@ -21,7 +21,11 @@ Constraints:
 1 <= num <= 3999
 """
 
-# O(1) time | O(1) space
+"""
+Notes:
+1. Using two lists: O(1) time | O(1) space
+2. Using list with tuple: O(1) time | O(1) space
+"""
 class Solution:
     def intToRoman(self, num: int) -> str:
         values = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1]
@@ -46,31 +50,54 @@ class Solution:
             num %= value
         return "".join(ans)
 
+    def intToRoman2(self, num: int) -> str:
+        symbolToValues = [
+            ("I", 1),
+            ("IV", 4),
+            ("V", 5),
+            ("IX", 9),
+            ("X", 10),
+            ("XL", 40),
+            ("L", 50),
+            ("XC", 90),
+            ("C", 100),
+            ("CD", 400),
+            ("D", 500),
+            ("CM", 900),
+            ("M", 1000)
+        ]
+        romans = []
+        for i in range(len(symbolToValues) -1, -1, -1):
+            symbol, value = symbolToValues[i]
+            times = num // value
+            num = num % value
+            romans.append(times * symbol)
+        return "".join(romans)
 
 # Unit Tests
 import unittest
-
+funcs = [Solution().intToRoman, Solution().intToRoman2]
 
 class TestIntToRoman(unittest.TestCase):
     def testIntToRoman1(self):
-        func = Solution().intToRoman
-        self.assertEqual(func(num=3), "III")
+        for func in funcs:
+            self.assertEqual(func(num=3), "III")
 
     def testIntToRoman2(self):
-        func = Solution().intToRoman
-        self.assertEqual(func(num=4), "IV")
+        for func in funcs:
+            self.assertEqual(func(num=4), "IV")
 
     def testIntToRoman3(self):
-        func = Solution().intToRoman
-        self.assertEqual(func(num=9), "IX")
+        for func in funcs:
+            self.assertEqual(func(num=9), "IX")
 
     def testIntToRoman4(self):
-        func = Solution().intToRoman
-        self.assertEqual(func(num=58), "LVIII")
+        for func in funcs:
+            self.assertEqual(func(num=58), "LVIII")
 
     def testIntToRoman5(self):
-        func = Solution().intToRoman
-        self.assertEqual(func(num=1994), "MCMXCIV")
+        for func in funcs:
+            self.assertEqual(func(num=1994), "MCMXCIV")
 
 
 if __name__ == "__main__":
