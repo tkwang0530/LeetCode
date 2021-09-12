@@ -16,15 +16,15 @@ One possible answer is: [0, -3, 9, -10, null, 5]
 
 """
 Note:
-1. Tree Construction - Top Down: O(n) time | O(n) space
+1. Tree Construction - Top Down: O(n) time | O(logn) space
 use binary search concept
+2. Iteration: O(n) time | O(logn) space
 """
 
 
 
 
-from typing import List
-import unittest
+from typing import List, Optional
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
         self.val = val
@@ -33,32 +33,50 @@ class TreeNode:
 
 
 class Solution:
-    def sortedArrayToBst(self, nums: List[int]) -> TreeNode:
-        return self.helper(nums, 0, len(nums) - 1)
-
-    def helper(self, arr, start, end):
+    def sortedArrayToBST(self, nums: List[int]) -> Optional[TreeNode]:
+        return self.buildTree(nums, 0, len(nums) - 1)
+    
+    def buildTree(self, nums, start, end) -> TreeNode:
         if start > end:
             return None
-        if start == end:
-            return TreeNode(arr[start])
-        mid = (start + end) // 2
-        subtreeRoot = TreeNode(arr[mid])
-        subtreeRoot.left = self.helper(arr, start, mid - 1)
-        subtreeRoot.right = self.helper(arr, mid + 1, end)
-        return subtreeRoot
+        mid = start + (end - start) // 2
+        root = TreeNode(nums[mid])
+        root.left = self.buildTree(nums, start, mid - 1)
+        root.right = self.buildTree(nums, mid + 1, end)
+        return root
+
+    def sortedArrayToBST2(self, nums: List[int]) -> Optional[TreeNode]:
+        if not nums:
+            return None
+        root = TreeNode(0)
+        stack = [(root, 0, len(nums) - 1)] # (node, leftIndex, rightIndex)
+        while len(stack) > 0:
+            node, left, right = stack.pop()
+            mid = left + (right - left) // 2
+            node.val = nums[mid]
+            if left < mid:
+                node.left = TreeNode(0)
+                stack.append((node.left, left, mid - 1))
+            if mid < right:
+                node.right = TreeNode(0)
+                stack.append((node.right, mid+1, right))
+        return root
+
+
 
 # Unit Tests
-
+import unittest
+funcs = [Solution().sortedArrayToBST, Solution().sortedArrayToBST2]
 
 class TestSortedArrayToBst(unittest.TestCase):
     def testSortedArrayToBst1(self):
-        nums = [-10, -3, 0, 5, 9]
-        func = Solution().sortedArrayToBst
-        self.assertEqual(func(nums=nums).val, 0)
-        self.assertEqual(func(nums=nums).left.val, -10)
-        self.assertEqual(func(nums=nums).left.right.val, -3)
-        self.assertEqual(func(nums=nums).right.val, 5)
-        self.assertEqual(func(nums=nums).right.right.val, 9)
+        for func in funcs:
+            nums = [-10, -3, 0, 5, 9]
+            self.assertEqual(func(nums=nums).val, 0)
+            self.assertEqual(func(nums=nums).left.val, -10)
+            self.assertEqual(func(nums=nums).left.right.val, -3)
+            self.assertEqual(func(nums=nums).right.val, 5)
+            self.assertEqual(func(nums=nums).right.right.val, 9)
 
 
 if __name__ == "__main__":
