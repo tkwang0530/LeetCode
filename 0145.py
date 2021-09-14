@@ -43,7 +43,8 @@ Follow up: Recursive solution is trival, could you do it iteratively?
 """
 Note:
 1. Recursion: O(n) time | O(h) space
-2. Iteration (reversely): O(n) time | O(h) space
+2. Iteration (PreOrder like traversal then reverse the result): O(n) time | O(h) space
+visited root -> right -> left
 3. Iteration (track visited node with tuple): O(n) time | O(n) space
 """
 
