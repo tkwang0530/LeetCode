@@ -28,9 +28,8 @@ Note:
 
 
 
-
+from typing import Optional
 from collections import deque
-import unittest
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
         self.val = val
@@ -39,7 +38,7 @@ class TreeNode:
 
 
 class Solution:
-    def minDepth(self, root: TreeNode) -> int:
+    def minDepth(self, root: Optional[TreeNode]) -> int:
         if not root:
             return 0
         if None in [root.left, root.right]:
@@ -47,7 +46,7 @@ class Solution:
         else:
             return min(self.minDepth(root.left), self.minDepth(root.right)) + 1
 
-    def minDepth2(self, root: TreeNode) -> int:
+    def minDepth2(self, root: Optional[TreeNode]) -> int:
         if not root:
             return 0
         queue = deque([(root, 1)])
@@ -55,16 +54,15 @@ class Solution:
             node, level = queue.popleft()
             if not node.left and not node.right:
                 return level
-            else:
-                if node.left:
-                    queue.append((node.left, level + 1))
-                if node.right:
-                    queue.append((node.right, level + 1))
+            if node.left:
+                queue.append((node.left, level+1))
+            if node.right:
+                queue.append((node.right, level+1))
 
 
 # Unit Tests
+import unittest
 funcs = [Solution().minDepth, Solution().minDepth2]
-
 
 class TestMinDepth(unittest.TestCase):
     def testMinDepth1(self):
