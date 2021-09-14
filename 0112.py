@@ -20,11 +20,11 @@ Outputs: true
 """
 Note:
 1. DFS: O(n) time | O(h) space
+2. DFS (Preorder Traversal): O(n) time | O(h) space
 """
 
-
-
-
+from typing import Optional
+from collections import deque
 import unittest
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
@@ -32,9 +32,8 @@ class TreeNode:
         self.left = left
         self.right = right
 
-
 class Solution:
-    def hasPathSum(self, root: TreeNode, sum: int) -> bool:
+    def hasPathSum(self, root: TreeNode, targetSum: int) -> bool:
         if root is None:
             return False
         result = [False]  # list is mutable
@@ -48,12 +47,41 @@ class Solution:
             if treeNode.right is not None:
                 dfs(treeNode.right, target - treeNode.val)
 
-        dfs(root, sum)
+        dfs(root, targetSum)
         return result[0]
+
+    def hasPathSum2(self, root: Optional[TreeNode], targetSum: int) -> bool:
+        if not root:
+            return False
+        stack = [(root, targetSum)]
+        while stack:
+            node, targetSum = stack.pop()
+            if not node.left and not node.right and node.val == targetSum:
+                return True
+            if node.right:
+                stack.append((node.right, targetSum - node.val))
+            if node.left:
+                stack.append((node.left, targetSum - node.val))
+        return False
+
+    def hasPathSum3(self, root: Optional[TreeNode], targetSum: int) -> bool:
+        if not root:
+            return False
+        queue = deque([(root, targetSum)])
+        while queue:
+            node, targetSum = queue.popleft()
+            if not node.left and not node.right and node.val == targetSum:
+                return True
+            else:
+                if node.left:
+                    queue.append((node.left, targetSum - node.val))
+                if node.right:
+                    queue.append((node.right, targetSum - node.val))
+        return False
 
 
 # Unit Tests
-funcs = [Solution().hasPathSum]
+funcs = [Solution().hasPathSum, Solution().hasPathSum2, Solution().hasPathSum3]
 
 
 class TestHasPathSum(unittest.TestCase):
@@ -61,17 +89,17 @@ class TestHasPathSum(unittest.TestCase):
         for func in funcs:
             root = TreeNode(5, TreeNode(4, TreeNode(11, TreeNode(7), TreeNode(2))), TreeNode(
                 8, TreeNode(13), TreeNode(4, None, TreeNode(1))))
-            self.assertEqual(func(root=root, sum=22), True)
+            self.assertEqual(func(root=root, targetSum=22), True)
 
     def testHasPathSum2(self):
         for func in funcs:
             root = TreeNode(1, TreeNode(2), TreeNode(3))
-            self.assertEqual(func(root=root, sum=5), False)
+            self.assertEqual(func(root=root, targetSum=5), False)
 
     def testHasPathSum3(self):
         for func in funcs:
             root = TreeNode(1, TreeNode(2))
-            self.assertEqual(func(root=root, sum=0), False)
+            self.assertEqual(func(root=root, targetSum=0), False)
 
 
 if __name__ == "__main__":
