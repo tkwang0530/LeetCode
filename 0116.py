@@ -18,6 +18,14 @@ Explanation: Given the above perfect binary tree (Figure A), your function shoul
 Example2:
 Input: root = []
 Output: []
+
+Constraints:
+The number of nodes in the tree is in the range [0, 2^12 - 1]
+-1000 <= Node.val <= 1000
+
+Follow up:
+You may only use constant extra space
+The recursive approach is fine. You may assume implicit stack space does not count as extra space for this problem
 """
 
 """
@@ -25,16 +33,16 @@ Note:
 1. Recursion: O(n) time | O(logn) space
 2. Iteration: O(n) time | O(1) space
 keep track the startNode
+3. Iterative (BFS): O(n) time | O(n) space
 """
 
-import unittest
+from collections import deque
 class TreeNode:
     def __init__(self, val=0, left=None, right=None, next=None):
         self.val = val
         self.left = left
         self.right = right
         self.next = next
-
 
 class Solution:
     def connect(self, root: TreeNode) -> TreeNode:
@@ -60,9 +68,28 @@ class Solution:
             startNode = startNode.left
         return root
 
-# Unit Tests
-funcs = [Solution().connect, Solution().connect2]
+    def connect3(self, root: TreeNode) -> TreeNode:
+        if not root:
+            return None
+        queue = deque([root])
+        while queue:
+            queueLength = len(queue)
+            current = None
+            for i in range(queueLength):
+                if i == 0:
+                    current = queue.popleft()
+                else:
+                    current.next = queue.popleft()
+                    current = current.next
+                if current.left:
+                    queue.append(current.left)
+                if current.right:
+                    queue.append(current.right)
+        return root
 
+# Unit Tests
+import unittest
+funcs = [Solution().connect, Solution().connect2, Solution().connect3]
 
 class TestConnect(unittest.TestCase):
     def testConnect1(self):
