@@ -36,9 +36,9 @@ Therefore, sum = 495 + 491 + 40 = 1026.
 
 """
 Note:
-1. DFS Recursively: O(n) time | O(h) space
-2. DFS+Stack: O(n) time | O(h) space
-3. BFS+Queue: O(n) time | O(h) space
+1. Recursive DFS: O(n) time | O(h) space
+2. Iterative DFS: O(n) time | O(h) space
+3. Iterative BFS: O(n) time | O(n) space
 """
 
 
@@ -71,19 +71,22 @@ class Solution:
         return
 
     def sumNumbers2(self, root: TreeNode) -> int:
-        stack, result = [], 0
-        stack.append(root)
+        total = 0
+        if not root:
+            return 0
+        stack = [(root, 0)]
         while stack:
-            node = stack.pop()
+            node, currentSum = stack.pop()
+            currentSum += node.val
             if not node.left and not node.right:
-                result += node.val
-            if node.right:
-                node.right.val += node.val * 10
-                stack.append(node.right)
-            if node.left:
-                node.left.val += node.val * 10
-                stack.append(node.left)
-        return result
+                total += currentSum
+            else:
+                currentSum *= 10
+                if node.right:
+                    stack.append((node.right, currentSum))
+                if node.left:
+                    stack.append((node.left, currentSum))
+        return total
 
     def sumNumbers3(self, root: TreeNode) -> int:
         queue, result = deque([]), 0
