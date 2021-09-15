@@ -32,12 +32,14 @@ Follow up: Can you flatten the tree in-place (with O(1) extra space)?
 
 """
 Note:
-1. Iterative DFS: O(n) time | O(n) space
+1. Iterative DFS: O(n) time | O(h) space
 2. Modified Morris Traversal: O(n) time | O(1) space
+3. Built preorder value list then build flatten Binary Tree: O(n) time | O(n) space
 """
 
 
 
+from typing import Optional
 import unittest
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
@@ -80,10 +82,32 @@ class Solution:
                 current.left = None
             current = current.right
 
+    def flatten3(self, root: Optional[TreeNode]) -> None:
+        """
+        Do not return anything, modify root in-place instead.
+        """
+        preorder = []
+        if not root:
+            return
+        stack = [root]
+        while stack:
+            node = stack.pop()
+            preorder.append(node.val)
+            if node.right:
+                stack.append(node.right)
+            if node.left:
+                stack.append(node.left)
+        
+        prev = root
+        root.left, root.right = None, None
+        for i in range(1, len(preorder)):
+            prev.right = TreeNode(preorder[i])
+            prev = prev.right
+
 
 
 # Unit Tests
-funcs = [Solution().flatten, Solution().flatten2]
+funcs = [Solution().flatten, Solution().flatten2, Solution().flatten3]
 
 
 class TestFlatten(unittest.TestCase):
