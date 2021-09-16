@@ -58,21 +58,29 @@ class Solution:
     def connect2(self, root: Node) -> Node:
         if not root:
             return root
-        p = dummy = Node(0)
+        next = dummy = Node(0)
         startNode = root
         while startNode:
             current = startNode
+            
+            # while current level pointer is not None
             while current:
+                # if current Level Pointer has left child, next Level Pointer points to it and move forward
                 if current.left:
-                    p.next = current.left
-                    p = p.next
+                    next.next = current.left
+                    next = next.next
+                # if current Level Pointer has right child, next Level Pointer points to it and move forward
                 if current.right:
-                    p.next = current.right
-                    p = p.next
+                    next.next = current.right
+                    next = next.next
+                # current move forward
                 current = current.next
+            # change startNode to the start of the next level
             startNode = dummy.next
+            
+            # cut down the dummy.next because we will reuse the dummy node in the next run
             dummy.next = None
-            p = dummy
+            next = dummy
         return root
 
 
