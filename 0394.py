@@ -63,14 +63,15 @@ class Solution(object):
         stack, currNum, currChars = [], 0, [], 
         for char in s:
             if char == "[":
-                stack.append("".join(currChars))
+                stack.append(currChars)
                 stack.append(currNum)
                 currChars = []
                 currNum = 0
             elif char == "]":
                 num = stack.pop()
                 prevString = stack.pop()
-                currChars = [prevString, num * "".join(currChars)]
+                prevString.extend(currChars * num)
+                currChars = prevString
             elif char.isdigit():
                 currNum = currNum * 10 + (ord(char) - ord("0"))
             else:
