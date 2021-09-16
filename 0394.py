@@ -34,7 +34,7 @@ All the integers in s are in the range [1, 300].
 """
 Notes:
 1. Using Stack 1: O(n^2) time | O(n) space - where n is the length of the decode string
-2. Using Stack 2: O(n^2) time | O(n) space - where n is the length of the decode string
+2. Using Stack 2: O(n) time | O(n) space - where n is the length of the decode string
 3. Recursion with queue: O(n^2) time | O(n) space - where n is the length of the decode string
 """
 
@@ -69,9 +69,9 @@ class Solution(object):
                 currNum = 0
             elif char == "]":
                 num = stack.pop()
-                prevString = stack.pop()
-                prevString.extend(currChars * num)
-                currChars = prevString
+                prevChars = stack.pop()
+                prevChars.extend(currChars * num)
+                currChars = prevChars
             elif char.isdigit():
                 currNum = currNum * 10 + (ord(char) - ord("0"))
             else:
