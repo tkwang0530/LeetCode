@@ -17,19 +17,19 @@ The result can be in any order.
 Follow up:
 What if the given array is already sorted? How would you optimize your algorithm?
 What if nums1's size is small compared to nums2's size? Which algorithm is better?
+What if elements of nums2 are stored on disk, and the memory is limited such that you cannot load all elements into the memory at once?
 """
 
 """
 Note:
-1. Hash Table: O(n+m) time | O(min(m, n)) space
+1. Hash Table (use one table): O(n+m) time | O(min(m, n)) space - where n is the length of nums1 and m is the length of nums2
 Count how many times each number shows up
-2. If already sorted use two pointers
+2. If already sorted use two pointers: O(n+m) time | O(1) space - where n is the length of nums1 and m is the length of nums2
+3. Hash Table (use two tables): O(n+m) time | O(min(m,n)) space - where n is the length of nums1 and m is the length of nums2
+coulde use list.extend([num for _ in range(count)]) for convenience
 """
 
 
-
-
-import unittest
 from typing import List
 class Solution(object):
     def intersect(self, nums1: List[int], nums2: List[int]) -> List[int]:
@@ -56,10 +56,25 @@ class Solution(object):
             else:
                 idx2 += 1
         return result
+    
+    def intersect3(self, nums1: List[int], nums2: List[int]) -> List[int]:
+        numCount1 = {}
+        numCount2 = {}
+        for num in nums1:
+            numCount1[num] = numCount1.get(num, 0) + 1
+        for num in nums2:
+            numCount2[num] = numCount2.get(num, 0) + 1
+            
+        result = []
+        for num in numCount1:
+            count = min(numCount1[num], numCount2.get(num, 0))
+            if count > 0:
+                result.extend([num for _ in range(count)])
+        return result
 
-        # Unit Tests
-funcs = [Solution().intersect, Solution().intersect2]
-
+# Unit Tests
+import unittest
+funcs = [Solution().intersect, Solution().intersect2, Solution().intersect3]
 
 class TestIntersect(unittest.TestCase):
     def testIntersect1(self):
