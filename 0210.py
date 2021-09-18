@@ -105,7 +105,7 @@ class Solution(object):
         return [] 
 
     def findOrder3(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
-        preCourseCounts = [ 0 for course in range(numCourses) ]
+        preCourseCounts = [0] * numCourses
         graph = [[] for course in range(numCourses)]
         for course, prerequisite in prerequisites:
             preCourseCounts[course] += 1
