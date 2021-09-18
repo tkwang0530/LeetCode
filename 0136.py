@@ -21,11 +21,12 @@ Store a (key, value) pair where key is num, value is how many times it showed up
 
 2. math: O(n) time | O(n) space
 2 * (a+b+c) - (a + a + b + b + c) = c
+
+3. Bit Manipulation (XOR): O(n) time | O(1) space
 """
 
 from typing import List
-
-
+from functools import reduce
 class Solution:
     def singleNumber(self, nums: List[int]) -> int:
         map = {}
@@ -41,36 +42,25 @@ class Solution:
     def singleNumber2(self, nums: List[int]) -> int:
         return 2 * sum(set(nums)) - sum(nums)
 
+    def singleNumber3(self, nums: List[int]) -> int:
+        return reduce(lambda x,y: x ^ y, nums)
 
 # Unit Tests
+funcs = [Solution().singleNumber, Solution().singleNumber2, Solution().singleNumber3]
 import unittest
-
 
 class TestSingleNumber(unittest.TestCase):
     def testSingleNumber1(self):
-        func = Solution().singleNumber
-        self.assertEqual(func(nums=[2, 2, 1]), 1)
+        for func in funcs:
+            self.assertEqual(func(nums=[2, 2, 1]), 1)
 
     def testSingleNumber2(self):
-        func = Solution().singleNumber
-        self.assertEqual(func(nums=[4, 1, 2, 1, 2]), 4)
+        for func in funcs:
+            self.assertEqual(func(nums=[4, 1, 2, 1, 2]), 4)
 
     def testSingleNumber3(self):
-        func = Solution().singleNumber
-        self.assertEqual(func(nums=[1]), 1)
-
-    def testSingleNumber4(self):
-        func = Solution().singleNumber2
-        self.assertEqual(func(nums=[2, 2, 1]), 1)
-
-    def testSingleNumber5(self):
-        func = Solution().singleNumber2
-        self.assertEqual(func(nums=[4, 1, 2, 1, 2]), 4)
-
-    def testSingleNumber6(self):
-        func = Solution().singleNumber2
-        self.assertEqual(func(nums=[1]), 1)
-
+        for func in funcs:
+            self.assertEqual(func(nums=[1]), 1)
 
 if __name__ == "__main__":
     unittest.main()
