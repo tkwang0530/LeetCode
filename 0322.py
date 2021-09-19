@@ -36,10 +36,9 @@ Constraints:
 
 """
 Note:
-1. BFS + caching: O(n * amount) time | O(n* amount) space
+1. BFS + caching (bottom up): O(n * amount) time | O(n* amount) space
+2. DP (bottom up): O(n * amount) time | O(amount) space
 """
-
-
 
 
 import unittest
@@ -66,10 +65,19 @@ class Solution:
                         queue.append((totalCoins, nextVal))
         return -1  # Cannot find any combination.
 
+    def coinChange2(self, coins: List[int], amount: int) -> int:
+        dp = [amount + 1] * (amount + 1)
+        dp[0] = 0
+        for value in range(1, amount + 1):
+            for coin in coins:
+                if value - coin >= 0:
+                    dp[value] = min(dp[value], 1 + dp[value - coin])
+        return dp[amount] if dp[amount] != amount + 1 else - 1
+
 
 # Unit Tests
 
-funcs = [Solution().coinChange]
+funcs = [Solution().coinChange, Solution().coinChange2]
 
 
 class TestCoinChange(unittest.TestCase):
