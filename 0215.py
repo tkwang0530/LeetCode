@@ -13,9 +13,9 @@ Output: 5
 
 """
 Note:
-1. Sort and constant time lookup at index len(arr) - k: O(nlogn) time | O(1) space
-2. Min Heap: O(nlogn) time | O(k) = O(n) space (no solution)
-3. Quick sort: O(n) time | O(1) space
+1. Sort and constant time lookup at index len(arr) - k: O(nlogn) time | O(n) space
+2. Min Heap: O(nlogk) time | O(k)
+3. Quick Select: O(n) time | O(logn) space
 Best case: O(n)
 Average case: O(n)
 Worst case: O(n^2)
@@ -26,42 +26,49 @@ Worst case: O(n^2)
 
 import unittest
 from typing import List
+from heapq import heappop, heappush, heappushpop
 class Solution(object):
     def findKthLargest(self, nums: List[int], k: int) -> int:
         nums.sort()
         return nums[len(nums) - k]
 
     def findKthLargest2(self, nums: List[int], k: int) -> int:
+        minHeap = []
+        for num in nums:
+            if len(minHeap) < k:
+                heappush(minHeap, num)
+            else:
+                heappushpop(minHeap, num)
+        return heappop(minHeap)
+
+    def findKthLargest3(self, nums: List[int], k: int) -> int:
         self.helper(nums, 0, len(nums) - 1, len(nums) - k)
         return nums[len(nums) - k]
-
-    def partition(self, arr: List[int], left: int, right: int) -> int:
-        pivot = arr[right]
-        i = left
-        for j in range(left, right):
-            if arr[j] < pivot:
-                self.swap(arr, i, j)
-                i += 1
-        self.swap(arr, i, right)  # put pivot at middle
-        return i  # pivot index
-
-    def helper(self, arr, left, right, k):
+    
+    def helper(self, nums, left, right, targetIndex) -> None:
         if left == right:
             return
-        pivot_index = self.partition(arr, left, right)
-        if pivot_index == k:
+        pivotIndex = self.partition(nums, left, right)
+        if pivotIndex == targetIndex:
             return
-        elif k < pivot_index:
-            self.helper(arr, left, pivot_index - 1, k)  # LHS
+        elif pivotIndex > targetIndex:
+            self.helper(nums, left, pivotIndex - 1, targetIndex)
         else:
-            self.helper(arr, pivot_index + 1, right, k)  # RHS
-
-    def swap(self, arr, i, j):
-        arr[i], arr[j] = arr[j], arr[i]
+            self.helper(nums, pivotIndex + 1, right, targetIndex)
+    
+    def partition(self, nums, left, right) -> int:
+        pivot = nums[right]
+        i = left
+        for j in range(left, right):
+            if nums[j] < pivot:
+                nums[j], nums[i] = nums[i], nums[j]
+                i += 1
+        nums[i], nums[right] = nums[right], nums[i]
+        return i
 
 
         # Unit Tests
-funcs = [Solution().findKthLargest, Solution().findKthLargest2]
+funcs = [Solution().findKthLargest, Solution().findKthLargest2, Solution().findKthLargest3]
 
 
 class TestFindKthLargest(unittest.TestCase):
