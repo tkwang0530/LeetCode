@@ -28,6 +28,7 @@ Output: -12
 """
 Note:
 1. Using Stack: O(n^2) time | O(n) space
+2. Using Stack (improve): O(n) time | O(n) space
 """
 
 class Solution(object):
@@ -66,11 +67,41 @@ class Solution(object):
             i += 1
         return sum(stack)
 
+    def calculate2(self, s: str) -> int:
+        return self.calculateHelper(s, 0)[0]
+
+    def calculateHelper(self, s: str, index: int) -> int:
+        stack = []
+        sign = "+"
+        currNum = 0
+        operators = {"+", "-", "*", "/", ")"}
+        while index < len(s):
+            char = s[index]
+            if char.isdigit():
+                currNum = currNum * 10 + (ord(char) - ord("0"))
+            if char == "(":
+                currNum, index = self.calculateHelper(s, index + 1)
+            if index == len(s) - 1 or char in operators:
+                if sign == "+":
+                    stack.append(currNum)
+                elif sign == "-":
+                    stack.append(-currNum)
+                elif sign == "*":
+                    stack[-1] = stack[-1] * currNum
+                elif sign == "/":
+                    stack[-1] = int(stack[-1] / currNum)
+                sign = char
+                currNum = 0
+                if char == ")":
+                    break
+            index += 1
+        return (sum(stack), index)
+
 
 
 # Unit Tests
 import unittest
-funcs = [Solution().calculate]
+funcs = [Solution().calculate, Solution().calculate2]
 
 
 class TestCalculate(unittest.TestCase):
@@ -93,6 +124,11 @@ class TestCalculate(unittest.TestCase):
         for func in funcs:
             s = "(2+6* 3+5- (3*14/7+2)*5)+3"
             self.assertEqual(func(s=s), -12)
+
+    def testCalculate5(self):
+        for func in funcs:
+            s = "6  - (2-(1+3))"
+            self.assertEqual(func(s=s), 8)
 
 if __name__ == "__main__":
     unittest.main()
