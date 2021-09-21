@@ -37,6 +37,8 @@ tokens[i] is either an operator: "+", "-", "*", or "/", or an integer in the ran
 """
 Notes:
 1. Using Stack: O(n) time | O(n) space
+"10".isdigit() => True
+"-10".isdigit() => False
 """
 
 from typing import List
