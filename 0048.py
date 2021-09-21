@@ -53,10 +53,12 @@ matrix[i].length == n
 
 """
 Note:
-1. Transpose and then reverse each row
+1. Transpose and then reverse each row: O(n^2) time | O(1) space - where n is the dimension of the matrix
 matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
 
 if the problem change to anti-clockwise => transpose and then reverse each col
+
+2. Rotate layer by layer: O(n^2) time | O(1) space - where n is the dimension of the matrix
 """
 
 from typing import List
@@ -69,10 +71,32 @@ class Solution:
         
         for i in range(len(matrix)):
             matrix[i].reverse()
+    
+    def rotate2(self, matrix: List[List[int]]) -> None:
+        left, right = 0, len(matrix) - 1
+        while left < right:
+            for i in range(right-left):
+                top, bottom = left, right
 
+                # save the topleft
+                topLeft = matrix[top][left+i]
+
+                # move bottom left into top left
+                matrix[top][left+i] = matrix[bottom-i][left]
+
+                # move bottom right into bottom left
+                matrix[bottom-i][left] = matrix[bottom][right-i]
+
+                # move top right into bottom right
+                matrix[bottom][right-i] = matrix[top+i][right]
+
+                # move top left into top right
+                matrix[top+i][right] = topLeft
+            right -= 1
+            left += 1
 
 # Unit Tests
-funcs = [Solution().rotate]
+funcs = [Solution().rotate, Solution().rotate2]
 
 
 class TestRotate(unittest.TestCase):
