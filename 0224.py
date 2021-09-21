@@ -37,6 +37,8 @@ where n is length of s
 (4) '(': push the previous result and sign into the stack, set the result to 0, just calcuate the new result within the parenthesis.
 (5) ')': pop the top two numbers from stack, first one is the sign before this pair of parenthesis, second is the temporary result before this pair of parenthesis. We add them together.
 Finally return result + sign * currNum
+
+2. Using Stack (better to extend): O(n) time | O(n) space
 """
 
 
@@ -74,10 +76,36 @@ class Solution(object):
                 currNum = 0
         return result + sign * currNum
 
+    def calculate2(self, s: str) -> int:
+        return self.calculateHelper(s, 0)[0]
+
+    def calculateHelper(self, s: str, index: int) -> int:
+        stack = []
+        sign = "+"
+        currNum = 0
+        operators = {"+", "-", ")"}
+        while index < len(s):
+            char = s[index]
+            if char.isdigit():
+                currNum = currNum * 10 + (ord(char) - ord("0"))
+            if char == "(":
+                currNum, index = self.calculateHelper(s, index + 1)
+            if index == len(s) - 1 or char in operators:
+                if sign == "+":
+                    stack.append(currNum)
+                elif sign == "-":
+                    stack.append(-currNum)
+                sign = char
+                currNum = 0
+                if char == ")":
+                    break
+            index += 1
+        return (sum(stack), index)
+
 
 
 # Unit Tests
-funcs = [Solution().calculate]
+funcs = [Solution().calculate, Solution().calculate2]
 
 
 class TestCalculate(unittest.TestCase):
