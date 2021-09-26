@@ -20,6 +20,12 @@ the idea is if the room is used, mark the room with its end time.
 (2) initially put the first interval's ending time to our minHeap (rooms)
 (3) traverse the intervals, when interval's starting time is less than the minimum ending time in the minHeap, heappop one out, and heappush that interval's ending time into the minHeap
 (4) after traverse, return the length of the heap
+
+2. Use two sorted array: O(nlogn) time | O(n) space
+(1) store start time and end time on different array "start" and "end"
+(2) sort them respectively
+(3) iterate through the two arrays
+    increase the count by 1 and s+= 1 if start[s] < end[e] otherwise, count -= 1 and e+=1
 """
 
 import heapq
@@ -39,9 +45,25 @@ class Solution(object):
             i += 1
         return len(rooms)
 
+    def minMeetingRooms2(self, intervals: List[List[int]]) -> int:
+        start = sorted([interval[0] for interval in intervals])
+        end = sorted([interval[1] for interval in intervals])
+        result, count = 0, 0
+        s, e = 0, 0
+        while s < len(intervals):
+            if start[s] < end[e]:
+                s += 1
+                count += 1
+            else:
+                e += 1
+                count -= 1
+            result = max(result, count)
+        return result
+
+
 
 # Unit Tests
-funcs = [Solution().minMeetingRooms]
+funcs = [Solution().minMeetingRooms, Solution().minMeetingRooms2]
 
 
 class TestMinMeetingRooms(unittest.TestCase):
