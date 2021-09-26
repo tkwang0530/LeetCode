@@ -25,25 +25,16 @@ medianFinder.findMedian(); // return 2.0
 """
 Note:
 1. Two Heaps: O(logn) time | O(n) space
-min heap stores larger half of elements
-max heap stores smaller half of elements
+(1) min heap stores larger half of elements
+(2) max heap stores smaller half of elements
+(3) for addNum function
+        make sure that every num in small is <= every num in large
+        make sure that abs(len(self.small) - len(self.large)) <= 1
 
-invariance:
-(1) even # of elements: len(small), len(large) = (k, k)
-(2) odd # of elements: len(small), len(large) = (k, k+1)
-after adding a #:
-(1) len(small), len(large) = (k, k + 1)
-(2) len(small), len(large) = (k+1, k+1)
-
-case1 (k, k) -> (k, k+1): push element to small, pop one element out of small, and push to large
-case2 (k, k+1) -> (k+1, k+1): push element to large, pop one element out of large, and push to small
 """
 
 
-
-
-import unittest
-from heapq import *
+import heapq
 class MedianFinder:
 
     def __init__(self):
@@ -51,19 +42,30 @@ class MedianFinder:
         self.large = []  # larger half of elements, min heap
 
     def addNum(self, num: int) -> None:
-        if len(self.small) == len(self.large):  # case1 (k, k)
-            heappush(self.large, -heappushpop(self.small, -num))
-        else:  # case2 (k, k+1)
-            heappush(self.small, -heappushpop(self.large, num))
+        heapq.heappush(self.small, -1 * num)
+
+        # make sure every number in small is <= every number in large
+        if self.small and self.large and (-1 * self.small[0] > self.large[0]):
+            num = -1 * heapq.heappop(self.small)
+            heapq.heappush(self.large, num)
+
+        # uneven size?
+        if len(self.small) > len(self.large) + 1:
+            num = -1 * heapq.heappop(self.small)
+            heapq.heappush(self.large, num)
+        if len(self.large) > len(self.small) + 1:
+            num = heapq.heappop(self.large)
+            heapq.heappush(self.small, -1 * num)
 
     def findMedian(self) -> float:
-        if len(self.small) == len(self.large):  # (k, k)
-            return (self.large[0] - self.small[0]) / 2
-        else:  # (k, k+1)
+        if len(self.small) > len(self.large):
+            return -1 * self.small[0]
+        if len(self.large) > len(self.small):
             return self.large[0]
+        return (-1 * self.small[0] + self.large[0]) / 2
 
 # Unit Tests
-
+import unittest
 
 class TestMedianFinder(unittest.TestCase):
     def testMedianFinder(self):
