@@ -29,13 +29,13 @@ import unittest
 class Solution(object):
     def characterReplacement(self, s: str, k: int) -> int:
         start = 0
-        dict = {}
+        letterCount = {}
         maxRepeat = maxLength = 0
         for end in range(len(s)):
-            dict[s[end]] = dict.get(s[end], 0) + 1
-            maxRepeat = max(maxRepeat, dict[s[end]])
+            letterCount[s[end]] = letterCount.get(s[end], 0) + 1
+            maxRepeat = max(maxRepeat, letterCount[s[end]])
             if end - start + 1 - maxRepeat > k:
-                dict[s[start]] -= 1
+                letterCount[s[start]] -= 1
                 start += 1
             maxLength = max(maxLength, end - start + 1)
         return maxLength
