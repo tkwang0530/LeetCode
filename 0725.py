@@ -31,6 +31,7 @@ The number of nodes in the list is in the range [0, 1000]
 """
 Note:
 1. Quotient and Remainder: O(n) time | O(n/k) space
+2. Quotient and Remainder (improve): O(n) time | O(1) space
 """
 
 class ListNode:
@@ -83,10 +84,41 @@ class Solution:
             prev.next = None
         return result
 
+    def splitListToParts2(self, head: Optional[ListNode], k: int) -> List[Optional[ListNode]]:
+        result = [None] * k
+        if not head:
+            return result
+        current = head
+        length = 0
+        while current:
+            length += 1
+            current = current.next
+        quotient = length // k
+        remainder = length % k
+        largeSizeListNum = remainder
+        current = head
+        idx = 0
+        while current and idx < len(result):
+            result[idx] = current
+            if not current:
+                idx += 1
+                continue
+            listSize = quotient
+            if largeSizeListNum > 0:
+                listSize += 1
+                largeSizeListNum -= 1
+            prev = None
+            while current and listSize:
+                prev = current
+                current = current.next
+                listSize -= 1
+            prev.next = None
+            idx += 1
+        return result
 
 # Unit Tests
 import unittest
-funcs = [Solution().splitListToParts]
+funcs = [Solution().splitListToParts, Solution().splitListToParts2]
 
 class TestSpliltListToParts(unittest.TestCase):
     def testSpliltListToParts1(self):
