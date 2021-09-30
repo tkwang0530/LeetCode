@@ -24,11 +24,7 @@ class ListNode:
 
     # TEST ONLY
     def __repr__(self):
-        nums = [self.val]
-        while self.next:
-            nums.append(self.next.val)
-            self = self.next
-        return "->".join(str(num) for num in nums)
+        return f"{self.val}->{self.next}"
 
     @classmethod
     def fromArray(cls, arr):
@@ -75,13 +71,13 @@ class TestAddTwoNumbers(unittest.TestCase):
         for func in funcs:
             l1 = ListNode.fromArray([2, 4, 7, 1])
             l2 = ListNode.fromArray([9, 4, 5])
-            self.assertEqual(repr(func(l1, l2)), "1->9->2->2")
+            self.assertEqual(repr(func(l1, l2)), "1->9->2->2->None")
 
     def testAddTwoNumbers2(self):
         for func in funcs:
             l1 = ListNode(0)
             l2 = ListNode(0)
-            self.assertEqual(repr(func(l1, l2)), "0")
+            self.assertEqual(repr(func(l1, l2)), "0->None")
 
 
 if __name__ == "__main__":
