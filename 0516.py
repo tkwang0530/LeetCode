@@ -75,10 +75,10 @@ class TestLongestPalindromeSubseq(unittest.TestCase):
             s = "bbbab"
             self.assertEqual(func(s=s), 4)
 
-    # def testLongestPalindromeSubseq2(self):
-    #     for func in funcs:
-    #         s = "cbbd"
-    #         self.assertEqual(func(s=s), 2)
+    def testLongestPalindromeSubseq2(self):
+        for func in funcs:
+            s = "cbbd"
+            self.assertEqual(func(s=s), 2)
 
 if __name__ == "__main__":
     unittest.main()
