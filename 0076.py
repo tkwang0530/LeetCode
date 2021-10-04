@@ -31,31 +31,35 @@ s and t consist of uppercase and lowercase English letters.
 
 """ 
 1. HashTable/Sliding Window: O(n+m) time | O(1) space
+(1) store the char count of t in a Hash Table
+(2) go through the s, when rightChar in that HashTable decrease the count by 1
+(3) if after decreasing the count the remaining >= 0, increase the matched by 1
+(4) when matched is equal to the length of t, that is every character in t is included in the window, update the minWindow if it has smaller length
+(5) keep shrinking the window by moving left pointer forward until matched no longer equals to length of t
 """
 
-import unittest
 class Solution(object):
     def minWindow(self, s: str, t: str) -> str:
         winStart = subStart = matched = 0
         minLength = float("inf")
-        dict = {}
+        charCount = {}
         for char in t:
-            dict[char] = dict.get(char, 0) + 1
+            charCount[char] = charCount.get(char, 0) + 1
         for end in range(len(s)):
             endChar = s[end]
-            if endChar in dict:
-                dict[endChar] -= 1
-                if dict[endChar] >= 0:
+            if endChar in charCount:
+                charCount[endChar] -= 1
+                if charCount[endChar] >= 0:
                     matched += 1
             while matched == len(t):
                 if end - winStart + 1 < minLength:
                     minLength = end - winStart + 1
                     subStart = winStart
                 startChar = s[winStart]
-                if startChar in dict:
-                    if dict[startChar] == 0:
+                if startChar in charCount:
+                    if charCount[startChar] == 0:
                         matched -= 1
-                    dict[startChar] += 1
+                    charCount[startChar] += 1
                 winStart += 1
         if minLength > len(s):
             return ""
@@ -64,9 +68,8 @@ class Solution(object):
 
 
 # Unit Tests
+import unittest
 funcs = [Solution().minWindow]
-
-
 class TestMinWindow(unittest.TestCase):
     def testMinWindow1(self):
         for func in funcs:
