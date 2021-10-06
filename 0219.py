@@ -22,11 +22,11 @@ Constraints:
 
 """ 
 1. Hash Table + Sliding Window: O(n) time | O(k) space
+2. Hash Table store last seen index: O(n) time | O(n) space
 """
 
 
 from typing import List
-import unittest
 class Solution(object):
     def containsNearbyDuplicate(self, nums: List[int], k: int) -> bool:
         seen = set()
@@ -38,8 +38,17 @@ class Solution(object):
                 seen.remove(nums[i-k])
         return False
 
+    def containsNearbyDuplicate2(self, nums: List[int], k: int) -> bool:
+        lastSeen = {} # <num, lastSeenIdx>
+        for i, num in enumerate(nums):
+            if num in lastSeen and abs(i - lastSeen[num]) <= k:
+                return True
+            lastSeen[num] = i
+        return False
+
 # Unit Tests
-funcs = [Solution().containsNearbyDuplicate]
+import unittest
+funcs = [Solution().containsNearbyDuplicate, Solution().containsNearbyDuplicate2]
 
 
 class TestContainsNearbyDuplicate(unittest.TestCase):
