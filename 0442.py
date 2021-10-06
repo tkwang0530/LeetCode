@@ -25,9 +25,9 @@ Constraints:
 """
 Note:
 1. use negative sign as marker: O(n) time | O(1) space
+2. use mod and divide operator as counter: O(n) time | O(1) space
 """
 
-import unittest
 from  typing import List
 class Solution:
     def findDuplicates(self, nums: List[int]) -> int:
@@ -39,10 +39,23 @@ class Solution:
                 nums[abs(num)-1] = -nums[abs(num)-1]
         return result
 
+    def findDuplicates2(self, nums: List[int]) -> int:
+        n = len(nums)
+        result = []
+        for num in nums:
+            remainder = num % (n+1)
+            nums[remainder-1] += n+1
+        
+        for i, num in enumerate(nums):
+            quotient = num // (n+1)
+            if quotient == 2:
+                result.append(i+1)
+        return result
+
 
 # Unit Tests
-funcs = [Solution().findDuplicates]
-
+import unittest
+funcs = [Solution().findDuplicates, Solution().findDuplicates2]
 
 class TestFindDuplicates(unittest.TestCase):
     def testFindDuplicates1(self):
