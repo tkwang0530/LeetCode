@@ -31,9 +31,11 @@ Follow up: Could you come up with a one-pass algorithm using only constant extra
 Note:
 1. Two Pointers: O(n) time | O(1) space
 (1) Focus on 0 and 2: move 0 to the left, move 2 to the right, so that if there is 1, it must be in the middle
+
+2. Count zero, one, two then reassign the value: O(n) time | O(1) space
 """
 
-import unittest
+import collections
 from  typing import List
 class Solution:
     def sortColors(self, nums: List[int]) -> None:
@@ -53,6 +55,22 @@ class Solution:
                 i += 1
             else:
                 i += 1
+
+    def sortColors2(self, nums: List[int]) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        """
+        numCount = collections.Counter(nums)
+        for i in range(len(nums)):
+            if numCount[0]:
+                nums[i] = 0
+                numCount[0] -= 1
+            elif numCount[1]:
+                nums[i] = 1
+                numCount[1] -= 1
+            elif numCount[2]:
+                nums[i] = 2
+                numCount[2] -= 1
             
     
     def swap(self, nums: List[int], i: int, j: int) -> None:
@@ -61,9 +79,8 @@ class Solution:
             
 
 # Unit Tests
-funcs = [Solution().sortColors]
-
-
+import unittest
+funcs = [Solution().sortColors, Solution().sortColors2]
 class TestSortColors(unittest.TestCase):
     def testSortColors1(self):
         for func in funcs:
