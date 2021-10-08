@@ -54,6 +54,8 @@ class Solution(object):
             else:
                 count1 -= 1
                 count2 -= 1
+        if candidate1 == candidate2:
+            return [candidate1]
         return [num for num in (candidate1, candidate2) if nums.count(num) > len(nums) // 3]
             
 
@@ -83,6 +85,11 @@ class TestMajorityElement(unittest.TestCase):
         for func in funcs:
             nums = [1,1,1,3,3,2,2,2]
             self.assertEqual(sorted(func(nums=nums)), sorted([1, 2]))
+
+    def testMajorityElement5(self):
+        for func in funcs:
+            nums = [0,0,0]
+            self.assertEqual(sorted(func(nums=nums)), sorted([0]))
 
 if __name__ == "__main__":
     unittest.main()
