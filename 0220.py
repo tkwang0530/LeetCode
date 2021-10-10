@@ -24,6 +24,8 @@ Constraints:
 """ 
 1. Brute Force: O(n * k) time | O(1) space
 2. Bucket Sort Concept + Sliding Window: O(n) time | O(k) space
+(1) store values in a Hash Table with <quotient, value>. Note that the quotient = value // (t+1), so that if two values have same quotient => their difference is less than or equal to t
+(2) dynamically adjust the Hash Table
 """
 
 
@@ -46,9 +48,9 @@ class Solution(object):
             return False
         if k == 0 or t < 0:
             return False
-        bucket = {}
+        bucket = {} # <quotient, value>
         for i, value in enumerate(nums):
-            bucketIdx = value // (t + 1)
+            bucketIdx = value // (t + 1) # the quotient, if two values have same quotient => their difference is less than or equal to t 
             if bucketIdx in bucket:
                 return True
             if bucketIdx - 1 in bucket and abs(value - bucket[bucketIdx-1]) <= t:
