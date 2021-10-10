@@ -35,6 +35,7 @@ All the numbers of nums are unique
 Note:
 1. xor + itertools.chain: O(n) time | O(1) space
 2. Math: O(n) time | O(1) space
+3. mod and divide as counter: O(n) time | O(1) space
 """
 
 from typing import List
@@ -47,10 +48,23 @@ class Solution:
     def missingNumber2(self, nums: List[int]) -> int:
         return (1+len(nums)) * len(nums) / 2 - sum(nums)
 
+    def missingNumber3(self, nums: List[int]) -> int:
+        n = len(nums) 
+        for num in nums:
+            remainder = num % (n+1)
+            if remainder == 0:
+                continue
+            nums[remainder-1] += n+1
+        for i in range(len(nums)):
+            quotient = nums[i] // (n+1)
+            if not quotient:
+                return i+1
+        return 0
+
 
 # Unit Tests
 import unittest
-funcs = [Solution().missingNumber, Solution().missingNumber2]
+funcs = [Solution().missingNumber, Solution().missingNumber2, Solution().missingNumber3]
 
 class TestMissingNumber(unittest.TestCase):
     def testMissingNumber1(self):
