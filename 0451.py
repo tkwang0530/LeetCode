@@ -30,7 +30,7 @@ s consists of uppercase and lowercase English letters and digits
 
 """
 Note:
-1. maxHeap: O(n) time | O(w) space - where n is the length of given string s and w is the number of distinct char in s
+1. maxHeap: O(n+wlogw) time | O(w) space - where n is the length of given string s and w is the number of distinct char in s
 (1) store the char count using collections.Counter(s)
 (2) using a maxHeap with (-count, char)
 (3) for each run, pop items out and append the char "count" times into the result array (chars), until the maxHeap is empty
