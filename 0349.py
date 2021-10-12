@@ -23,8 +23,6 @@ Note:
 """
 
 from typing import List
-import unittest
-
 class Solution:
     def intersection(self, nums1: List[int], nums2: List[int]) -> List[int]:
         result = []
@@ -48,11 +46,14 @@ class Solution:
     def intersection2(self, nums1: List[int], nums2: List[int]) -> List[int]:
         return list(set(nums1) & set(nums2))
 
+    def intersection3(self, nums1: List[int], nums2: List[int]) -> List[int]:
+        return set(nums1).intersection(set(nums2))
+
 
 
 # Unit Tests
-funcs = [Solution().intersection, Solution().intersection2]
-
+import unittest
+funcs = [Solution().intersection, Solution().intersection2, Solution().intersection3]
 class TestIntersection(unittest.TestCase):
     def testIntersection1(self):
         for func in funcs:
