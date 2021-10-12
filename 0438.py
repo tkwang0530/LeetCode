@@ -24,41 +24,41 @@ s and p consist of lowercase English letters
 
 """ 
 1. HashTable/Sliding Window: O(n+m) time | O(1) space
+(1) use collections.Counter to generate charCount
+(2) apply sliding windows with the following rules
+    - keep extending  right side of the window and decrease the charCount[char] if char in charCount, update the matched variable if updated charCount[char] == 0
+    - if matched == len(charCount): append the start index into result list
+    - if end - start + 1 == len(p): shrink the left side of the window and increase the charCount[s[start]] if s[start] in charCount, update the matched variable when init charCounts[start]] == 0
 """
 
 
 
 from typing import List
-import unittest
+import collections
 class Solution(object):
     def findAnagrams(self, s: str, p: str) -> List[int]:
+        charCount = collections.Counter(p)
         start = matched = 0
-        dict = {}
         result = []
-        for letter in p:
-            dict[letter] = dict.get(letter, 0) + 1
-        for end, letter in enumerate(s):
-            if letter in dict:
-                dict[letter] -= 1
-                if dict[letter] == 0:
+        for end, char in enumerate(s):
+            if char in charCount:
+                charCount[char] -= 1
+                if charCount[char] == 0:
                     matched += 1
-            if matched == len(dict):
+            if matched == len(charCount):
                 result.append(start)
             if end - start + 1 >= len(p):
-                if s[start] in dict:
-                    if dict[s[start]] == 0:
+                if s[start] in charCount:
+                    if charCount[s[start]] == 0:
                         matched -= 1
-                    dict[s[start]] += 1
+                    charCount[s[start]] += 1
                 start += 1
         return result
-                    
-
 
 
 # Unit Tests
+import unittest
 funcs = [Solution().findAnagrams]
-
-
 class TestFindAnagrams(unittest.TestCase):
     def testFindAnagrams1(self):
         for func in funcs:
