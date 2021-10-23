@@ -14,6 +14,7 @@ Output: [-1, -1]
 """
 Note:
 1. Binary Search: O(logn) time | O(1) space
+2. Brute Force: O(n) time | O(1) space
 """
 
 from typing import List
@@ -44,13 +45,20 @@ class Solution:
             else:
                 left = mid + 1
         return left - 1 if nums[left-1] == target else -1
-            
-
-
+    
+    def searchRange2(self, nums: List[int], target: int) -> List[int]:
+        if not nums:
+            return [-1, -1]
+        for i, num in enumerate(nums):
+            if num == target:
+                lastIndex = i
+                while lastIndex < len(nums) and nums[lastIndex] == target:
+                    lastIndex += 1
+                return [i, lastIndex - 1]
+        return [-1, -1]
 
 # Unit Tests
-funcs = [Solution().searchRange]
-
+funcs = [Solution().searchRange, Solution().searchRange2]
 class TestSearchRange(unittest.TestCase):
     def testSearchRange1(self):
         for func in funcs:
