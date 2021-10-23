@@ -38,6 +38,7 @@ Follow up: Can you come up with an algorithm that runs in O(m+n) time ?
 """
 Note:
 1. Two Pointers + backward traverse: O(m+n) time | O(1) space
+2. Two Pointers + backward traverse2: O(m+n) time | O(1) space
 """
 
 
@@ -60,12 +61,28 @@ class Solution:
                 nums1[idx] = nums2[idx2]
                 idx2 -= 1
             idx -= 1
+
+    def merge2(self, nums1: List[int], m: int, nums2: List[int], n: int) -> None:
+        idx1 = m - 1
+        idx2 = n - 1
+        end = len(nums1) - 1
+        while idx1 >= 0 and idx2 >= 0:
+            if nums1[idx1] > nums2[idx2]:
+                nums1[end] = nums1[idx1]
+                idx1 -= 1
+            else:
+                nums1[end] = nums2[idx2]
+                idx2 -= 1
+            end -= 1
+        
+        if idx2 >= 0:
+            nums1[0:idx2+1] = nums2[0:idx2+1]
         
 
 
 
 # Unit Tests
-funcs = [Solution().merge]
+funcs = [Solution().merge, Solution().merge2]
 
 
 class TestMerge(unittest.TestCase):
