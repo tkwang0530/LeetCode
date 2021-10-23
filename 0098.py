@@ -57,17 +57,18 @@ class Solution:
         return rootIsValid and leftIsValid and rightIsValid
 
     def isValidBST2(self, root: TreeNode) -> bool:
+        previousVal = float("-inf")
         stack = []
-        pre = None
-        while root is not None or len(stack) > 0:
-            while root is not None:
+        while root or stack:
+            while root:
                 stack.append(root)
                 root = root.left
             root = stack.pop()
-            if pre is not None and root.val <= pre.val:
+            if root.val <= previousVal:
                 return False
-            pre = root
-            root = root.right
+            else:
+                previousVal = root.val
+                root = root.right
         return True
 
     def isValidBST3(self, root: TreeNode) -> bool:
