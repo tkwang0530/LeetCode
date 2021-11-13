@@ -47,7 +47,7 @@ import unittest
 from typing import List
 class Solution:
     def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
-        if not candidates or len(candidates) == 0:
+        if not candidates:
             return []
         result = []
         self.dfs(candidates, target, [], result, 0)
