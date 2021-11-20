@@ -39,7 +39,7 @@ hash(s) = s_0 + s_1 * p + ... + s_n-1 * p^(n-1), where p is a prime and p > n
 
 hash(s) could be very large => using modulus hash(s) % m, where m is a large prime (e.g. 1000,000,007)
 
-2. Rolling hash without modulus (python only): O(n+m) time | O(n+m) space - where n is len(a) and m is len(b)
+2. Rolling hash without modulus (python only): O(n+m) time | O(1) space - where n is len(a) and m is len(b)
 """
 
 class Solution(object):
@@ -66,33 +66,30 @@ class Solution(object):
             hashA[i] = hashA[i] + mod - (basePower * ord(leftChar)) % mod
 
             if hashA[i] % mod == hashB:
-                return i+1 // len(a) if (i+1) % len(a) == 0 else (i+1) % len(a) + 1
+                return (i+1) // len(a) if (i+1) % len(a) == 0 else (i+1) // len(a) + 1
         return -1
 
     def repeatedStringMatch2(self, a: str, b: str) -> int:
         base = 31
         maxLength = len(a) + len(b)
         hashB = ord(b[0])
-        hashA = [0] * maxLength
-        hashA[0] = ord(a[0])
+        hashA = ord(a[0])
         basePower = base
-
-        for i in range(1, len(b)):
-            hashB = (hashB * base) + ord(b[i])
-            hashA[i] = (hashA[i-1] * base) + ord(a[i % len(a)])
-
-            basePower = basePower * base
         
-        if hashA[len(b) - 1] == hashB:
+        for i in range(1, len(b)):
+            hashB = hashB * base + ord(b[i])
+            hashA = hashA * base + ord(a[i % len(a)])
+            basePower = basePower * base
+            
+        if hashA == hashB:
             return len(b) // len(a) if len(b) % len(a) == 0 else len(b) // len(a) + 1
         
         for i in range(len(b), maxLength):
-            leftChar, rightChar = a[(i-len(b)) % len(a)], a[i % len(a)]
-            hashA[i] = hashA[i-1] * base + ord(rightChar)
-            hashA[i] = hashA[i] - basePower * ord(leftChar)
-
-            if hashA[i] == hashB:
-                return i+1 // len(a) if (i+1) % len(a) == 0 else (i+1) % len(a) + 1
+            leftChar, rightChar = a[(i - len(b)) % len(a)], a[i % len(a)]
+            hashA = hashA * base + ord(rightChar) - basePower * ord(leftChar)
+            
+            if hashA == hashB:
+                return (i+1) // len(a) if (i+1) % len(a) == 0 else (i+1) // len(a) + 1
         return -1
 
 # Unit Tests
@@ -115,6 +112,14 @@ class TestRepeatedStringMatch(unittest.TestCase):
     def testRepeatedStringMatch4(self):
         for func in funcs:
             self.assertEqual(func(a="abc", b="wxyz"), -1)
+
+    def testRepeatedStringMatch5(self):
+        for func in funcs:
+            self.assertEqual(func(a="aaac", b="aac"), 1)
+
+    def testRepeatedStringMatch6(self):
+        for func in funcs:
+            self.assertEqual(func(a="abc", b="cabcabca"), 4)
 
 
 if __name__ == "__main__":
