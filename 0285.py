@@ -46,7 +46,6 @@ class TreeNode:
 
 class Solution:
     def inorderSuccessor(self, root: TreeNode, p: TreeNode) -> TreeNode:
-        # return self.helper(root, p)
         if not root:
             return
         if root.val > p.val:
