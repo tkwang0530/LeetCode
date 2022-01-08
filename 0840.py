@@ -45,27 +45,27 @@ class Solution:
         return total
 
     def isMagicSquare(self, row, col, grid) -> bool:
-        sameSum = sum(grid[row][col:col+3])
         squareSet = set()
         for r in range(row, row+3):
             for c in range(col, col+3):
                 squareSet.add(grid[r][c])
-        if squareSet != {1, 2, 3, 4, 5, 6, 7, 8, 9}:
+        if squareSet != {i for i in range(1, 9+1)}:
             return False
         
-        if sum(grid[row+1][col:col+3]) != sameSum:
+        for i in range(row, row+3):
+            if sum(grid[i][col:col+3]) != 15:
+                return False
+
+        for j in range(col, col+3):
+            colSum = 0
+            for i in range(row, row+3):
+                colSum += grid[i][j]
+            if colSum != 15:
+                return False
+        
+        if sum([grid[row][col], grid[row+1][col+1], grid[row+2][col+2]]) != 15:
             return False
-        if sum(grid[row+2][col:col+3]) != sameSum:
-            return False
-        if sum([grid[row][col], grid[row+1][col], grid[row+2][col]]) != sameSum:
-            return False
-        if sum([grid[row][col+1], grid[row+1][col+1], grid[row+2][col+1]]) != sameSum:
-            return False
-        if sum([grid[row][col+2], grid[row+1][col+2], grid[row+2][col+2]]) != sameSum:
-            return False
-        if sum([grid[row][col], grid[row+1][col+1], grid[row+2][col+2]]) != sameSum:
-            return False
-        if sum([grid[row][col+2], grid[row+1][col+1], grid[row+2][col]]) != sameSum:
+        if sum([grid[row][col+2], grid[row+1][col+1], grid[row+2][col]]) != 15:
             return False
         return True
 
