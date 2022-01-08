@@ -5,8 +5,8 @@ Given a binary search tree and a node in it, find the in-order successor of that
 The successor of a node p is the node with the smallest key greater than p.val
 
 Example1:
-        2
-      /   \
+       2
+     /   \
     1     3 
 Input: root = [2, 1, 3], p = 1
 Output: 2
@@ -27,9 +27,9 @@ Explanation: There is no in-order successor of the current node, so the answer i
 
 """
 Note:
-1. Recursion: O(n) time | O(h) space
-2. Iterative: O(n) time | O(1) space
-3. Recursion: (store temp successor in array): O(n) time | O(h) space
+1. Recursion: O(h) time | O(h) space
+2. Iterative: O(h) time | O(1) space
+3. Recursion: (successorContainer): O(h) time | O(h) space
 """
 
 
@@ -46,15 +46,13 @@ class TreeNode:
 
 class Solution:
     def inorderSuccessor(self, root: TreeNode, p: TreeNode) -> TreeNode:
-        return self.helper(root, p)
-
-    def helper(self, node, p):
-        if not node:
+        # return self.helper(root, p)
+        if not root:
             return
-        if node.val > p.val:
-            return self.helper(node.left, p) or node
+        if root.val > p.val:
+            return self.inorderSuccessor(root.left, p) or root
         else:
-            return self.helper(node.right, p)
+            return self.inorderSuccessor(root.right, p)
 
     def inorderSuccessor2(self, root: TreeNode, p: TreeNode) -> TreeNode:
         successor = None
@@ -68,17 +66,17 @@ class Solution:
 
     def inorderSuccessor3(self, root: TreeNode, p: TreeNode) -> TreeNode:
         result = [None]
-        self.helper3(root, p, result)
+        self.inorderSuccessorHelper(root, p, result)
         return result[0]
 
-    def helper3(self, root: TreeNode, p: TreeNode, result: List[TreeNode]):
+    def inorderSuccessorHelper(self, root: TreeNode, p: TreeNode, result: List[TreeNode]):
         if not root:
             return
         if root.val > p.val:
             result[0] = root
-            self.helper3(root.left, p, result)
+            self.inorderSuccessorHelper(root.left, p, result)
         else:
-            self.helper3(root.right, p, result)
+            self.inorderSuccessorHelper(root.right, p, result)
 
         # Unit Tests
 funcs = [Solution().inorderSuccessor, Solution().inorderSuccessor2,
