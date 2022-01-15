@@ -83,6 +83,13 @@ class TestNetworkDelayTime(unittest.TestCase):
             k = 2
             self.assertEqual(func(times=times, n=n, k=k), -1)
 
+    def testNetworkDelayTime4(self):
+        for func in funcs:
+            times = [[1,2,1],[2,1,3]]
+            n = 2
+            k = 2
+            self.assertEqual(func(times=times, n=n, k=k), 3)
+
 
 if __name__ == "__main__":
     unittest.main()
