@@ -29,10 +29,17 @@ where n is the number of characters in the dictionary (including duplicates)
 (1) use set as value because the duplication of char
 (2) use post order traversal in dfs
 (3) return the reverse version of the result we build during the graph traversal
+
+2. Iterative BFS (Class-based): O(n) time | O(n) space
 """
 
-import unittest
+import collections
 from typing import List
+
+class Node:
+    def __init__(self):
+        self.preCharCount = 0
+        self.nextChars = set()
 class Solution(object):
     def alienOrder(self, words: List[str]) -> str:  # dfs
         graph = {}
@@ -71,14 +78,48 @@ class Solution(object):
         result.append(char)
         return False
 
-
+    def alienOrder2(self, words: List[str]) -> str:
+        graph = {}
+        for word in words:
+            for char in word:
+                if char not in graph:
+                    graph[char] = Node()
+                    
+        for word1, word2 in zip(words[:-1], words[1:]):
+            if len(word1) > len(word2) and word1[:len(word2)] == word2:
+                return ""
+            
+            for char1, char2 in zip(word1, word2):
+                if char1 != char2:
+                    if char2 not in graph[char1].nextChars:
+                        graph[char1].nextChars.add(char2)
+                        graph[char2].preCharCount += 1
+                    break
+        
+        queue = collections.deque([])
+        for char, node in graph.items():
+            if node.preCharCount == 0:
+                queue.append(char)
+        
+        orders = []
+        while queue:
+            char = queue.popleft()
+            orders.append(char)
+            if len(orders) == len(graph):
+                return "".join(orders)
+            
+            for nextChar in graph[char].nextChars:
+                graph[nextChar].preCharCount -= 1
+                if graph[nextChar].preCharCount == 0:
+                    queue.append(nextChar)
+        
+        return ""
 
         
     
 # Unit Tests
-funcs = [Solution().alienOrder]
-
-
+import unittest
+funcs = [Solution().alienOrder, Solution().alienOrder2]
 class TestAlienOrder(unittest.TestCase):
     def testAlienOrder1(self):
         for func in funcs:
