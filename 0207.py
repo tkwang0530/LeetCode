@@ -32,10 +32,18 @@ Detect Loop in the graph
 
 2. DFS: O(V+E) time | O(V+E) space
 remove finish course from the prerequisites list
+
+3. BFS: O(V+E) time | O(V+E) space
 """
 
 import unittest
 from typing import List, Dict, Set
+import collections
+
+class Node:
+    def __init__(self):
+        self.preCourseCounts = 0
+        self.parentCourses = []
 class Solution(object):
     def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
         graph = []
@@ -95,8 +103,31 @@ class Solution(object):
         graph[course] = []
         return True
 
+    def canFinish3(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
+        graph = collections.defaultdict(Node)
+        for course, prerequisite in prerequisites:
+            graph[course].preCourseCounts += 1
+            graph[prerequisite].parentCourses.append(graph[course])
+            
+        queue = collections.deque([])
+        for course in range(numCourses):
+            if graph[course].preCourseCounts == 0:
+                queue.append(graph[course])
+        
+        taken = 0
+        while len(queue) > 0:
+            node = queue.popleft()
+            taken += 1
+            if taken == numCourses:
+                return True
+            for parentCourse in node.parentCourses:
+                parentCourse.preCourseCounts -= 1
+                if parentCourse.preCourseCounts == 0:
+                    queue.append(parentCourse)
+        return False
+
     # Unit Tests
-funcs = [Solution().canFinish, Solution().canFinish2]
+funcs = [Solution().canFinish, Solution().canFinish2, Solution().canFinish3]
 
 
 class TestCanFinish(unittest.TestCase):
