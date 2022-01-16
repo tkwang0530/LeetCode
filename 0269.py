@@ -54,21 +54,21 @@ class Solution(object):
                     graph[char1].add(char2)
                     break
             
-        for node in graph:
-            if self.dfs(node, graph, visiting, result):
+        for char in graph:
+            if self.dfs(char, graph, visiting, result):
                 return ""
         return "".join(result[::-1])
     
     # return True if breaks rule (find loop in graph)
-    def dfs(self, node, graph, visiting, result) -> bool:
-        if node in visiting:
-            return visiting[node]
-        visiting[node] = True
-        for neighbor in graph[node]:
+    def dfs(self, char, graph, visiting, result) -> bool:
+        if char in visiting:
+            return visiting[char]
+        visiting[char] = True
+        for neighbor in graph[char]:
             if self.dfs(neighbor, graph, visiting, result):
                 return True
-        visiting[node] = False
-        result.append(node)
+        visiting[char] = False
+        result.append(char)
         return False
 
 
