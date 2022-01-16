@@ -39,8 +39,13 @@ Note:
 
 
 from collections import defaultdict, deque
-import unittest
 from typing import List
+
+class Node:
+    def __init__(self, id):
+        self.id = id
+        self.preCourseCounts = 0
+        self.parentCourses = []
 class Solution(object):
     def findOrder(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
         graph = [[] for course in range(numCourses)]
@@ -126,13 +131,32 @@ class Solution(object):
                     queue.append(neighbor)
         return []
 
+    def findOrder4(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
+        graph = {id: Node(id) for id in range(numCourses)}
+        for course, prerequisite in prerequisites:
+            graph[course].preCourseCounts += 1
+            graph[prerequisite].parentCourses.append(graph[course])
+            
+        queue = deque([])
+        for course in range(numCourses):
+            if graph[course].preCourseCounts == 0:
+                queue.append(graph[course])
+        
+        taken = []
+        while len(queue) > 0:
+            node = queue.popleft()
+            taken.append(node.id)
+            if len(taken) == numCourses:
+                return taken
+            for parentCourse in node.parentCourses:
+                parentCourse.preCourseCounts -= 1
+                if parentCourse.preCourseCounts == 0:
+                    queue.append(parentCourse)
+        return []
 
-
-
-    # Unit Tests
-funcs = [Solution().findOrder, Solution().findOrder2, Solution().findOrder3]
-
-
+# Unit Tests
+import unittest
+funcs = [Solution().findOrder, Solution().findOrder2, Solution().findOrder3, Solution().findOrder4]
 class TestFindOrder(unittest.TestCase):
     def testFindOrder1(self):
         for func in funcs:
