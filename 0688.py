@@ -99,5 +99,13 @@ class TestKnightProbability(unittest.TestCase):
             column = 0
             self.assertEqual(func(n=n, k=k, row=row, column=column), 1.0000)
 
+    def testKnightProbability3(self):
+        for func in funcs:
+            n = 8
+            k = 30
+            row = 6
+            column = 4
+            self.assertEqual(round(func(n=n, k=k, row=row, column=column), 5), round(0.00019, 5))
+
 if __name__ == "__main__":
     unittest.main()
