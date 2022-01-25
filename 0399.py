@@ -39,8 +39,10 @@ Ai, Bi, Ci, Dj consist of lower case English letters and digits.
 """
 Note:
 1. dfs + path compression: O(n^2) time | O(n^2) space
+2. Floyd Warshall: O(n^3) time | O(n^2) space
 """
 
+import collections
 from typing import List
 
 class Node:
@@ -93,11 +95,67 @@ class Solution:
             else:
                 result.append(-1.0)
         return result
+    
+    def calcEquation2(self, equations: List[List[str]], values: List[float], queries: List[List[str]]) -> List[float]:
+        # graph
+        indexTable = {} #<var, the index of a in indexList>
+        indexList = []
+        graph = collections.defaultdict(list)
+        for i, (a, b) in enumerate(equations):
+            value = values[i]
+
+            if a not in indexTable:
+                indexTable[a] = len(indexTable)
+                indexList.append(a)
             
+            if b not in indexTable:
+                indexTable[b] = len(indexTable)
+                indexList.append(b)
+
+            graph[a].append((value, b))
+            graph[b].append((1/value, a))
+
+        # initialize all node-to-node's weight(division) into float("inf")
+        table = [[float("inf")] * len(indexTable) for _ in range(len(indexTable))]
+
+        # node to node itself has node/node = 1
+        for i in range(len(indexTable)):
+            table[i][i] = 1
+
+        for i, (a, b) in enumerate(equations):
+            value = values[i]
+            indexA = indexTable[a]
+            indexB = indexTable[b]
+            table[indexA][indexB] = value
+            table[indexB][indexA] = 1 / value
+
+        # floyd warshall
+        for src in indexList:
+            for dst in indexList:
+                for mid in indexList:
+                    indexSrc = indexTable[src]
+                    indexDst = indexTable[dst]
+                    indexMid = indexTable[mid]
+
+                    table[indexSrc][indexDst] = min(table[indexSrc][indexDst], table[indexSrc][indexMid] * table[indexMid][indexDst])
+
+        result = []
+        for a, b in queries:
+            if a not in indexTable or b not in indexTable:
+                result.append(-1.0)
+            else:
+                indexA = indexTable[a]
+                indexB = indexTable[b]
+                if table[indexA][indexB] != float("inf"):
+                    result.append(table[indexA][indexB])
+                else:
+                    result.append(-1.0)
+        return result
+
 
 # Unit Tests
 import unittest
-funcs = [Solution().calcEquation]
+funcs = [Solution().calcEquation, Solution().calcEquation2]
 
 class TestCalcEquation(unittest.TestCase):
     def testCalcEquation1(self):
