@@ -42,11 +42,13 @@ class Solution(object):
     def topKFrequent2(self, nums: List[int], k: int) -> List[int]:
         buckets = [[] for _ in range(len(nums) + 1)]
         counter = collections.Counter(nums)
+        maxFreq = float("-inf")
         for num, count in counter.items():
             buckets[count].append(num)
+            maxFreq = max(maxFreq, count)
         flatList = []
 
-        for i in range(len(buckets) -1 , -1, -1):
+        for i in range(maxFreq , -1, -1):
             numbers = buckets[i]
             flatList.extend(numbers)
             if len(flatList) >= k:
