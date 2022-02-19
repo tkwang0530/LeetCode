@@ -35,6 +35,8 @@ Note:
 (2) using a maxHeap with (-count, char)
 (3) for each run, pop items out and append the char "count" times into the result array (chars), until the maxHeap is empty
 (4) return "".join(chars)
+
+2. bucket sort: O(26n) time | O(n) space - where n is the length of given string s and w is the number of distinct char in s
 """
 import collections
 import heapq
@@ -53,9 +55,26 @@ class Solution:
             chars.append(char * count)
         return "".join(chars)
 
+    def frequencySort2(self, s: str) -> str:
+        charCount = collections.Counter(s)
+        bucket = [[] for _ in range(len(s) + 1)]
+        maxCount = float("-inf")
+        for char, count in charCount.items():
+            bucket[count].append(char)
+            maxCount = max(maxCount, count)
+        
+        characters = []
+        for count in range(maxCount, -1, -1):
+            chars = bucket[count]
+            for char in chars:
+                characters.append(count * char)
+        return "".join(characters)
+
+
+
 # Unit Tests
 import unittest
-funcs = [Solution().frequencySort]
+funcs = [Solution().frequencySort, Solution().frequencySort2]
 
 
 class TestFrequencySort(unittest.TestCase):
