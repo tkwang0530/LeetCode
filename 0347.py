@@ -18,12 +18,13 @@ It is guaranteed that the answer is unique.
 
 """
 Note:
-1. minHeap + Hash Table: O(n + klogk) time | O(n) space
+1. minHeap + Hash Table: O(n + klogk) time | O(n+k) space
+2. bucket sort: O(n) time | O(n+k) space
 """
 
 import heapq
 from typing import List
-from collections import Counter
+import collections
 class Solution(object):
     def topKFrequent(self, nums: List[int], k: int) -> List[int]:
         numCount = {} # <num, count>
@@ -40,13 +41,17 @@ class Solution(object):
 
     def topKFrequent2(self, nums: List[int], k: int) -> List[int]:
         buckets = [[] for _ in range(len(nums) + 1)]
-        counter = Counter(nums)
+        counter = collections.Counter(nums)
         for num, count in counter.items():
             buckets[count].append(num)
         flatList = []
-        for numbers in buckets: # or flatList = list(itertools.chain(*buckets))
-            flatList += numbers
-        return flatList[::-1][:k]
+
+        for i in range(len(buckets) -1 , -1, -1):
+            numbers = buckets[i]
+            flatList.extend(numbers)
+            if len(flatList) >= k:
+                break
+        return flatList[:k]
 
 
 # Unit Tests
