@@ -52,12 +52,12 @@ class Solution(object):
         
         count = len(words)
         result = []
-        while count >= 0 and len(result) < k:
+        while count >= 0:
             buckets[count].sort()
             for word in buckets[count]:
+                result.append(word)
                 if len(result) == k:
                     return result
-                result.append(word)
             count -= 1
         return result
 
