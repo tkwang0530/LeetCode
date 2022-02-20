@@ -20,11 +20,12 @@ It is guaranteed that the answer is unique.
 Note:
 1. minHeap + Hash Table: O(n + klogk) time | O(n+k) space
 2. bucket sort: O(n) time | O(n+k) space
+3. quickselect: O(n) time | O(n) space
 """
 
 import heapq
 from typing import List
-import collections
+import collections, random
 class Solution(object):
     def topKFrequent(self, nums: List[int], k: int) -> List[int]:
         numCount = {} # <num, count>
@@ -55,10 +56,39 @@ class Solution(object):
                 break
         return flatList[:k]
 
+    def topKFrequent3(self, nums: List[int], k: int) -> List[int]:
+
+        counter = collections.Counter(nums)
+        def quickselect(nums, k):
+            if not nums:
+                return []
+            pivotIndex = random.randint(0, len(nums) - 1)
+            nums[pivotIndex], nums[-1] = nums[-1], nums[pivotIndex]
+            pivot = counter[nums[-1]]
+
+            i = 0
+            for j in range(len(nums)):
+                if counter[nums[j]] < pivot:
+                    nums[i], nums[j] = nums[j], nums[i]
+                    i += 1
+            
+            nums[i], nums[-1] = nums[-1], nums[i]
+
+            target = len(nums) - i
+            if target == k:
+                return nums[i:]
+            elif target < k: # go left
+                return quickselect(nums[:i], k-target) + nums[i:]
+            else: # go right
+                return quickselect(nums[i:], k)
+        nums = list(counter.keys())
+        return quickselect(nums, k)
+            
+
 
 # Unit Tests
 import unittest
-funcs = [Solution().topKFrequent, Solution().topKFrequent2]
+funcs = [Solution().topKFrequent, Solution().topKFrequent2, Solution().topKFrequent3]
 
 class TestTopKFrequent(unittest.TestCase):
     def testTopKFrequent1(self):
