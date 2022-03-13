@@ -33,6 +33,8 @@ sum(piles[i]) is odd.
 Note:
 1. dfs with cache: O(n^2) time | O(n^2) space
 2. smart choose all odd or all even piles: O(1) time | O(1) space
+3. DP: O(n^2) time | O(n^2) space
+4. DP(improved): O(n^2) time | O(n) space
 """
 
 import unittest
@@ -40,31 +42,68 @@ from typing import List, Dict
 class Solution(object):
     def stoneGame(self, piles: List[int]) -> bool:
         cache = {} # subarr piles (left, right) -> Max Alice Total
-        return self.dfs(piles, 0, len(piles) - 1, cache) > (sum(piles)) // 2
-    
-    def dfs(self, piles: List[int], left: int, right: int, cache: Dict) -> int:
-        if left > right:
-            return 0
-        if (left, right) in cache:
+
+        # return max alice total
+        def dfs(left, right):
+            if left > right:
+                return 0
+            if (left, right) in cache:
+                return cache[(left, right)]
+            
+            # check if this round is Alice or Bob
+            isAliceTurn = (right - left + 1) % 2 == 0
+            leftPile = piles[left] if isAliceTurn else 0
+            rightPile = piles[right] if isAliceTurn else 0
+
+            if isAliceTurn:
+                cache[(left, right)] = max(dfs(left + 1, right) + leftPile,
+                        dfs(left, right - 1) + rightPile)
+            else:
+                cache[(left, right)] = min(dfs(left + 1, right) + leftPile,
+                        dfs(left, right - 1) + rightPile)
             return cache[(left, right)]
-        
-        even = (right - left + 1) % 2 == 0
-        leftPile = piles[left] if even else 0
-        rightPile = piles[right] if even else 0
-        if even:
-            cache[(left, right)] = max(self.dfs(piles, left + 1, right, cache) + leftPile,
-                    self.dfs(piles, left, right - 1, cache) + rightPile)
-        else:
-            cache[(left, right)] = min(self.dfs(piles, left + 1, right, cache) + leftPile,
-                    self.dfs(piles, left, right - 1, cache) + rightPile)
-        return cache[(left, right)]
+        return dfs(0, len(piles) - 1) > (sum(piles)) // 2
 
     def stoneGame2(self, piles: List[int]) -> bool:
         return True
 
+    def stoneGame3(self, piles: List[int]) -> bool:
+        n = len(piles)
+        # left: from n-1 to 0 (n kinds)
+        # right: from 0 ~ n-1 (n kinds)
+        
+        dp = [[0] * (n+1) for _ in range(n+1)]
+        for left in range(n-1, -1, -1):
+            for right in range(1, n):
+                # check if this round is Alice or Bob
+                isAliceTurn = (right - left + 1) % 2 == 0
+                leftPile = piles[left] if isAliceTurn else 0
+                rightPile = piles[right] if isAliceTurn else 0
+                dp[left][right] = max(dp[left+1][right] + leftPile, dp[left][right-1] + rightPile)
+        return dp[0][n-1] > (sum(piles)) // 2
+
+    def stoneGame4(self, piles: List[int]) -> bool:
+        n = len(piles)
+        # left: from n-1 to 0 (n kinds)
+        # right: from 0 ~ n-1 (n kinds)
+        
+        dp0 = [0] * (n+1)
+        for left in range(n-1, -1, -1):
+            dp1 = [0] * (n+1)
+            for right in range(1, n):
+                # check if this round is Alice or Bob
+                isAliceTurn = (right - left + 1) % 2 == 0
+                leftPile = piles[left] if isAliceTurn else 0
+                rightPile = piles[right] if isAliceTurn else 0
+
+                dp1[right] = max(dp0[right] + leftPile, dp1[right-1] + rightPile)
+            dp0 = dp1
+        return dp0[n-1] > (sum(piles)) // 2
+
+
 
 # Unit Tests
-funcs = [Solution().stoneGame, Solution().stoneGame2]
+funcs = [Solution().stoneGame, Solution().stoneGame2, Solution().stoneGame3, Solution().stoneGame4]
 
 class TestStoneGame(unittest.TestCase):
     def testStoneGame1(self):
