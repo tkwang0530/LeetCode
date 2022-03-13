@@ -28,6 +28,7 @@ Note:
 dp[i][j] means # of repeated chars for substrings ending at i and j, where j > i
 if s[i] != s[j]: dp[i][j] = 0; otherwise dp[i][j] = dp[i-1][j-1] + 1
 2. DP (improve): O(n^2) time | O(n) space
+3. Sliding Window: O(n^2) time | O(n) space
 """
 
 from typing import List
@@ -56,9 +57,22 @@ class Solution:
             dp0 = dp1
         return maxCount
 
+    def longestRepeatingSubstring3(self, s: str) -> int:
+        maxLength = 0
+        start = 0
+        windowSize = 1
+        while start + windowSize < len(s):
+            if s[start:start+windowSize] in s[start+1:]:
+                maxLength = max(maxLength, windowSize)
+                windowSize += 1
+                continue
+            
+            start += 1
+        return maxLength
+
 # Unit Tests
 import unittest
-funcs = [Solution().longestRepeatingSubstring, Solution().longestRepeatingSubstring2]
+funcs = [Solution().longestRepeatingSubstring, Solution().longestRepeatingSubstring2, Solution().longestRepeatingSubstring3]
 
 class TestLongestRepeatingSubstring(unittest.TestCase):
     def testLongestRepeatingSubstring1(self):
