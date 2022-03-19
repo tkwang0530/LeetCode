@@ -55,8 +55,8 @@ class Solution(object):
                 theOtherPlayerMaxTake = dfs(p+x, max(x, m))
 
                 leftStone = preSum[p+x] - theOtherPlayerMaxTake
-                nextTake = take + leftStone
-                maxVal = max(maxVal, nextTake)
+                totalTake = take + leftStone
+                maxVal = max(maxVal, totalTake)
             memo[(p, m)] = maxVal
             return memo[(p, m)]
         return dfs(0, 1)
@@ -78,15 +78,15 @@ class Solution(object):
                 maxVal = 0
                 for x in range(1, 2*m+1):
                     if p+x >= n:
-                        nextTake = preSum[p]
-                        maxVal = max(maxVal, nextTake)
+                        totalTake = preSum[p]
+                        maxVal = max(maxVal, totalTake)
                         break
 
                     take = preSum[p] - preSum[p+x]
                     theOtherPlayerMaxTake = dp[p+x][max(x, m)]
                     leftStone = preSum[p+x] - theOtherPlayerMaxTake
-                    nextTake = take + leftStone
-                    maxVal = max(maxVal, nextTake)
+                    totalTake = take + leftStone
+                    maxVal = max(maxVal, totalTake)
                 dp[p][m] = maxVal
         return dp[0][1]
 
