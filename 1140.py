@@ -27,6 +27,7 @@ Constraints:
 """
 Note:
 1. dfs + memo: O(n^2) time | O(n^2) space
+2. dp: O(n^2) time | O(n^2) space
 """
 
 from typing import List
@@ -73,7 +74,6 @@ class Solution(object):
         for p in range(n, -1, -1):
             for m in range(n, 0, -1):
                 if p >= n:
-                    dp[p] = [0] * (n+1)
                     break
                 maxVal = 0
                 for x in range(1, 2*m+1):
