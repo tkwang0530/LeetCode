@@ -18,8 +18,9 @@ Constraints:
 """
 
 """ 
-1. dp: O(2^n) time | O((2^n) ^ 2) space
-2. dp(improved): O(2^n) time | O(2^n) space
+1. dp: O((2^n)^2) time | O((2^n)^2) space
+2. dp(improved): O((2^n)^2) time | O(2^n) space
+3. dp(further improved): O(2^n) time | O(2^n) space
 """
 
 from typing import List
@@ -55,9 +56,31 @@ class Solution(object):
             preSumSet = currentSumSet
         return False
 
+    def canPartition3(self, nums: List[int]) -> bool:
+        totalSum = sum(nums)
+        if totalSum % 2 != 0:
+            return False
+        
+        sumSet = set([0])
+        sumSetSeq = [0]
+        idx = 0
+        for i in range(len(nums) - 1, -1, -1):
+            if (totalSum // 2 - nums[i]) in sumSet:
+                return True
+            for j in range(0, idx+1):
+                s = sumSetSeq[j]
+                newSum = s+nums[i]
+                if newSum == totalSum // 2:
+                    return True
+                if newSum not in sumSet:
+                    sumSetSeq.append(s+nums[i])
+                    sumSet.add(s+nums[i])
+            idx = len(sumSet) - 1
+        return False
+
 # Unit Tests
 import unittest
-funcs = [Solution().canPartition, Solution().canPartition2]
+funcs = [Solution().canPartition, Solution().canPartition2, Solution().canPartition3]
 
 
 class TestCanPartition(unittest.TestCase):
