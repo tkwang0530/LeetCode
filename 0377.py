@@ -41,7 +41,9 @@ dp(nums, target): => all combinations that uses nums to sumup to target
     if target == 0: return {}
     return Union{{num_i} X dp(nums, target - num_i)} (num_i <= target)
 
-3, DP(Iteration): O(target*nums) time | O(target) space
+3. DP(Iteration): O(target*nums) time | O(target) space
+
+4. DFS + memo: O(target*n) time | O(target) space
 """
 
 from typing import List
@@ -87,11 +89,26 @@ class Solution:
                 times = dp[i-num] if i - num >= 0 else 0
                 dp[i] += times
         return dp[target]
-
+    
+    def combinationSum4_4(self, nums: List[int], target: int) -> int:
+        memo = {}
+        def dfs(target) -> int:
+            if target == 0:
+                return 1
+            if target in memo:
+                return memo[target]
+            count = 0
+            for num in nums:
+                if num > target:
+                    continue
+                count += dfs(target-num)
+            memo[target] = count
+            return memo[target]
+        return dfs(target)
 
 # Unit Tests
 import unittest
-funcs = [Solution().combinationSum4, Solution().combinationSum4_2, Solution().combinationSum4_3]
+funcs = [Solution().combinationSum4, Solution().combinationSum4_2, Solution().combinationSum4_3, Solution().combinationSum4_4]
 
 
 class TestCombinationSum(unittest.TestCase):
