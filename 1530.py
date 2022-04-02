@@ -31,8 +31,6 @@ Note:
 1. DFS (Bottom up): O(100n) time | O(n) space - where n is the number of nodes
 """
 
-import unittest, collections
-
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
         self.val = val
@@ -68,8 +66,8 @@ class Solution:
         return goodPairs
 
 # Unit Tests
+import unittest
 funcs = [Solution().countPairs]
-
 class TestCountPairs(unittest.TestCase):
     def testCountPairs1(self):
         for func in funcs:
