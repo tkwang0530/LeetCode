@@ -35,7 +35,14 @@ At most 3 * 10^4 calls will be made to update and sumRange.
 Note:
 1. Segment Tree
 Space complexity: O(n)
-time complexity:
+Time complexity:
+- __init__: O(n) 
+- update: O(logn)
+- sumRange: O(logn)
+
+2. Binary Indexed Tree
+Space complexity: O(n)
+Time complexity: 
 - __init__: O(n) 
 - update: O(logn)
 - sumRange: O(logn)
@@ -104,16 +111,48 @@ class NumArray:
 # obj.update(index,val)
 # param_2 = obj.sumRange(left,right)
 
+class BIT:
+    def __init__(self, n):
+        self.arr = [0] * (n+1)
+
+    def update(self, i, delta):
+        while i < len(self.arr):
+            self.arr[i] += delta
+            i += i & -i
+    
+    def query(self, i):
+        ans = 0
+        while i > 0:
+            ans += self.arr[i]
+            i -= i & -i
+        return ans
+
+
+class NumArray2:
+    def __init__(self, nums: List[int]):
+        self.nums = nums
+        self.bit = BIT(len(nums))
+        for i, num in enumerate(nums):
+            self.bit.update(i+1, num)
+        
+    def update(self, index: int, val: int) -> None:
+        delta = val - self.nums[index]
+        self.bit.update(index+1, delta)
+        self.nums[index] = val
+
+    def sumRange(self, left: int, right: int) -> int:
+        return self.bit.query(right+1) - self.bit.query(left)
 
 # Unit Tests
 import unittest
-
+classes = [NumArray, NumArray2]
 class TestNumArray(unittest.TestCase):
     def testNumArray1(self):
-        numArray = NumArray([1, 3, 5])
-        self.assertEqual(numArray.sumRange(0, 2), 9)
-        numArray.update(1, 2)
-        self.assertEqual(numArray.sumRange(0, 2), 8)
+        for MyClass in classes:
+            numArray = MyClass([1, 3, 5])
+            self.assertEqual(numArray.sumRange(0, 2), 9)
+            numArray.update(1, 2)
+            self.assertEqual(numArray.sumRange(0, 2), 8)
 
 
 if __name__ == "__main__":
