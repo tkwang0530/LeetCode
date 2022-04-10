@@ -33,6 +33,7 @@ Constraints:
 
 """ 
 1. Sort + Binary Search: O(nlogn) time | O(n) space
+2. Sort + Two Pointers: O(nlogn) time | O(n) space
 """
 import bisect
 from typing import List
@@ -51,10 +52,39 @@ class Solution(object):
             
         return count
 
+    def numSubseq2(self, nums: List[int], target: int) -> int:
+        memo = {}
+        def myPow(x, n, M):
+            if n == 0:
+                return 1
+            if (x, n, M) in memo:
+                return memo[(x, n, M)]
+            ans = x
+            times = 1
+            while times * 2 < n:
+                ans *= ans
+                ans %= M
+                times *= 2
+            
+            memo[(x, n, M)] = ans * myPow(x, n - times, M)
+            return memo[(x, n, M)]
+
+        M = 10 ** 9 + 7
+        n = len(nums)
+        nums.sort()
+        ans = 0
+        left, right = 0, n-1
+        while left <= right:
+            if nums[left] + nums[right] <= target:
+                ans += myPow(2, (right-left), M)
+                left += 1
+            else:
+                right -= 1
+        return ans % M
 
 # Unit Tests
 import unittest
-funcs = [Solution().numSubseq]
+funcs = [Solution().numSubseq, Solution().numSubseq2]
 
 
 class TestNumSubseq(unittest.TestCase):
