@@ -68,7 +68,7 @@ class Solution(object):
         if len(bloomDay) < m * k:
             return -1
             
-        left, right = 1, max(bloomDay)
+        left, right = 1, max(bloomDay)+1
         while left < right:
             mid = left + (right - left) // 2
             if hasEnoughBouquets(mid):
