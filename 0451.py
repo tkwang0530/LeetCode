@@ -37,6 +37,8 @@ Note:
 (4) return "".join(chars)
 
 2. bucket sort: O(26n) time | O(n) space - where n is the length of given string s and w is the number of distinct char in s
+
+3. hashTable + sort: O(n+wlogw) time | O(1) space - where n is the length of given string s and w is the number of distinct char in s
 """
 import collections
 import heapq
@@ -70,11 +72,21 @@ class Solution:
                 characters.append(count * char)
         return "".join(characters)
 
+    def frequencySort3(self, s: str) -> str:
+        charCounts = collections.Counter(s)
+        countCharsArr = [(count, char*count) for char, count in charCounts.items()]
+        result = []
+        
+        countCharsArr.sort(reverse=True)
+        for _, chars in countCharsArr:
+            result.append(chars)
+        
+        return "".join(result)
 
 
 # Unit Tests
 import unittest
-funcs = [Solution().frequencySort, Solution().frequencySort2]
+funcs = [Solution().frequencySort, Solution().frequencySort2, Solution().frequencySort3]
 
 
 class TestFrequencySort(unittest.TestCase):
