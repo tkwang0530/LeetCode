@@ -42,6 +42,7 @@ bloomDay.length == n
 
 """ 
 1. Binary Search + Sliding Window: O(nlogm) time | O(1) space - where n is the length of bloomDay and m is max(bloomDay)
+2. Binary Search: O(nlogm) time | O(1) space - where n is the length of bloomDay and m is max(bloomDay)
 """
 from typing import List
 class Solution(object):
@@ -68,7 +69,7 @@ class Solution(object):
         if len(bloomDay) < m * k:
             return -1
             
-        left, right = 1, max(bloomDay)+1
+        left, right = min(bloomDay), max(bloomDay)+1
         while left < right:
             mid = left + (right - left) // 2
             if hasEnoughBouquets(mid):
@@ -77,9 +78,35 @@ class Solution(object):
                 left = mid + 1
         return left
 
+    def minDays2(self, bloomDay: List[int], m: int, k: int) -> int:
+        def hasEnoughBouquets(day) -> bool:
+            flowers = 0
+            bouquets = 0
+            for end in range(len(bloomDay)):
+                isBloom = day >= bloomDay[end]
+                if isBloom:
+                    flowers += 1
+                if flowers == k:
+                    flowers -= k
+                    bouquets += 1
+                if not isBloom:
+                    flowers = 0
+            return bouquets >= m
+
+        if len(bloomDay) < m * k:
+            return -1
+            
+        left, right = min(bloomDay), max(bloomDay)+1
+        while left < right:
+            mid = left + (right - left) // 2
+            if hasEnoughBouquets(mid):
+                right = mid
+            else:
+                left = mid + 1
+        return left
 # Unit Tests
 import unittest
-funcs = [Solution().minDays]
+funcs = [Solution().minDays, Solution().minDays2]
 
 
 class TestMinDays(unittest.TestCase):
