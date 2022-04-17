@@ -42,6 +42,7 @@ Note:
 (3) count outgoing edges
 
 2. Iterative BFS: O(n) time | O(n) space
+3. level order traveral: O(n) time | O(n) space
 """
 
 from collections import defaultdict, deque
@@ -96,16 +97,31 @@ class Solution:
                 queue.append(neighbor)
         return changes
 
+    def minReorder3(self, n: int, connections: List[List[int]]) -> int:
+        edges = { (source, target) for source, target in connections}
+        graph = defaultdict(list)
+        for source, target in connections:
+            graph[source].append(target)
+            graph[target].append(source)
         
-        
-
-
-
-
-
+        currentSet = set([0])
+        visited = set([0])
+        changes = 0
+        while currentSet:
+            nextSet = set()
+            for city in currentSet:
+                for neighbor in graph[city]:
+                    if neighbor in visited:
+                        continue
+                    if (neighbor, city) not in edges:
+                        changes += 1
+                    visited.add(neighbor)
+                    nextSet.add(neighbor)
+            currentSet = nextSet
+        return changes
 
 # Unit Tests
-funcs = [Solution().minReorder, Solution().minReorder2]
+funcs = [Solution().minReorder, Solution().minReorder2, Solution().minReorder3]
 
 
 class TestMinReorder(unittest.TestCase):
