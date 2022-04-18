@@ -46,6 +46,7 @@ Note:
 2. Iteration (PreOrder like traversal then reverse the result): O(n) time | O(h) space
 visited root -> right -> left
 3. Iteration (track visited node with tuple): O(n) time | O(n) space
+4. Iteration (one stack with preNode): O(n) time | O(n) space
 """
 
 
@@ -103,10 +104,30 @@ class Solution:
                     stack.append((node.left, False))
         return result
 
+    def postorderTraversal4(self, root: TreeNode) -> List[int]:
+        result, stack = [], []
+
+        if not root:
+            return result
+        preNode = None
+        while root or stack:
+            if root:
+                stack.append(root)
+                root = root.left
+            else:
+                root = stack[-1] if stack else None
+                if not root.right or root.right == preNode:
+                    result.append(root.val)
+                    stack.pop()
+                    preNode, root = root, None
+                else:
+                    root = root.right
+        return result
+
 
 # Unit Tests
 funcs = [Solution().postorderTraversal, Solution(
-).postorderTraversal2, Solution().postorderTraversal3]
+).postorderTraversal2, Solution().postorderTraversal3, Solution().postorderTraversal4]
 
 
 class TestPostorderTraversal(unittest.TestCase):
