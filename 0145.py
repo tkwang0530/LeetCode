@@ -47,6 +47,8 @@ Note:
 visited root -> right -> left
 3. Iteration (track visited node with tuple): O(n) time | O(n) space
 4. Iteration (one stack with preNode): O(n) time | O(n) space
+5. Morris Traversal: O(n) time | O(1) space
+ref: https://leetcode.com/problems/binary-tree-postorder-traversal/discuss/45648/three-ways-of-iterative-postorder-traversing-easy-explanation
 """
 
 
@@ -124,10 +126,55 @@ class Solution:
                     root = root.right
         return result
 
+    def postorderTraversal5(self, root: TreeNode) -> List[int]:
+        result = []
+
+        if not root:
+            return result
+        
+        def reverse(fromNode: TreeNode, toNode: TreeNode) -> None:
+            if fromNode == toNode:
+                return
+            prev, current = fromNode, fromNode.right
+            while prev != toNode:
+                next = current.right
+                current.right = prev
+                prev, current = current, next
+
+        dummy = TreeNode(0)
+        dummy.left, root = root, dummy
+        while root:
+            if not root.left:
+                root = root.right
+            else:
+                predecessor = root.left
+                while predecessor.right and predecessor.right != root:
+                    predecessor = predecessor.right
+                if not predecessor.right:
+                    predecessor.right = root
+                    root = root.left
+                else:
+                    # if we already built the bridge, reverse the list from root.left to predecessor
+                    node = predecessor
+                    reverse(root.left, predecessor)
+                    while node != root.left:
+                        result.append(node.val)
+                        node = node.right
+
+                    # append node.val again since we are stopping at node = root.left
+                    result.append(node.val)
+
+                    # reverse back
+                    reverse(predecessor, root.left)
+                    predecessor.right = None
+                    root = root.right
+        return result
+        
+
 
 # Unit Tests
 funcs = [Solution().postorderTraversal, Solution(
-).postorderTraversal2, Solution().postorderTraversal3, Solution().postorderTraversal4]
+).postorderTraversal2, Solution().postorderTraversal3, Solution().postorderTraversal4, Solution().postorderTraversal5]
 
 
 class TestPostorderTraversal(unittest.TestCase):
