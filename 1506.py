@@ -27,6 +27,7 @@ Could you solve this problem in constant space complexity with a linear time alg
 Note:
 1. HashTable: O(n) time | O(n) space
 2. Use sign as marker: O(n) time | O(1) space
+3. Bitwise Operation (XOR): O(n) time | O(1) space
 """
 
 
@@ -62,11 +63,23 @@ class Solution:
                 
         return root if root else zeroNode
 
+    def findRoot3(self, tree: List[Node]) -> Node:
+        bitmask = 0
+        for node in tree:
+            bitmask ^= node.val
+            for child in node.children:
+                bitmask ^= child.val
+        
+        ans = None
+        for node in tree:
+            if node.val == bitmask:
+                ans = node
+        return ans
 
 
 # Unit Tests
 import unittest
-funcs = [Solution().findRoot, Solution().findRoot2]
+funcs = [Solution().findRoot, Solution().findRoot2, Solution().findRoot3]
 
 
 class TestFindRoot(unittest.TestCase):
