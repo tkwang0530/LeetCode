@@ -69,14 +69,14 @@ class Solution:
 funcs = [Solution().kthPalindrome]
 
 
-class TestLongestWPI(unittest.TestCase):
-    def testLongestWPI1(self):
+class TestKthPalindrome(unittest.TestCase):
+    def testKthPalindrome1(self):
         for func in funcs:
             queries = [1,2,3,4,5,90]
             intLength = 3
             self.assertEqual(func(queries=queries, intLength=intLength), [101,111,121,131,141,999])
 
-    def testLongestWPI2(self):
+    def testKthPalindrome2(self):
         for func in funcs:
             queries = [2,4,6]
             intLength = 4
