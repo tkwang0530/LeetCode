@@ -27,8 +27,13 @@ Constraints:
 
 """ 
 1. Segment Tree: O(nlogn) time | O(n) space
+2. Merge sort: O(nlognlogn) time | O(n) space
+bisect_left(arr, x, ...) returns Locate the inertion point for x in arr to maintain sorted order
+The returned insertion point i partitions the array arr into two halves so that all(val < x for val in arr[lo:i]) for the left side and all(val >= x for val in a[i:hi]) for the right side.
+3. Binary Indexed Tree: O(nlogn) time | O(n) space
 """
 
+import bisect
 from typing import List
 class Node:
     def __init__(self, val, start, end) -> None:
@@ -78,6 +83,22 @@ class SegmentTree:
 
         return sum([self.query(start, end, child) for child in node.children])
 
+class BIT: # aka Fenwick Tree
+    def __init__(self, n):
+        self.arr = [0] * (n+1)
+    
+    def update(self, i, delta=1):
+        while i < len(self.arr):
+            self.arr[i] += delta
+            i += i & -i
+
+    def query(self, i):
+        result = 0
+        while i > 0:
+            result += self.arr[i]
+            i -= i & -i
+        return result
+
 class Solution(object):
     def countSmaller(self, nums: List[int]) -> List[int]:
         indexDict = {num: i for i, num in enumerate(sorted(set(nums)))}
@@ -90,9 +111,59 @@ class Solution(object):
         result.reverse()
         return result
 
+    def countSmaller2(self, nums: List[int]) -> List[int]:
+        result = [0] * len(nums)
+        nums = [(n, i) for i, n in enumerate(nums)]
+
+        def mergeTwoArray(leftArr, rightArr):
+            for numIndex in leftArr:
+                index = numIndex[1] # (num, i)[1] = i
+                result[index] += bisect.bisect_left(rightArr, numIndex)
+
+            # merge leftArr and rightArr into a sorted arr
+            arr = []
+            i = j = 0
+            while i < len(leftArr) and j < len(rightArr):
+                if leftArr[i] <= rightArr[j]:
+                    arr.append(leftArr[i])
+                    i += 1
+                else:
+                    arr.append(rightArr[j])
+                    j += 1
+            arr.extend(leftArr[i:]) if i < len(leftArr) else arr.extend(rightArr[j:])
+            return arr
+
+        def countSmallerHelper(nums):
+            nonlocal result
+            if len(nums) <= 1:
+                return nums
+            
+            mid = len(nums) // 2
+            leftArr = countSmallerHelper(nums[:mid])
+            rightArr = countSmallerHelper(nums[mid:])
+            return mergeTwoArray(leftArr, rightArr)
+            
+        countSmallerHelper(nums)
+        return result
+            
+    def countSmaller3(self, nums: List[int]) -> List[int]:
+        # index (dict) stores the index of each num
+        index = {}
+        for i, num in enumerate(sorted(list(set(nums)))):
+            index[num] = i
+        
+        tree = BIT(len(index))
+        ans = [0] * len(nums)
+        for i in range(len(nums)-1, -1, -1):
+            num = nums[i]
+            ans[i] = tree.query(index[num])
+            tree.update(index[num]+1)
+        return ans
+
+
 # Unit Tests
 import unittest
-funcs = [Solution().countSmaller]
+funcs = [Solution().countSmaller, Solution().countSmaller2, Solution().countSmaller3]
 
 class TestCountSmaller(unittest.TestCase):
     def testCountSmaller1(self):
