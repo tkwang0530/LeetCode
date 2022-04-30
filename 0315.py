@@ -116,6 +116,7 @@ class Solution(object):
         nums = [(n, i) for i, n in enumerate(nums)]
 
         def mergeTwoArray(leftArr, rightArr):
+            n, m = len(leftArr), len(rightArr)
             for numIndex in leftArr:
                 index = numIndex[1] # (num, i)[1] = i
                 result[index] += bisect.bisect_left(rightArr, numIndex)
@@ -123,18 +124,17 @@ class Solution(object):
             # merge leftArr and rightArr into a sorted arr
             arr = []
             i = j = 0
-            while i < len(leftArr) and j < len(rightArr):
+            while i < n and j < m:
                 if leftArr[i] <= rightArr[j]:
                     arr.append(leftArr[i])
                     i += 1
                 else:
                     arr.append(rightArr[j])
                     j += 1
-            arr.extend(leftArr[i:]) if i < len(leftArr) else arr.extend(rightArr[j:])
+            arr.extend(leftArr[i:]) if i < n else arr.extend(rightArr[j:])
             return arr
 
         def countSmallerHelper(nums):
-            nonlocal result
             if len(nums) <= 1:
                 return nums
             
