@@ -20,7 +20,7 @@ Note: This question is the same as 1081
 
 """
 Note:
-1. Using Stack and Hash Table: O(n) time | O(1) space
+1. Monotonic increasing stack + HashTable: O(n) time | O(1) space
 """
 
 import unittest
