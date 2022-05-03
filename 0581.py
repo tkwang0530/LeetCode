@@ -31,6 +31,8 @@ Note:
 (1) increase left and decrease right if possible
 (2) find the lowest and largest value between left and right
 (3) extend subarray by the stored lowest and largest values
+
+2. Monotonic Stacks: O(n) time | O(n) space
 """
 
 import unittest
@@ -56,8 +58,25 @@ class Solution:
             right += 1
         return right - left + 1
 
+    def findUnsortedSubarray2(self, nums: List[int]) -> int:
+        start, end = len(nums), 0
+        
+        # e.g. [2,6,4,8,10,9,15]
+        stack = []
+        for i in range(len(nums) - 1, -1, -1):
+            while stack and nums[stack[-1]] < nums[i]:
+                end = max(end, stack.pop())
+            stack.append(i)
+
+        stack = []
+        for i in range(len(nums)):
+            while stack and nums[stack[-1]] > nums[i]:
+                start = min(start, stack.pop())
+            stack.append(i)
+        return end - start + 1 if end != 0 else 0
+
 # Unit Tests
-funcs = [Solution().findUnsortedSubarray]
+funcs = [Solution().findUnsortedSubarray, Solution().findUnsortedSubarray2]
 
 
 class TestFindUnsortedSubarray(unittest.TestCase):
