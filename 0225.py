@@ -42,7 +42,7 @@ Note:
 1. Using two queues (push O(1))
 pop(), top()
 (0) if length of q2 > 0, return p2.popleft or q2[0] directly
-(1) q2.append(q1.pop()) until q1 only has one item
+(1) q2.append(q1.popleft()) until q1 only has one item
 (2) q1, q2 = q2, q1
 (3) return q2.popleft or q2[0]
 
@@ -59,6 +59,8 @@ return q2.popleft() or q2[0]
 push(x)
 (1) q1.append(x)
 (2) q1.append(q1.popleft()) len(q1) - 1 times
+
+4. Using nested queue (O(1) purely with queues)
 """
 
 
@@ -196,8 +198,49 @@ class MyStack3:
         """
         return len(self.q1) == 0
 
+class MyStack4:
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.queue0 = deque()
+        
+
+    def push(self, x: int) -> None:
+        """
+        Push element x onto stack.
+        """
+        queue1 = deque()
+        queue1.append(x)
+        queue1.append(self.queue0)
+        self.queue0 = queue1
+        
+
+    def pop(self) -> int:
+        """
+        Removes the element on top of the stack and returns that element.
+        """
+        val = self.queue0.popleft()
+        self.queue0 = self.queue0.popleft()
+        return val
+        
+
+    def top(self) -> int:
+        """
+        Get the top element.
+        """
+        return self.queue0[0]
+        
+
+    def empty(self) -> bool:
+        """
+        Returns whether the stack is empty.
+        """
+        return len(self.queue0) == 0
+
 # Unit Tests
-classes = [MyStack, MyStack2, MyStack3]
+classes = [MyStack, MyStack2, MyStack3, MyStack4]
 class TestMyStack(unittest.TestCase):
     def testMyStack1(self):
         for myclass in classes:
