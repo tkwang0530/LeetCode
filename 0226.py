@@ -21,10 +21,13 @@ The number of nodes in the tree is in the range [0, 100].
 
 """
 Note:
-1. Recursion: O(n) time | O(h) space
+1. Recursive DFS (PostOrder Traversal): O(n) time | O(h) space
+2. Iterative DFS (PreOrder Traversal): O(n) time | O(h) space
+3. Iterative BFS: O(n) time | O(n) space
 """
 
 from typing import Optional, List
+import collections
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
         self.val = val
@@ -40,10 +43,37 @@ class Solution:
         root.left, root.right = root.right, root.left
         return root
 
+    def invertTree2(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+        if not root:
+            return root
+        stack = [root]
+        while stack:
+            node = stack.pop()
+            node.left, node.right = node.right, node.left
+            if node.right:
+                stack.append(node.right)
+
+            if node.left:
+                stack.append(node.left)
+        return root
+
+    def invertTree3(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+        if not root:
+            return root
+        queue = collections.deque([root])
+        while queue:
+            node = queue.popleft()
+            node.left, node.right = node.right, node.left
+            if node.left:
+                queue.append(node.left)
+
+            if node.right:
+                queue.append(node.right)
+        return root
 
 # Unit Tests
 import unittest
-funcs = [Solution().invertTree]
+funcs = [Solution().invertTree, Solution().invertTree2, Solution().invertTree3]
 
 def inorder(root: TreeNode) -> List[int]:
     result = []
