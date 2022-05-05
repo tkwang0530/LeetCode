@@ -23,7 +23,7 @@ The tree consists only of the root, its left child, and its right child.
 
 """
 Note:
-1. Trial: O(1) time | O(1) space
+1. Trivial: O(1) time | O(1) space
 """
 
 from typing import Optional
