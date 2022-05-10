@@ -45,36 +45,30 @@ Constraints:
 
 """
 Note:
-1. Recursion with backtracking (1): O(k * C(n,k)) time | O(k) space
+1. DFS + backtracking (1): O(k * C(n,k)) time | O(k) space
 """
-
-
-
 
 import unittest
 from typing import List
 class Solution:
     def combinationSum3(self, k: int, n: int) -> List[List[int]]:
-        if n > 45 or n < 1:
-            return []
+        digits = [i for i in range(1, 10)]
+        current = []
         result = []
-        self.dfs(k, n, [], result, 1)
+        def dfs(i, k, current, currentSum, result):
+            if currentSum == n and k == 0:
+                result.append(current[:])
+                return
+            
+            if currentSum > n or k == 0:
+                return
+            
+            for j in range(i, len(digits)):
+                current.append(digits[j])
+                dfs(j+1, k-1, current, currentSum + digits[j], result)
+                current.pop()
+        dfs(0, k, current, 0, result)
         return result
-    
-    def dfs(self, k: int, n: int, current: List[int], result: List[List[int]], start: int) -> None:
-        if n < 0:
-            return
-        if len(current) == k:
-            if n == 0:
-                result.append(current[:])   
-            return
-        if start > 9:
-            return
-        self.dfs(k, n, current, result, start + 1)
-        current.append(start)
-        self.dfs(k, n-start, current, result, start + 1)
-        current.pop()
-
 
 # Unit Tests
 funcs = [Solution().combinationSum3]
