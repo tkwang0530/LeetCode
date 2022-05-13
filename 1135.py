@@ -29,7 +29,7 @@ x_i != y_i
 """
 Note:
 1. Prim's Algorithm: O(E+ElogE) time | O(V+E+2E) space
-2. Kruskal's Algorithm: o(E+ElogE) time | O(n) space
+2. Kruskal's Algorithm: O(E+ElogE) time | O(n) space
 """
 import collections, heapq
 from typing import List
