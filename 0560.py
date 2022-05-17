@@ -18,7 +18,8 @@ Constraints:
 
 """
 Note:
-1. Use HashTable <PrefixSum, count>: O(n) time | O(n) space
+1. HashTable + PreSum: O(n) time | O(n) space
+<subarraySum, count>
 2. Brute Force: O(n^2) time | O(1) space
 """
 
