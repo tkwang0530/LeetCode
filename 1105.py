@@ -72,9 +72,10 @@ class Solution:
 
             # if the current shelve have enough space to put it on the current shelve
             j = i - 1
-            while j > 0 and books[j-1][0] <= shelfWidth - width:
+            space = shelfWidth - width
+            while j > 0 and books[j-1][0] <= space:
                 height = max(height, books[j-1][1])
-                width += books[j-1][0]
+                space -= books[j-1][0]
                 dp[i] = min(dp[i], dp[j-1] + height)
                 j -= 1
         return dp[n]
