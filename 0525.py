@@ -19,27 +19,22 @@ nums[i] is either 0 or 1.
 
 """ 
 Notes:
-1. Prefix Sum + Hash Map: O(n) time | O(n) space
+1. Hash Table: O(n) time | O(n) space
 store the count difference between one and zero into a Hash Map <diff, index>
 """
 
-from collections import defaultdict
 from typing import List
 class Solution(object):
     def findMaxLength(self, nums: List[int]) -> int:
-        oneZeroDiff = defaultdict(int)
-        runningDiff = 0
+        diffIndice = {0: -1} # <one count - zero count: index (first occur index inclusive)>
+        currentDiff = 0
         maxLength = 0
         for i, num in enumerate(nums):
-            runningDiff += 1 if num == 1 else -1
-                
-            if runningDiff not in oneZeroDiff:
-                oneZeroDiff[runningDiff] = i
-            
-            if runningDiff == 0:
-                maxLength = max(maxLength, i + 1)
-            if runningDiff in oneZeroDiff:
-                maxLength = max(maxLength, i - oneZeroDiff[runningDiff])
+            currentDiff += 1 if num == 1 else -1
+            if currentDiff in diffIndice:
+                maxLength = max(maxLength, i-diffIndice[currentDiff])
+            else:
+                diffIndice[currentDiff] = i
         return maxLength
 
 # Unit Tests
