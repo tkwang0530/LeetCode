@@ -28,8 +28,9 @@ slots2[i][0] < slots2[i][1]
 """
 Notes:
 1. Two Pointers: O(nlogn+mlogm) time | O(n+m) space
+2. Line Sweep: O((n+m)log(n+m)) time | O(n+m) space
 """
-
+import collections
 from typing import List
 class Solution:
     def minAvailableDuration(self, slots1: List[List[int]], slots2: List[List[int]], duration: int) -> List[int]:
@@ -51,12 +52,31 @@ class Solution:
             else:
                 idx2 += 1
         return []
+    
+    def minAvailableDuration2(self, slots1: List[List[int]], slots2: List[List[int]], duration: int) -> List[int]:
+        timeIncreasePeople = collections.defaultdict(int)
+        for start, end in slots1+slots2:
+            timeIncreasePeople[start] += 1
+            timeIncreasePeople[end] -= 1
         
+        peopleCount = 0
+        validStart = -1
+        for time in sorted(timeIncreasePeople.keys()):
+            peopleCount += timeIncreasePeople[time]
+            
+            if validStart != -1 and time - validStart >= duration:
+                return [validStart, validStart+duration]
+            
+            if peopleCount < 2:
+                validStart = -1
+            else:
+                validStart = time
+        return []
 
 
 # Unit Tests
 import unittest
-funcs = [Solution().minAvailableDuration]
+funcs = [Solution().minAvailableDuration, Solution().minAvailableDuration2]
 
 class TestMinAvailableDuration(unittest.TestCase):
     def testMinAvailableDuration1(self):
