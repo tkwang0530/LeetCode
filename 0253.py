@@ -26,10 +26,12 @@ the idea is if the room is used, mark the room with its end time.
 (2) sort them respectively
 (3) iterate through the two arrays
     increase the count by 1 and s+= 1 if start[s] < end[e] otherwise, count -= 1 and e+=1
+
+3. Line Sweep: O(nlogn) time | O(n) space
 """
 
 import heapq
-import unittest
+import collections
 from typing import List
 class Solution(object):
     def minMeetingRooms(self, intervals: List[List[int]]) -> int:
@@ -60,10 +62,22 @@ class Solution(object):
             result = max(result, count)
         return result
 
+    def minMeetingRooms3(self, intervals: List[List[int]]) -> int:
+        startIncreaseRooms = collections.defaultdict(int)
+        for start, end in intervals:
+            startIncreaseRooms[start] += 1
+            startIncreaseRooms[end] -= 1
+
+        currentRooms = minimumRooms = 0
+        for start in sorted(startIncreaseRooms.keys()):
+            currentRooms += startIncreaseRooms[start]
+            minimumRooms = max(minimumRooms, currentRooms)
+        return minimumRooms
 
 
 # Unit Tests
-funcs = [Solution().minMeetingRooms, Solution().minMeetingRooms2]
+import unittest
+funcs = [Solution().minMeetingRooms, Solution().minMeetingRooms2, Solution().minMeetingRooms3]
 
 
 class TestMinMeetingRooms(unittest.TestCase):
