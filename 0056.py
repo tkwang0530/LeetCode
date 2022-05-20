@@ -16,37 +16,27 @@ Explanation: Intervals [1,4] and [4,5] are considered overlapping.
 """
 Note:
 1. Sort + one pass: O(nlogn) time | O(n) space
-(1) Sort the intervals with key = lambda x: x[0]
-(2) initiate currentInterval = sortedIntervals[0] and mergeIntervals to [currentInterval]
-(3) if the head of next interval <= current tail:
-currentInterval's tail = max(currentInterval's tail, nextInterval's tail)
-otherwise, update currentInterval to nextInterval and then append the currentInterval to the mergeIntervals list
 """
 
-
-
-
-import unittest
 from typing import List
 class Solution:
     def merge(self, intervals: List[List[int]]) -> List[List[int]]:
-        sortedIntervals = sorted(intervals, key=lambda x: x[0])
-        currentInterval = sortedIntervals[0]
-        mergedIntervals = [currentInterval]
-
-        for nextInterval in sortedIntervals:
-            if currentInterval[1] >= nextInterval[0]:
-                currentInterval[1] = max(currentInterval[1], nextInterval[1])
-            else:
-                currentInterval = nextInterval
-                mergedIntervals.append(currentInterval)
+        intervals.sort()
+        preEnd = -1
+        mergedIntervals = []
+        for start, end in intervals:
+            if preEnd < start:
+                mergedIntervals.append([start, end])
+            else:    
+                mergedIntervals[-1][1] = max(mergedIntervals[-1][1], end)
+            preEnd = max(preEnd, end)
+            
         return mergedIntervals
 
 
 # Unit Tests
+import unittest
 funcs = [Solution().merge]
-
-
 class TestMerge(unittest.TestCase):
     def testMerge1(self):
         for func in funcs:
