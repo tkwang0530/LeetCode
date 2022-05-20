@@ -34,17 +34,17 @@ Notes:
 from typing import List
 class Solution(object):
     def checkSubarraySum(self, nums: List[int], k: int) -> bool:
-        remainderToIndex = {0: -1}
-        subarraySum = 0
-        for i in range(len(nums)):
-            subarraySum += nums[i]
-            if k != 0:
-                subarraySum %= k
-            if subarraySum in remainderToIndex:
-                if i - remainderToIndex[subarraySum] > 1:
+        remainderIndice = {0: -1}
+        currentSum = 0
+        
+        for i, num in enumerate(nums):
+            currentSum += num
+            remainder = currentSum % k
+            if remainder in remainderIndice:
+                if i - remainderIndice[remainder] > 1:
                     return True
             else:
-                remainderToIndex[subarraySum] = i
+                remainderIndice[remainder] = i
         return False
 
 # Unit Tests
