@@ -38,35 +38,35 @@ obstacleGrid[i][j] is 0 or 1.
 """
 1. DP: O(mn) time | O(mn space)
 dp[i][j] = dp[i-1][j] + dp[i][j-1] if obstacleGrid[i][j] == 0 else 0
-2. DP (in-place): O(mn) time | O(1)
-3. DP (optimized): O(mn) time | O(n) space
+2. DP (in-place): O(mn) time | O(1) space
+3. DP (1D with one row): O(mn) time | O(n) space
+4. DP (1D with two rows): O(mn) time | O(n) space
 """
 
 from typing import List
 import unittest
 class Solution(object):
     def uniquePathsWithObstacles(self, obstacleGrid: List[List[int]]) -> int:
-        if not obstacleGrid:
-            return 0
-        dp = []
-        rows, cols = len(obstacleGrid), len(obstacleGrid[0])
-        for row in range(rows):
-            dp.append([0] * cols)
-        
         if obstacleGrid[0][0] == 1:
             return 0
-        else:
-            dp[0][0] = 1
-
-        for row in range(rows):
-            for col in range(cols):
-                if obstacleGrid[row][col] == 1:
-                    dp[row][col] = 0
-                else:
-                    if row >= 1:
-                        dp[row][col] += dp[row-1][col]
-                    if col >= 1:
-                        dp[row][col] += dp[row][col -1]
+        
+        m = len(obstacleGrid)
+        n = len(obstacleGrid[0])
+        
+        dp = [[0] * n for _ in range(m)]
+        dp[0][0] = 1
+        
+        for col in range(1, n):
+            dp[0][col] = dp[0][col-1] if obstacleGrid[0][col] != 1 else 0
+                
+        for row in range(1, m):
+            dp[row][0] = dp[row-1][0] if obstacleGrid[row][0] != 1 else 0
+        
+        
+        for row in range(1, m):
+            for col in range(1, n):
+                dp[row][col] = dp[row-1][col] + dp[row][col-1] if obstacleGrid[row][col] != 1 else 0
+        
         return dp[-1][-1]
 
     def uniquePathsWithObstacles2(self, obstacleGrid: List[List[int]]) -> int:
@@ -103,8 +103,31 @@ class Solution(object):
                 dp[col] = (dp[col-1] + dp[col]) * (1 - obstacleGrid[row][col])
         return dp[-1]
 
+    def uniquePathsWithObstacles4(self, obstacleGrid: List[List[int]]) -> int:
+        if not obstacleGrid or obstacleGrid[0][0] == 1:
+            return 0
+        m, n = len(obstacleGrid), len(obstacleGrid[0])
+        dp0 = [0] * n
+        dp0[0] = 1 - obstacleGrid[0][0]
+
+        for col in range(1, n):
+            dp0[col] = dp0[col-1] * (1 - obstacleGrid[0][col])
+        
+        for row in range(1, m):
+            dp1 = [0] * n
+            dp1[0] = dp0[0] * (1 - obstacleGrid[row][0])
+            for col in range(1, n):
+                dp1[col] = (dp1[col-1] + dp0[col]) * (1 - obstacleGrid[row][col])
+            dp0 = dp1
+        return dp0[-1]
+
 # Unit Tests
-funcs = [Solution().uniquePathsWithObstacles, Solution().uniquePathsWithObstacles2, Solution().uniquePathsWithObstacles3]
+funcs = [
+    Solution().uniquePathsWithObstacles,
+    Solution().uniquePathsWithObstacles2,
+    Solution().uniquePathsWithObstacles3,
+    Solution().uniquePathsWithObstacles4
+]
 
 
 class TestUniquePathsWithObstacles(unittest.TestCase):
