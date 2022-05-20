@@ -20,7 +20,7 @@ They overlapped if the first meeting end time > the second meeting start time.
 
 2. Sort + One pass (use while): O(nlogn) time | O(n) space
 
-3. Buckets Sort: O(max(start)) time | O(n) space  
+3. Buckets Sort: O(max(start) + n) time | O(n) space  
 """
 
 import unittest
