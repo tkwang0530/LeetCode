@@ -96,7 +96,7 @@ class Solution(object):
                 full[rainLake] = i
             elif rainLake > 0:
                 lastRainDay = full[rainLake]
-                idx = zeroIndices.bisect_left(lastRainDay)
+                idx = zeroIndices.bisect_right(lastRainDay)
                 if idx == len(zeroIndices):
                     return []
                 zeroDay = zeroIndices[idx]
