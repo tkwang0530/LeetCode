@@ -31,10 +31,10 @@ Constraints:
 """
 Note:
 1. dfs + memo: O(nw) time | O(nw) space - where n is the length of books and w is shelfWidth
-2. DP: O(nw) time | O(n) space - where n is the length of books and w is shelfWidth
-dp[i]: the min height for placing first books i-1 on shelves
-For dp[i+1], either place books[i] on a new shelve => dp[i] + height[i],
-or put it on the current shelve if the current shelve still have enough space
+
+2. dfs + memo: O(nw) time | O(n) space - where n is the length of books
+
+3. DP: O(nw) time | O(n) space - where n is the length of books
 """
 
 from typing import List
@@ -59,30 +59,49 @@ class Solution:
         return dfs(0, shelfWidth, 0)
 
     def minHeightShelves2(self, books: List[List[int]], shelfWidth: int) -> int:
+        memo = {}
+        def dfs(i):
+            if i == len(books):
+                return 0
+            
+            if i in memo:
+                return memo[i]
+            
+            currentWidth = 0
+            currentHeight = 0
+            result = float("inf")
+
+            for j in range(i, len(books)):
+                currentWidth += books[j][0]
+                if currentWidth > shelfWidth:
+                    break
+                currentHeight = max(currentHeight, books[j][1])
+                result = min(result, currentHeight+dfs(j+1))
+            
+            memo[i] = result
+            return memo[i]
+        return dfs(0)
+
+    def minHeightShelves3(self, books: List[List[int]], shelfWidth: int) -> int:
         n = len(books)
         dp = [0] * (n+1)
-        dp[0] = 0
-
-        for i in range(1, n+1):
-            width = books[i-1][0]
-            height = books[i-1][1]
-
-            # put current book on a new shelve
-            dp[i] = dp[i-1] + height
-
-            # if the current shelve have enough space to put it on the current shelve
-            j = i - 1
-            space = shelfWidth - width
-            while j > 0 and books[j-1][0] <= space:
-                height = max(height, books[j-1][1])
-                space -= books[j-1][0]
-                dp[i] = min(dp[i], dp[j-1] + height)
-                j -= 1
-        return dp[n]
+        for i in range(n-1, -1, -1):
+            currentWidth = 0
+            currentHeight = 0
+            result = float("inf")
+            
+            for j in range(i, n):
+                currentWidth += books[j][0]
+                if currentWidth > shelfWidth:
+                    break
+                currentHeight = max(currentHeight, books[j][1])
+                result = min(result, currentHeight+dp[j+1])
+            dp[i] = result
+        return dp[0]
 
 # Unit Tests
 import unittest
-funcs = [Solution().minHeightShelves, Solution().minHeightShelves2]
+funcs = [Solution().minHeightShelves, Solution().minHeightShelves2, Solution().minHeightShelves3]
 
 class TestMinHeightShelves(unittest.TestCase):
     def testMinHeightShelves1(self):
