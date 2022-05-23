@@ -28,6 +28,10 @@ Note:
 1. Greedy Algorithm: O(nlogn) time | O(n) time
 (1) sort the intervals by the starting point
 (2) traverse the intervals and in each run, if we found overlapping, keep the end with smaller value and remove the larger one
+
+2. Greedy Algorithm: O(nlogn) time | O(n) time
+(1) sort the intervals by the (ending point, starting point)
+(2) traverse the intervals and in each run, if we found start > previous end, count+=1, otherwise update preEnd to end
 """
 
 from typing import List
@@ -44,9 +48,20 @@ class Solution:
                 prevEnd = min(prevEnd, end)
         return removes
 
+    def eraseOverlapIntervals2(self, intervals: List[List[int]]) -> int:
+        intervals.sort(key=lambda x: (x[1], x[0]))
+        preEnd = -float("inf")
+        removeCount = 0
+        for start, end in intervals:
+            if start < preEnd:
+                removeCount += 1
+            else:
+                preEnd = end
+        return removeCount
+
 # Unit Tests
 import unittest
-funcs = [Solution().eraseOverlapIntervals]
+funcs = [Solution().eraseOverlapIntervals, Solution().eraseOverlapIntervals2]
 
 
 class TestEraseOverlapIntervals(unittest.TestCase):
