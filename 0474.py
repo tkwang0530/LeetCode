@@ -25,7 +25,7 @@ strs consists only of digits '0' and '1'.
 """
 
 """ 
-1. dfs (bottom up): O(n^2) time | O(n^2) space - where n is the number of all possible subsets
+1. dfs (bottom up): O(n) time | O(n) space - where n is the number of all possible subsets
 2. dp: O(n) time | O(n) space - where n is the number of all possible subsets
 """
 
