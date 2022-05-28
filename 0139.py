@@ -40,12 +40,14 @@ but the constraint (1 <= wordDict[i].length <= 20) make it O(n^2 * 20) => O(n^2)
 where n is the length of s
 where m is the number of words in wordDict
 s[left : right] = s[left : left + len(word)]
+
+3. DP + KMP: O(w*(n+m+m) + n^2) time | O(n^2) - where n is the length of string s, w is the number of words, m is the average length of word
 """
 
 
 
+import collections
 from typing import List
-import unittest
 class Solution:
     def wordBreak(self, s: str, wordDict: List[str]) -> bool:
         dp = [False] * (len(s) + 1) # dp[i] means s[:i+1] can be segmented into words in the wordDicts
@@ -69,10 +71,51 @@ class Solution:
                     dp[right] = True 
         return dp[-1]
 
+    def wordBreak3(self, s: str, wordDict: List[str]) -> bool:
+        def build(p: str) -> List[int]:
+            m = len(p)
+            next = [0, 0]
+            j = 0
+            for i in range(1, m):
+                while j > 0 and p[i] != p[j]:
+                    j = next[j]
+                if p[i] == p[j]:
+                    j += 1
+                next.append(j)
+            return next
+        
+        def match(s: str, p: str) -> List[int]:
+            n, m = len(s), len(p)
+            next = build(p)
+            ans = []
+            j = 0
+            for i in range(n):
+                while j > 0 and s[i] != p[j]:
+                    j = next[j]
+                if s[i] == p[j]:
+                    j += 1
+                if j == m:
+                    ans.append(i-m+1)
+                    j = next[j]
+            return ans
+
+        startMatches = collections.defaultdict(set)
+        for word in wordDict:
+            matches = match(s, word)
+            for m in matches:
+                startMatches[m].add(m+len(word))
+        
+        dp = [False] * (len(s)+1) # dp[i] means s[:i+1] can be segmented into words in the wordDicts
+        dp[0] = True
+        for left in range(len(s)):
+            if not dp[left]: continue
+            for m in startMatches[left]:
+                dp[m] = True
+        return dp[-1]
 
 # Unit Tests
-funcs = [Solution().wordBreak, Solution().wordBreak2]
-
+import unittest
+funcs = [Solution().wordBreak, Solution().wordBreak2, Solution().wordBreak3]
 
 class TestWordBreak(unittest.TestCase):
     def testWordBreak1(self):
