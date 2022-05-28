@@ -32,6 +32,7 @@ haystack and needle consist of only lower-case English characters.
 3. KMP: O(n+m) time | O(m) space - where n is the length of haystack, and m is the length of needle
 """
 
+from typing import List
 class Solution(object):
     def strStr(self, haystack: str, needle: str) -> int:
         if not needle: return 0
@@ -53,40 +54,38 @@ class Solution(object):
         return -1
 
     def strStr3(self, haystack: str, needle: str) -> int:
-        if needle == "":
+        if not needle:
             return 0
 
-        # lps[i] indicates that for substring needle[:i], the maximum number of L such that substring needle[0:L] equals to needle[n-L:]
-        # where n is the length of string needle and L <= n
-        lps = [0] * len(needle)
-        lpsIdx, i = 0, 1
-        while i < len(needle):
-            if needle[i] == needle[lpsIdx]:
-                lps[i] = lpsIdx + 1
-                lpsIdx += 1
-                i += 1
-            elif lpsIdx == 0:
-                lps[i] = 0
-                i += 1
-            else:
-                lpsIdx = lps[lpsIdx - 1]
-
-        i = 0 # ptr for haystack
-        j = 0 # ptr for needle
-        while i < len(haystack):
-            if haystack[i] == needle[j]:
-                i, j = i+1, j+1
-            elif j == 0:
-                i += 1
-            else:
-                # j-1 is the last matching index
-                # e.g. lps[j-1] = 2
-                # tell us that there are already 2 matches (needle[:2] == haystack[i:i+2]), so that we could compare char starting from j=2 rather than j = 0 (the brute-force approach)
-                j = lps[j-1]
-            
-            if j == len(needle):
-                return i - len(needle)
-        return -1
+        def build(p: str) -> List[int]:
+            m = len(p)
+            next = [0, 0]
+            j = 0
+            for i in range(1, m):
+                while j > 0 and p[i] != p[j]:
+                    j = next[j]
+                if p[i] == p[j]:
+                    j += 1
+                next.append(j)
+            return next
+        
+        def match(s: str, p: str) -> List[int]:
+            n, m = len(s), len(p)
+            next = build(p)
+            ans = []
+            j = 0
+            for i in range(n):
+                while j > 0 and s[i] != p[j]:
+                    j = next[j]
+                if s[i] == p[j]:
+                    j += 1
+                if j == m:
+                    ans.append(i-m+1)
+                    j = next[j]
+            return ans
+        
+        matches = match(haystack, needle)
+        return -1 if not matches else matches[0]
 
 
 # Unit Tests
