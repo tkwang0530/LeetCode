@@ -32,7 +32,7 @@ Note:
 1. DP (traverse by i and j): O(n^3+m) time | O(n+m) space
 where n is the length of s, and m is the number of words
 
-**dp[i] means s[:i+1] can be segmented into words in the wordDicts**
+**# dp[i] means s[:i] (exclusive) can be segmented into words in the wordDicts, so we can start trying to match from i if dp[i] is true**
 
 2. DP (traverse by i and word from wordDict): O(n*m^2) time | O(n) space
 where n is the length of s
@@ -48,7 +48,7 @@ import collections
 from typing import List
 class Solution:
     def wordBreak(self, s: str, wordDict: List[str]) -> bool:
-        dp = [False] * (len(s) + 1) # dp[i] means s[:i+1] can be segmented into words in the wordDicts
+        dp = [False] * (len(s) + 1) # dp[i] means s[:i] (exclusive) can be segmented into words in the wordDicts, so we can start trying to match from i if dp[i] is true
         dp[0] = True
         wordSet = set(wordDict)
         for left in range(len(s)):
@@ -59,7 +59,7 @@ class Solution:
         return dp[-1]
 
     def wordBreak2(self, s: str, wordDict: List[str]) -> bool:
-        dp = [False] * (len(s) + 1) # dp[i] means s[:i+1] can be segmented into words in the wordDicts
+        dp = [False] * (len(s) + 1) # dp[i] means s[:i] (exclusive) can be segmented into words in the wordDicts, so we can start trying to match from i if dp[i] is true
         dp[0] = True
         for left in range(len(s)):
             if not dp[left]: continue
@@ -103,7 +103,7 @@ class Solution:
             for m in matches:
                 startMatches[m].add(m+len(word))
         
-        dp = [False] * (len(s)+1) # dp[i] means s[:i+1] can be segmented into words in the wordDicts
+        dp = [False] * (len(s)+1) # dp[i] means s[:i] (exclusive) can be segmented into words in the wordDicts, so we can start trying to match from i if dp[i] is true
         dp[0] = True
         for left in range(len(s)):
             if not dp[left]: continue
