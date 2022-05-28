@@ -22,7 +22,7 @@ s consists of lowercase English letters.
 """
 
 """ 
-1. Brute Force + HashTable: O(n^2) time | O(n) space - where n is the length of string s
+1. Brute Force: O(n^2) time | O(n) space - where n is the length of string s
 2. KMP: O(n) time | O(n) space - where n is the length of string s
 """
 
@@ -30,14 +30,10 @@ from typing import List
 class Solution(object):
     def repeatedSubstringPattern(self, s: str) -> bool:
         n = len(s)
-        visited = set()
         for end in range(n//2):
             if n % (end+1) > 0:
                 continue
             substring = s[:end+1]
-            if substring in visited:
-                continue
-            visited.add(substring)
             if substring * (n // (end+1)) == s:
                 return True
         return False
