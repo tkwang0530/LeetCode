@@ -29,14 +29,12 @@ All the strings of wordDict are unique.
 
 """
 Note:
-1. DP (traverse by i and j): O(n^2) time | O(n+m) space
-where n is the length of s
-the time complexity should be O(n^3) 
-but the constraint (1 <= wordDict[i].length <= 20) make it O(n^2 * 20) => O(n^2)
+1. DP (traverse by i and j): O(n^3+m) time | O(n+m) space
+where n is the length of s, and m is the number of words
 
 **dp[i] means s[:i+1] can be segmented into words in the wordDicts**
 
-2. DP (traverse by i and word from wordDict): O(n*m) time | O(n) space
+2. DP (traverse by i and word from wordDict): O(n*m^2) time | O(n) space
 where n is the length of s
 where m is the number of words in wordDict
 s[left : right] = s[left : left + len(word)]
