@@ -36,6 +36,8 @@ Note:
 1. xor + itertools.chain: O(n) time | O(1) space
 2. Math: O(n) time | O(1) space
 3. mod and divide as counter: O(n) time | O(1) space
+4. mod and divide as counter 2: O(n) time | O(1) space
+5. negative sign as marker: O(n) time | O(1) space
 """
 
 from typing import List
@@ -55,16 +57,42 @@ class Solution:
             if remainder == 0:
                 continue
             nums[remainder-1] += n+1
-        for i in range(len(nums)):
-            quotient = nums[i] // (n+1)
+        for i, num in enumerate(nums):
+            quotient = num // (n+1)
             if not quotient:
                 return i+1
         return 0
 
+    def missingNumber4(self, nums: List[int]) -> int:
+        n = len(nums)
+        nums.append(0)
+        for i in range(n):
+            remainder = nums[i] % (n+1)
+            nums[remainder] += (n+1)
+        
+        for i, num in enumerate(nums):
+            quotient = num // (n+1)
+            if not quotient:
+                return i
+
+    def missingNumber5(self, nums: List[int]) -> int:
+        offset = 1
+        for i in range(len(nums)):
+            nums[i] += offset
+            
+        nums.append(float("inf"))
+        nums.append(float("inf"))
+        
+        for i in range(len(nums)-2):
+            nums[abs(nums[i])] *= -1
+            
+        for i in range(1, len(nums)):
+            if nums[i] > 0:
+                return i-1
 
 # Unit Tests
 import unittest
-funcs = [Solution().missingNumber, Solution().missingNumber2, Solution().missingNumber3]
+funcs = [Solution().missingNumber, Solution().missingNumber2, Solution().missingNumber3, Solution().missingNumber4, Solution().missingNumber5]
 
 class TestMissingNumber(unittest.TestCase):
     def testMissingNumber1(self):
