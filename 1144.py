@@ -37,10 +37,8 @@ class Solution:
             prev = nums[i-1] if i-1 >= 0 else float("inf")
             next = nums[i+1] if i+1 < n else float("inf")
             minVal = min(prev, next)
-            if curr > minVal:
+            if curr >= minVal:
                 largeFirstMoves += curr - minVal + 1
-            elif curr == minVal:
-                largeFirstMoves += 1
             i += 2
         
         smallFirstMoves = 0
@@ -50,10 +48,8 @@ class Solution:
             prev = nums[i-1] if i-1 >= 0 else float("inf")
             next = nums[i+1] if i+1 < n else float("inf")
             minVal = min(prev, next)
-            if curr > minVal:
+            if curr >= minVal:
                 smallFirstMoves += curr - minVal + 1
-            elif curr == minVal:
-                smallFirstMoves += 1
             i += 2
         
         return min(smallFirstMoves, largeFirstMoves)
