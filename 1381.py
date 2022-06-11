@@ -48,6 +48,8 @@ so that we can accumulate the increment inc[i] for the bottom elements and the f
 
 __init__: O(1) time | O(1) space
 push, pop, increment: O(1) time | O(1) space
+
+2. Lazy increment with fix sized self.inc
 """
 
 class CustomStack:
@@ -73,9 +75,35 @@ class CustomStack:
         if self.inc:
             self.inc[min(k, len(self.inc)) - 1] += val
 
+class CustomStack2:
+
+    def __init__(self, maxSize: int):
+        self.n = maxSize
+        self.stack = []
+        self.inc = [0] * maxSize
+
+    def push(self, x: int) -> None:
+        if len(self.stack) < self.n:
+            self.stack.append(x)
+
+    def pop(self) -> int:
+        if not self.stack:
+            return -1
+
+        lastIndex = len(self.stack) - 1
+        lastInc = self.inc[lastIndex]
+        if lastIndex >= 1:
+            self.inc[lastIndex-1] += lastInc
+        self.inc[lastIndex] = 0
+        return self.stack.pop() + lastInc
+
+    def increment(self, k: int, val: int) -> None:
+        if self.stack:
+            self.inc[min(k, len(self.stack)) - 1] += val
+
 # Unit Tests
 import unittest
-classes = [CustomStack]
+classes = [CustomStack, CustomStack2]
 
 class TestCustomStack(unittest.TestCase):
     def testCustomStack1(self):
