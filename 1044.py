@@ -19,7 +19,7 @@ s consists of lowercase English letters.
 
 """
 Note:
-1. Rolling Hash + Binary Search: O(nlogn) time | O(n^2) space
+1. Rolling Hash + Binary Search: O(nlogn) time | O(n) space
 """
 
 import unittest, collections
