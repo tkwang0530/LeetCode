@@ -41,6 +41,8 @@ class Solution(object):
         return maxLength
 
     def findLength2(self, nums1: List[int], nums2: List[int]) -> int:
+        if len(nums1) > len(nums2):
+            nums1, nums2 = nums2, nums1
         MOD = 1e9 + 7
         a = 101
         n1, n2 = len(nums1), len(nums2)
@@ -63,7 +65,13 @@ class Solution(object):
                 h1 = h1 * a  # move window
                 h1 = (h1 - nums1[start - 1] * power[L] % MOD + MOD) % MOD  # remove tail digit
                 h1 = (h1 + nums1[start + L - 1]) % MOD # add new head digit
-                hashStartIndice[h1].append(start)
+                foundRealMatch = False
+                for i in hashStartIndice[h1]:
+                    if nums1[i:i+L] == nums1[start:start+L]:
+                        foundRealMatch = True
+                        break
+                if not foundRealMatch:
+                    hashStartIndice[h1].append(start)
 
             for i in hashStartIndice[h2]:
                     if nums1[i:i+L] == nums2[:L]:
