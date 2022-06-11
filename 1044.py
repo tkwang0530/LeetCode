@@ -26,7 +26,7 @@ import unittest, collections
 from typing import List
 class Solution:
     def longestDupSubstring(self, s: str) -> str:
-        MOD = 2**32
+        MOD = 1e9 + 7
         a = 26
         n = len(s)
         power = [1] * n
