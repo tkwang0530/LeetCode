@@ -25,6 +25,7 @@ The number of nodes in the tree is in the range [1, 100].
 """
 Note:
 1. Recursion (DFS - PreOrder Traversal): O(n) time | O(n) space
+2. Recursion (DFS - PostOrder Traversal): O(n) time | O(n) space
 """
 
 
@@ -55,10 +56,27 @@ class Solution:
             self.dfs(root.right, current, result)
         current.pop()
 
+    def binaryTreePaths2(self, root: Optional[TreeNode]) -> List[str]:
+        def dfs(node) -> List[str]:
+            if not node.left and not node.right:
+                return [str(node.val)]
+            
+            output = []
+            array = []
+            if node.left:
+                array.extend(dfs(node.left))
+            if node.right:
+                array.extend(dfs(node.right))
+            for ans in array:
+                output.append(str(node.val) +"->" + ans)
+            
+            return output
+        
+        return dfs(root)
 
 # Unit Tests
 import unittest
-funcs = [Solution().binaryTreePaths]
+funcs = [Solution().binaryTreePaths, Solution().binaryTreePaths2]
 
 class TestBinaryTreePaths(unittest.TestCase):
     def testBinaryTreePaths1(self):
