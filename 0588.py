@@ -42,9 +42,12 @@ At most 300 calls will be made to ls, mkdir, addContentToFile, and readContentFr
 """
 Note:
 1. Nested HashTable (Trie Concept)
-all methods are O(1) time | O(1) space
-except for ls O(n) time | O(n) space
-where n is the depth of the path
+ls: O(nlogn) time | O(1) space
+mkdir: O(m) time | O(m) space
+addContentToFile: O(1) time | O(1) space
+readContentFromFile: O(1) time | O(1) space
+where m = level of folder
+where n is the max files + directories in one directory
 """
 from typing import List
 class File:
