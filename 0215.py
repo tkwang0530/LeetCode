@@ -21,10 +21,7 @@ Average case: O(n)
 Worst case: O(n^2)
 """
 
-
-
-
-import unittest
+import random
 from typing import List
 from heapq import heappop, heappush, heappushpop
 class Solution(object):
@@ -42,35 +39,37 @@ class Solution(object):
         return heappop(minHeap)
 
     def findKthLargest3(self, nums: List[int], k: int) -> int:
-        self.helper(nums, 0, len(nums) - 1, len(nums) - k)
+        targetIndex = len(nums) - k
+        def partition(nums, left, right) -> int:
+            randInt = random.randint(left, right)
+            nums[randInt], nums[right] = nums[right], nums[randInt]
+            pivot = nums[right]
+            i = left
+            for j in range(left, right):
+                if nums[j] < pivot:
+                    nums[j], nums[i] = nums[i], nums[j]
+                    i += 1
+            nums[i], nums[right] = nums[right], nums[i]
+            return i
+    
+        def helper(nums, left, right) -> None:
+            if left == right:
+                return
+            pivotIndex = partition(nums, left, right)
+            if pivotIndex == targetIndex:
+                return
+            elif pivotIndex > targetIndex:
+                helper(nums, left, pivotIndex - 1)
+            else:
+                helper(nums, pivotIndex + 1, right)
+                
+        helper(nums, 0, len(nums) - 1)
         return nums[len(nums) - k]
-    
-    def helper(self, nums, left, right, targetIndex) -> None:
-        if left == right:
-            return
-        pivotIndex = self.partition(nums, left, right)
-        if pivotIndex == targetIndex:
-            return
-        elif pivotIndex > targetIndex:
-            self.helper(nums, left, pivotIndex - 1, targetIndex)
-        else:
-            self.helper(nums, pivotIndex + 1, right, targetIndex)
-    
-    def partition(self, nums, left, right) -> int:
-        pivot = nums[right]
-        i = left
-        for j in range(left, right):
-            if nums[j] < pivot:
-                nums[j], nums[i] = nums[i], nums[j]
-                i += 1
-        nums[i], nums[right] = nums[right], nums[i]
-        return i
 
 
-        # Unit Tests
+# Unit Tests
+import unittest
 funcs = [Solution().findKthLargest, Solution().findKthLargest2, Solution().findKthLargest3]
-
-
 class TestFindKthLargest(unittest.TestCase):
     def testFindKthLargest1(self):
         for func in funcs:
@@ -85,7 +84,6 @@ class TestFindKthLargest(unittest.TestCase):
             k = 4
             self.assertEqual(
                 func(nums=nums, k=k), 4)
-
 
 if __name__ == "__main__":
     unittest.main()
