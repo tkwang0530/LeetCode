@@ -37,41 +37,40 @@ nums2.length == n
 
 """ 
 1. Binary Search: O(log(min(n+m))) time | O(1) space
+Determine i, j, such that a[0:i] + b[0:j] (exclusive) is the most small "after" numbers.
+There could multiple pairs of such (i, j) if there are some duplicated numbers.
+Each such pair satisfies the following criteria at the same time:
+1. i + j == after
+2. (j >= 1 and a[i] >= b[j-1]) or j == 0
+3. (i>=1 and b[j] >= a[i-1]) or i == 0 
 """
 
 from typing import List
 class Solution(object):
     def findMedianSortedArrays(self, nums1: List[int], nums2: List[int]) -> float:
-        A, B = nums1, nums2
-        total = len(nums1) +len(nums2)
-        half = total // 2
-        if len(B) < len(A):
-            A, B = B, A
-        
-        left, right = 0, len(A) - 1
-        while True:
-            mid = left + (right - left) // 2 # mid is the index for A
+        A, B = sorted((nums1, nums2), key=len)
+        m, n = len(A), len(B)
 
-             # half - (mid + 1) is the size of the partition of B, while j is the index of the right most index of that partition 
-            j = half - (mid + 1) - 1
-            ALeft = A[mid] if mid >= 0 else float("-inf")
-            ARight = A[mid+1] if mid+1 < len(A) else float("inf")
-            BLeft = B[j] if j >= 0 else float("-inf")
-            BRight = B[j+1] if j+1 < len(B) else float("inf")
-
-            # partition is correct
-            if ALeft <= BRight and BLeft <= ARight:
-                # odd
-                if total % 2 == 1:
-                    return min(ARight, BRight)
-                # even
-                return (max(ALeft, BLeft) + min(ARight, BRight)) / 2
-            elif ALeft > BRight:
-                right = mid - 1
+        # if m+n == odd number (7), (m+n-1)//2 = 3
+        # if m+n == even number (8), (m+n-1)//2 = 3
+        after = (m+n-1) // 2 
+        left, right = 0, m
+        while left < right:
+            i = left + (right - left) // 2
+            j = after - i
+            cond1 = (j >= 1 and A[i] >= B[j-1]) or j == 0
+            cond2 = (i >= 1 and B[j] >= A[i-1]) or i == 0
+            if cond1 and cond2:
+                left = i
+                break
+            elif not cond1:
+                left = i + 1
             else:
-                left = mid + 1
-            
-
+                right = i
+        i = left
+        j = after - i
+        nextFew = sorted(A[i:i+2]+B[j:j+2])
+        return (nextFew[0] + nextFew[1- (m+n)%2]) / 2.0
 
 # Unit Tests
 import unittest
@@ -108,6 +107,12 @@ class TestFindMedianSortedArrays(unittest.TestCase):
             nums1 = [2]
             nums2 = []
             self.assertEqual(func(nums1=nums1, nums2=nums2), 2.0)
+
+    def testFindMedianSortedArrays6(self):
+        for func in funcs:
+            nums1 = [1,2]
+            nums2 = [-1,3]
+            self.assertEqual(func(nums1=nums1, nums2=nums2), 1.5)
 
 if __name__ == "__main__":
     unittest.main()
