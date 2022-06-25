@@ -27,7 +27,8 @@ Constraints:
 
 """
 Note:
-1. dfs + memo + bitmask: O(n*2^n) time | O(2^n) space
+1. dfs + memo + bitmask (bottom up): O(n*2^n) time | O(2^n) space
+2. dfs + backtracking + truning (top down): O(n!) time | O(n) space
 """
 class Solution:
     def countArrangement(self, n: int) -> int:
@@ -45,9 +46,31 @@ class Solution:
             memo[bitmask] = result
             return memo[bitmask]
         return dfs(0, n)
+
+    def countArrangement2(self, n: int) -> int:
+        nums = [i for i in range(n+1)]
+        container = [0]
+
+        def swap(nums, i, j):
+            nums[i], nums[j] = nums[j], nums[i]
+        
+        def dfs(nums, start, container):
+            if start == 0:
+                container[0] += 1
+                return
+
+            # iterate from the back (start to 1)
+            for i in range(start, 0, -1):
+                swap(nums, start, i)
+                if (nums[start] % start == 0 or start % nums[start] == 0):
+                    dfs(nums, start-1, container)
+                swap(nums, start, i)
+        dfs(nums, n, container)
+        return container[0]
+
 # Unit Tests
 import unittest
-funcs = [Solution().countArrangement]
+funcs = [Solution().countArrangement, Solution().countArrangement2]
 class TestCountArrangement(unittest.TestCase):
     def testCountArrangement1(self):
         for func in funcs:
