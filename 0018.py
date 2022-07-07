@@ -24,8 +24,10 @@ Constraints:
 
 """
 Note:
-1. Two Pointers: O(n^3) time | O(1) space
+1. Two Pointers: O(n^3) time | O(1) space - where n is the length of nums
 nested 3Sum
+
+2. KSum + TwoSum + HashTable: O(n^3) time | O(n) space - where n is the length of nums
 """
 
 import unittest
@@ -59,8 +61,37 @@ class Solution:
                             left += 1
         return result
 
+    def fourSum2(self, nums: List[int], target: int) -> List[List[int]]:
+        nums.sort()
+        def dfs(i, temp, nums, target, k, result) -> None:
+            if nums[i] * k > target or nums[-1] * k < target:
+                return
+            
+            if k == 2:
+                visited = set()
+                for idx in range(i, len(nums)):
+                    num = nums[idx]
+                    if target - num in visited:
+                        elements = temp.copy()
+                        elements.append(target - num)
+                        elements.append(num)
+                        result.add(tuple(elements))
+                    visited.add(num)
+                return
+            
+            for j in range(i, len(nums)-k+1):
+                if j > i and nums[j-1] == nums[j]:
+                    continue
+                temp.append(nums[j])
+                dfs(j+1, temp, nums, target-nums[j], k-1, result)
+                temp.pop()
+        
+        temp = []
+        result = set()
+        dfs(0, temp, nums, target, 4, result)
+        return [list(elements) for elements in result]
 # Unit Tests
-funcs = [Solution().fourSum]
+funcs = [Solution().fourSum, Solution().fourSum2]
 
 
 class TestFourSum(unittest.TestCase):
@@ -69,7 +100,7 @@ class TestFourSum(unittest.TestCase):
             nums = [1,0,-1,0,-2,2]
             target = 0
             self.assertEqual(
-                func(nums=nums, target=target), [[-2,-1,1,2],[-2,0,0,2],[-1,0,0,1]])
+                sorted(func(nums=nums, target=target)), sorted([[-2,-1,1,2],[-2,0,0,2],[-1,0,0,1]]))
 
     def testFourSum2(self):
         for func in funcs:
