@@ -22,6 +22,7 @@ u is a node in the binary tree rooted at root.
 """
 Note:
 1. BFS: O(n) time | O(n) space - where n is the number of nodes in the tree
+2. DFS: O(n) time | O(h) space - where n is the number of nodes and h is the height of the tree
 """
 
 class TreeNode:
@@ -52,9 +53,26 @@ class Solution:
                 queue.append((node.right, level+1))
         return target
 
+    def findNearestRightNode2(self, root: TreeNode, u: TreeNode) -> Optional[TreeNode]:
+        container = [-1]
+        def dfs(node, level, container):
+            if not node or len(container) > 1:
+                return
+            if node == u:
+                container[0] = level
+                return
+            if level == container[0]:
+                container.append(node)
+                return
+            
+            dfs(node.left, level+1, container)
+            dfs(node.right, level+1, container)
+        dfs(root, 0, container)
+        return container[1] if len(container) > 1 else None
+
 # Unit Tests
 import unittest
-funcs = [Solution().findNearestRightNode]
+funcs = [Solution().findNearestRightNode, Solution().findNearestRightNode2]
 
 class TestFindNearestRightNode(unittest.TestCase):
     def testFindNearestRightNode1(self):
