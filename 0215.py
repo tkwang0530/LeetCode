@@ -16,9 +16,8 @@ Note:
 1. Sort and constant time lookup at index len(arr) - k: O(nlogn) time | O(n) space
 2. Min Heap: O(nlogk) time | O(k)
 3. Quick Select: O(n) time | O(logn) space
-Best case: O(n)
-Average case: O(n)
-Worst case: O(n^2)
+Average case: O(logn)
+Worst case: O(n)
 """
 
 import random
