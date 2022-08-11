@@ -32,7 +32,7 @@ Note:
 2. DP + Binary Search: O(nlogn) time | O(n) space
 tails is an array storing the smallest of all increasing subsequence with length i+1 in tails[i]
 for example, say we have nums = [4, 5, 6, 3], then all the available increasing subsequences are:
-len = 1: [4], [5], [6], [7] => tails[0] = 3
+len = 1: [4], [5], [6], [3] => tails[0] = 3
 len = 2: [4, 5], [5, 6]      => tails[1] = 5
 len = 3: [4, 5, 6]             => tails[2] = 6
 
@@ -53,19 +53,25 @@ class Solution:
         return max(LIS)
 
     def lengthOfLIS2(self, nums: List[int]) -> int:
-        tails = [0] * len(nums)
-        size = 0
+        n = len(nums)
+        tails = [float("inf")] * (n+1) # tails[lengthOfSubsequence] = smallestTail
+        tails[0] = -float("inf")
+        maxSize = 0
         for num in nums:
-            i, j = 0, size
-            while i < j:
-                mid = i + (j - i) // 2
+            # bisect right
+            left, right = 0, maxSize+1
+            while left < right:
+                mid = left + (right - left) // 2
                 if tails[mid] < num:
-                    i = mid + 1
+                    left = mid + 1
                 else:
-                    j = mid
-            tails[i] = num
-            size = max(i+1, size)
-        return size
+                    right = mid
+            
+            # left will stop at the position where tails[left] >= num
+            # which is also the next possible maxSize
+            tails[left] = min(tails[left], num)
+            maxSize = max(maxSize, left)
+        return maxSize
 
 
 # Unit Tests
