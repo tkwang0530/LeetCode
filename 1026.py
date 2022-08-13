@@ -57,35 +57,37 @@ class TreeNode:
 
 class Solution:
     def maxAncestorDiff(self, root: Optional[TreeNode]) -> int:
-        if not root:
-            return 0
-        result = [0] # [maxDiff]
-        self.dfs(root, root.val, root.val, result)
-        return result[0]
-    def dfs(self, node: TreeNode, maxVal: int, minVal: int, result: List[int]):
-        result[0] = max(result[0], abs(maxVal - node.val), abs(minVal - node.val))
-        maxVal = max(maxVal, node.val)
-        minVal = min(minVal, node.val)
-        
-        if node.left:
-            self.dfs(node.left, maxVal, minVal, result)
-        if node.right:
-            self.dfs(node.right, maxVal, minVal, result)
+        def dfs(node: TreeNode, minVal: int, maxVal: int, container) -> None:
+            container[0] = max(
+                container[0],
+                abs(minVal - node.val),
+                abs(maxVal - node.val)
+            )
+            if node.left:
+                dfs(node.left, min(minVal, node.val), max(maxVal, node.val), container)
+            
+            if node.right:
+                dfs(node.right, min(minVal, node.val), max(maxVal, node.val), container)
+                
+        container = [0]
+        dfs(root, root.val, root.val, container)
+        return container[0]
 
     def maxAncestorDiff2(self, root: Optional[TreeNode]) -> int:
-        if not root:
-            return 0
         maxDiff = 0
-        stack = [(root, root.val, root.val)] # (node, maxVal, minVal)
-        while len(stack) > 0:
-            node, maxVal, minVal = stack.pop()
-            maxDiff = max(maxDiff, abs(maxVal - node.val), abs(minVal - node.val))
-            maxVal = max(maxVal, node.val)
-            minVal = min(minVal, node.val)
+        stack = [(root, root.val, root.val)] # (root, minVal, maxVal)
+        while stack:
+            node, minVal, maxVal = stack.pop()
+            maxDiff = max(
+                maxDiff,
+                abs(minVal - node.val),
+                abs(maxVal - node.val)
+            )
             if node.right:
-                stack.append((node.right, maxVal, minVal))
+                stack.append((node.right, min(minVal, node.val), max(maxVal, node.val)))
+            
             if node.left:
-                stack.append((node.left, maxVal, minVal))
+                stack.append((node.left, min(minVal, node.val), max(maxVal, node.val)))
         return maxDiff
 
 # Unit Tests
