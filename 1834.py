@@ -51,33 +51,32 @@ import heapq
 from typing import List
 class Solution:
     def getOrder(self, tasks: List[List[int]]) -> List[int]:
-        tasksPreps = [(tasks[i][0], i , tasks[i][1]) for i in range(len(tasks))]
-        tasksPreps.sort()
+        taskNodes = [(enqueueTime, processingTime, i) for i, (enqueueTime, processingTime) in enumerate(tasks)]
+        taskNodes.sort()
         
-        
+        current = 0
+        n = len(taskNodes)
+        order = []
         minHeap = []
-        idx = 0
-        output = []
-        time = tasksPreps[idx][0]
-        
-        processed = 0
-        while processed < len(tasks):
-            while idx < len(tasksPreps) and time >= tasksPreps[idx][0]:
-                _, i, processTime  = tasksPreps[idx]
-                heapq.heappush(minHeap, (processTime, i))
-                idx += 1
+        i = 0
+        while len(order) < n:
+            # check if there are available tasks
+            # if not => update current to max(current,taskNode[i][0])
+            if not minHeap:
+                current = max(current, taskNodes[i][0])
             
-            if len(minHeap) > 0:
-                processTime, i = heapq.heappop(minHeap)
-                output.append(i)
-                time += processTime
-                processed += 1
-                continue
-
-            if idx < len(tasksPreps):
-                time = tasksPreps[idx][0]
+            # keep push newTask if enqueueTime <= currentTime
+            while i < n and taskNodes[i][0] <= current:
+                _, processingTime, idx = taskNodes[i]
+                heapq.heappush(minHeap, (processingTime, idx))
+                i += 1
+                    
+            # process shortest processing time taskNode with index = idx
+            processingTime, idx = heapq.heappop(minHeap)
+            order.append(idx)
+            current += processingTime
             
-        return output
+        return order
 
 # Unit Tests
 import unittest
