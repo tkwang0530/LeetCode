@@ -34,6 +34,7 @@ Constraints:
 Note:
 1. minHeap: O(nlogn+nlogk) time | O(k) space
 2. sort + slice: O(nlogn+nlogn) time | O(n+k) space
+3. sort + Two Pointers: O(nlogn+k) time | O(k) space
 """
 import heapq
 from typing import List
@@ -62,9 +63,26 @@ class Solution:
         compares.sort(reverse=True)
         return [num for _, num in compares[:k]]
 
+    def getStrongest3(self, arr: List[int], k: int) -> List[int]:
+        arr.sort()
+        n = len(arr)
+        m = arr[(n-1)//2]
+        i, j = 0, n-1
+        output = []
+        while len(output) < k:
+            left, right = arr[i], arr[j]
+            leftScore, rightScore = abs(left - m), abs(right - m)
+            if leftScore > rightScore:
+                output.append(left)
+                i += 1
+            else:
+                output.append(right)
+                j -= 1
+        return output
+
 # Unit Tests
 import unittest
-funcs = [Solution().getStrongest, Solution().getStrongest2]
+funcs = [Solution().getStrongest, Solution().getStrongest2, Solution().getStrongest3]
 class TestGetStrongest(unittest.TestCase):
     def testGetStrongest1(self):
         for func in funcs:
