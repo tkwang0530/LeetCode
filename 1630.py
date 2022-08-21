@@ -44,17 +44,27 @@ Note:
 from typing import List
 class Solution:
     def checkArithmeticSubarrays(self, nums: List[int], l: List[int], r: List[int]) -> List[bool]:
-        def rangeCheck(nums) -> bool:
+        n = len(nums)
+        preSum = [0] * (n+1)
+        for i in range(1, n+1):
+            preSum[i] = preSum[i - 1] + nums[i - 1]
+            
+        def rangeCheck(nums, l, r) -> bool:
             m = len(nums)
             minVal, maxVal = min(nums), max(nums)
 
+            # check total diff
             if (maxVal - minVal) % (m - 1) != 0:
                 return False
 
+            # check sum valid
+            if (minVal + maxVal) * m != (preSum[r+1] - preSum[l]) * 2:
+                return False
+            
             diff = int((maxVal-minVal) / (m-1))
             if diff == 0:
                 return nums == ([nums[0]] * m)
-
+            
             check = [1] * m
             for num in nums:
                 if (num-minVal) % diff != 0 or check[(num-minVal) // diff] == 0:
@@ -64,7 +74,7 @@ class Solution:
 
         res = []
         for i, j in zip(l, r):
-            res.append(rangeCheck(nums[i:j+1]))
+            res.append(rangeCheck(nums[i:j+1], i, j))
         return res
 
 # Unit Tests
