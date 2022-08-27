@@ -30,7 +30,7 @@ All reservedSeats[i] are distinct.
 
 """
 Note:
-1. HashTable + Bucket Concept: O(m) time | O(1) space - where m is the number of reservedSeats
+1. HashTable + Bucket Concept: O(3m + m) time | O(m) space - where m is the number of reservedSeats
 """
 
 from typing import List
