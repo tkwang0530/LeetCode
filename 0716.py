@@ -103,23 +103,80 @@ class MaxStack:
         self._removeK(maxVal)
         return maxVal
 
+from sortedcontainers import SortedList
+class MaxStack2:
+
+    # Initialize the stack object
+    def __init__(self):
+        self.dummyHead = TreeNode(0)
+        self.dummyTail = TreeNode(0)
+        self.dummyHead.next, self.dummyTail.prev = self.dummyTail, self.dummyHead
+        self.numStack = collections.defaultdict(list)
+        self.sortedList = SortedList()
+    # _insertNodeToHead insert a new node with value (val) to the head of the doubly linkedlist
+    def _insertNodeToHead(self, val) -> None:
+        prev, next = self.dummyHead, self.dummyHead.next
+        newNode = TreeNode(val, prev, next)
+        prev.next = next.prev = newNode
+    
+    # _removeNode removes specific node from the double linkedlist
+    def _removeNode(self, node):
+        node.prev.next, node.next.prev = node.next, node.prev
+    
+    # Pushes element x onto the stack
+    def push(self, x: int) -> None:
+        self._insertNodeToHead(x)
+        self.numStack[x].append(self.dummyHead.next)
+        if len(self.numStack[x]) == 1:
+            self.sortedList.add(x)
+
+    # Removes the element on top of the stack and returns it
+    def pop(self) -> int:
+        topVal = self.top()
+        self._removeK(topVal)
+        return topVal
+        
+    
+    # Gets the element on the top of the stack without removing it
+    def top(self) -> int:
+        return self.dummyHead.next.val
+    
+    # _removeK removes the toppest element with value k
+    def _removeK(self, k) -> None:
+        node = self.numStack[k].pop()
+        self._removeNode(node)
+        if not self.numStack[k]:
+            del self.numStack[k]
+            self.sortedList.remove(k)
+    
+    # Retrieves the maximum element in the stack without removing it
+    def peekMax(self) -> int:
+        return self.sortedList[-1]
+        
+    # Retrieves the maximum element in the stack and removes it. If there if more than one maximum element, only remove the top-most one.
+    def popMax(self) -> int:
+        maxVal = self.peekMax()
+        self._removeK(maxVal)
+        return maxVal
 # Unit Tests
 import unittest
 
+classes = [MaxStack, MaxStack2]
 class TestMaxStack(unittest.TestCase):
     def testMaxStack1(self):
-        stk = MaxStack()
-        stk.push(5) # [5] the top of the stack and the maximum number is 5.
-        stk.push(1) # [5, 1] the top of the stack is 1, but the maximum is 5.
-        stk.push(5) # [5, 1, 5] the top of the stack is 5, which is also the maximum, because it is the top most one.
+        for myclass in classes: 
+            stk = myclass()
+            stk.push(5) # [5] the top of the stack and the maximum number is 5.
+            stk.push(1) # [5, 1] the top of the stack is 1, but the maximum is 5.
+            stk.push(5) # [5, 1, 5] the top of the stack is 5, which is also the maximum, because it is the top most one.
 
-        self.assertEqual(stk.top(), 5) # return 5, [5, 1, 5] the stack did not change.
-        self.assertEqual(stk.popMax(), 5) # return 5, [5, 1] the stack is changed now, and the top is different from the max.
-        self.assertEqual(stk.top(), 1) # return 1, [5, 1] the stack did not change.
-        self.assertEqual(stk.peekMax(), 5) # return 5, [5, 1] the stack did not change.
+            self.assertEqual(stk.top(), 5) # return 5, [5, 1, 5] the stack did not change.
+            self.assertEqual(stk.popMax(), 5) # return 5, [5, 1] the stack is changed now, and the top is different from the max.
+            self.assertEqual(stk.top(), 1) # return 1, [5, 1] the stack did not change.
+            self.assertEqual(stk.peekMax(), 5) # return 5, [5, 1] the stack did not change.
 
-        self.assertEqual(stk.pop(), 1) # return 1, [5] the top of the stack and the max element is now 5.
-        self.assertEqual(stk.top(), 5) # return 5, [5] the stack did not change.
+            self.assertEqual(stk.pop(), 1) # return 1, [5] the top of the stack and the max element is now 5.
+            self.assertEqual(stk.top(), 5) # return 5, [5] the stack did not change.
 
 if __name__ == "__main__":
     unittest.main()
