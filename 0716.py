@@ -36,6 +36,16 @@ Note:
 # Average Time  : push -> O(1), pop -> O(1), top -> O(1), peekMax -> O(logm), popMax -> O(logm)
 # Average Space : push -> O(1), pop -> O(1), top -> O(1), peekMax -> O(1), popMax -> O(1)
 where m is the unique number count in the stack
+
+2. HashTable+LinkedList+BST
+Time: 
+- push: O(logm)
+- pop: O(logm)
+- top: O(1)
+- peekMax: O(1)
+- popMax: O(logm)
+Space: O(1)
+where m is the unique number count in the stack
 """
 
 import heapq, collections
