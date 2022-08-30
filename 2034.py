@@ -59,6 +59,14 @@ update: O(logn) time
 current: O(1ogn) time
 maximum: O(logn) time
 minimum: O(logn) time
+
+3. Binary Search Tree (SortedList) + HashTables
+Total Space Complexity: O(n)
+__init__: O(1) time
+update: O(logn) time
+current: O(1) time
+maximum: O(logn) time
+minimum: O(logn) time
 """
 
 import unittest, heapq
@@ -127,8 +135,56 @@ class StockPrice2:
     def minimum(self) -> int:
         return self.records.peekitem(0)[0]
 
+from sortedcontainers import SortedList
+import collections
+class StockPrice3:
+
+    # __init__ initializes the object with no price records.
+    def __init__(self):
+        self.maxTimestamp = 0
+        self.timestampPrice = {}
+        self.priceTimestamps = collections.defaultdict(set)
+        self.sortedList = SortedList()
+
+    # update updates the price of the stock at the given timestamp
+    def update(self, timestamp: int, price: int) -> None:
+        if timestamp not in self.timestampPrice:
+            self.maxTimestamp = max(self.maxTimestamp, timestamp)
+            self._add(timestamp, price)
+        else:
+            if price != self.timestampPrice[timestamp]:
+                self._update(timestamp, price)
+    
+    def _add(self, timestamp: int, price: int) -> None:
+        self.timestampPrice[timestamp] = price
+        self.priceTimestamps[price].add(timestamp)
+        if len(self.priceTimestamps[price]) == 1:
+            self.sortedList.add(price)
+    
+    def _update(self, timestamp: int, price: int) -> None:
+        originalPrice = self.timestampPrice[timestamp]
+        self.timestampPrice[timestamp] = price
+        self.priceTimestamps[originalPrice].remove(timestamp)
+        self.priceTimestamps[price].add(timestamp)
+        if len(self.priceTimestamps[originalPrice]) == 0:
+            self.sortedList.remove(originalPrice)
+        if len(self.priceTimestamps[price]) == 1:
+            self.sortedList.add(price)
+    
+    # current returns the latest price of the stock.
+    def current(self) -> int:
+        return self.timestampPrice[self.maxTimestamp]
+
+    # maximum returns the maximum price of the stock.
+    def maximum(self) -> int:
+        return self.sortedList[-1]
+        
+    # minimum returns the minimum price of the stock.
+    def minimum(self) -> int:
+        return self.sortedList[0]
+
 # Unit Tests
-classes = [StockPrice, StockPrice2]
+classes = [StockPrice, StockPrice2, StockPrice3]
 
 class TestLRUCache(unittest.TestCase):
     def testLRUCache1(self):
