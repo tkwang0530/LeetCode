@@ -25,7 +25,7 @@ Constraints:
 
 """
 Note:
-1. 
+1. Brute-Force + HashTable: O(1) time | O(1) space
 """
 from typing import List
 import collections
