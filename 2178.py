@@ -43,11 +43,11 @@ import unittest
 from typing import List
 class Solution:
     def maximumEvenSplit(self, finalSum: int) -> List[int]:
-        n = int((-1+(1 ^ 2+4*finalSum)**0.5)/2*1) if finalSum % 2 == 0 else 0
+        if finalSum % 2 != 0:
+            return []
+        n = int((-1+(1 ^ 2+4*finalSum)**0.5)/2*1)
         result = [2*i for i in range(1, n+1)]
-        if not result:
-            return result
-        currentSum = sum(result)
+        currentSum = (2+2+(n-1)*2)*n // 2
         result[-1] += finalSum - currentSum
         return result
 
