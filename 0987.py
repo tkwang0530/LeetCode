@@ -53,15 +53,15 @@ The number of the nodes in the tree is in the range [1, 1000].
 
 """
 Note:
-1. BFS + HashMap: O(nlogn) time | O(n) space
+1. BFS + HashMap + Sort: O(nlogn) time | O(n) space
+2. BFS + HashMap: O(n) time | O(n) space
 """
 
 
 
 
-from typing import List
-import unittest
-from collections import deque, defaultdict
+from typing import List, Optional
+import unittest, collections
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
         self.val = val
@@ -72,10 +72,10 @@ class TreeNode:
 class Solution:
     def verticalTraversal(self, root: TreeNode) -> List[List[int]]:
         result = []
-        dict = defaultdict(list)
+        dict = collections.defaultdict(list)
         if not root:
             return result
-        queue = deque([(root, 0, 0)])
+        queue = collections.deque([(root, 0, 0)])
         while queue:
             node, row, col = queue.popleft()
             dict[col].append((row, node.val))
@@ -90,26 +90,60 @@ class Solution:
             result.append(temp)
         return result
 
+    def verticalTraversal2(self, root: Optional[TreeNode]) -> List[List[int]]:
+        queue = collections.deque([(root, 0, 0)])
+
+        colRows = collections.defaultdict(list)
+        positionVals = collections.defaultdict(list)
+
+        smallestCol = float("inf")
+        largestCol = float("-inf")
+        while queue:
+            node, row, col = queue.popleft()
+            positionVals[(row, col)].append(node.val)
+            if not colRows[col] or colRows[col][-1] < row:
+                colRows[col].append(row)
+            if node.left:
+                queue.append((node.left, row+1, col-1))
+
+            if node.right:
+                queue.append((node.right, row+1, col+1))
+
+            smallestCol = min(smallestCol, col)
+            largestCol = max(largestCol, col)
+
+        output = []
+        for col in range(smallestCol, largestCol+1):
+            output.append([])
+            for row in colRows[col]:
+                output[-1].extend(sorted(positionVals[(row, col)]))
+
+        return output
+
 
 # Unit Tests
-funcs = [Solution().verticalTraversal]
+funcs = [Solution().verticalTraversal, Solution().verticalTraversal2]
 
 
 class TestVerticalTraversal(unittest.TestCase):
     def testVerticalTraversal1(self):
         for func in funcs:
-            root = TreeNode(3, TreeNode(9), TreeNode(20, TreeNode(15), TreeNode(7)))
-            self.assertEqual(func(root=root), [[9],[3,15],[20],[7]])
+            root = TreeNode(3, TreeNode(9), TreeNode(
+                20, TreeNode(15), TreeNode(7)))
+            self.assertEqual(func(root=root), [[9], [3, 15], [20], [7]])
 
     def testVerticalTraversal2(self):
         for func in funcs:
-            root = TreeNode(1, TreeNode(2, TreeNode(4), TreeNode(5)), TreeNode(3, TreeNode(6), TreeNode(7)))
-            self.assertEqual(func(root=root), [[4],[2],[1,5,6],[3],[7]])
+            root = TreeNode(1, TreeNode(2, TreeNode(4), TreeNode(
+                5)), TreeNode(3, TreeNode(6), TreeNode(7)))
+            self.assertEqual(func(root=root), [[4], [2], [1, 5, 6], [3], [7]])
 
     def testVerticalTraversal3(self):
         for func in funcs:
-            root = TreeNode(1, TreeNode(2, TreeNode(4), TreeNode(6)), TreeNode(3, TreeNode(5), TreeNode(7)))
-            self.assertEqual(func(root=root), [[4],[2],[1,5,6],[3],[7]])
+            root = TreeNode(1, TreeNode(2, TreeNode(4), TreeNode(
+                6)), TreeNode(3, TreeNode(5), TreeNode(7)))
+            self.assertEqual(func(root=root), [[4], [2], [1, 5, 6], [3], [7]])
+
 
 if __name__ == "__main__":
     unittest.main()
