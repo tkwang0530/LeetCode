@@ -39,20 +39,24 @@ oneBuy -> oneProfit -> twoBuy -> twoProfit
 # when you buy the share the second time, it's like you bought it one time if you bought it at the price at price - oneProfit
 """
 
+
+
+
 from typing import List
 import unittest
 class Solution:
     def maxProfit(self, prices: List[int]) -> int:
-        oneBuy = twoBuy = float("inf")
-        oneProfit = twoProfit = 0
+        firstBuyLowestPrice = secondBuyLowestPrice = float("inf")
+        firstProfit = secondProfit = 0
         for price in prices:
-            oneBuy = min(oneBuy, price)
-            oneProfit = max(oneProfit, price - oneBuy)
+            firstBuyLowestPrice = min(firstBuyLowestPrice, price)
+            firstProfit = max(firstProfit, price - firstBuyLowestPrice)
 
-            # when you buy the share the second time, it's like you bought it one time if you bought it at the price at price - oneProfit
-            twoBuy = min(twoBuy, price - oneProfit)
-            twoProfit = max(twoProfit, price - twoBuy)
-        return twoProfit
+            # when you buy the share the second time, it's like you bought it one time if you bought it at the price at price - firstProfit
+            secondBuyLowestPrice = min(
+                secondBuyLowestPrice, price - firstProfit)
+            secondProfit = max(secondProfit, price - secondBuyLowestPrice)
+        return secondProfit
 
 
 # Unit Tests
@@ -62,7 +66,7 @@ funcs = [Solution().maxProfit]
 class TestMaxProfit(unittest.TestCase):
     def testMaxProfit1(self):
         for func in funcs:
-            prices = [3,3,5,0,0,3,1,4]
+            prices = [3, 3, 5, 0, 0, 3, 1, 4]
             self.assertEqual(func(prices=prices), 6)
 
     def testMaxProfit2(self):
@@ -72,13 +76,14 @@ class TestMaxProfit(unittest.TestCase):
 
     def testMaxProfit3(self):
         for func in funcs:
-            prices = [7,6,4,3,1]
+            prices = [7, 6, 4, 3, 1]
             self.assertEqual(func(prices=prices), 0)
 
     def testMaxProfit4(self):
         for func in funcs:
             prices = [1]
             self.assertEqual(func(prices=prices), 0)
+
 
 if __name__ == "__main__":
     unittest.main()
