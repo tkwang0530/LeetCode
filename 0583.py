@@ -23,6 +23,8 @@ Note:
 1. BFS + HashTable: O((w1+w2)**(w1+w2)) time | O((w1+w2)**(w1+w2)) space -> TLE
 2. DFS + memo: O(w1*w2) time | O(w1*w2) space - where w1 is the length of word1 and w2 is the length of word2
 dfs(i, j) returns the number of steps required to equalize word1[i:] and word2[j:]
+
+3. DP: O(w1*w2) time | O(w1*w2) space - where w1 is the length of word1 and w2 is the length of word2
 """
 
 
@@ -79,9 +81,26 @@ class Solution:
             return memo[(i, j)]
         return dfs(0, 0)
 
+    def minDistance3(self, word1: str, word2: str) -> int:
+        L1, L2 = len(word1), len(word2)
+        dp = [[1000] * (L2+1) for _ in range(L1+1)]
+        for i in range(L1, -1, -1):
+            for j in range(L2, -1, -1):
+                if i == L1 and j == L2:
+                    dp[i][j] = 0
+                elif i == L1 or j == L2:
+                    dp[i][j] = max(L1-i, L2-j)
+                else:
+                    if word1[i] == word2[j]:
+                        dp[i][j] = dp[i+1][j+1]
+                    else:
+                        dp[i][j] = 1+min(dp[i+1][j], dp[i][j+1])
+        return dp[0][0]
+
 
 # Unit Tests
-funcs = [Solution().minDistance]
+funcs = [Solution().minDistance, Solution().minDistance2,
+         Solution().minDistance3]
 
 
 class TestMinDistance(unittest.TestCase):
