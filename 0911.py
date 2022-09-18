@@ -27,7 +27,7 @@ topVotedCandidate.q(8); // return 1
 
 """
 Note:
-1. HashTable:
+1. HashTable + Binary Search:
 __init__: O(n) time | O(n) space
 q: O(logn) time | O(1) space
 where n is the length of persons
