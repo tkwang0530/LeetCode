@@ -27,25 +27,28 @@ Notes:
 x = 0, return 0
 n = 0, return 1
 """
+
+
+
+
+import unittest
 class Solution(object):
     def myPow(self, x: float, n: int) -> float:
-        result = self.myPowHelper(x, abs(n))
+        def pow(x: float, n: int) -> float:
+            if x == 0:
+                return 0
+            if n == 0:
+                return 1
+
+            result = pow(x*x, n//2)
+            return x * result if n % 2 else result
+        result = pow(x, abs(n))
         return result if n >= 0 else 1/result
-
-    def myPowHelper(self, x: float, n: int):
-        if x == 0: return 0
-        if n == 0: return 1
-
-        # could replace with self.myPowHelper(x*x, n // 2) without the next line
-        result = self.myPowHelper(x, n // 2) 
-        result = result * result
-        return x * result if n % 2 else result
-
 
 
 # Unit Tests
-import unittest
 funcs = [Solution().myPow]
+
 
 class TestMyPow(unittest.TestCase):
     def testMyPow1(self):
