@@ -23,7 +23,8 @@ root is guaranteed to be a valid binary search tree.
 """
 Note:
 1. Iterative BFS : O(n) time | O(n) space - where n is the number of nodes in the tree
-2. Recursive DFS (PostOrder Traversal): O(n) time | O(n) space - where n is the number of nodes in the tree
+2. Recursive DFS (PostOrder Traversal): O(n) time | O(h) space - where n is the number of nodes in the tree
+2. Iterative DFS (PreOrder Traversal): O(n) time | O(h) space - where n is the number of nodes in the tree
 """
 
 
@@ -85,9 +86,45 @@ class Solution:
         root.right = self.trimBST2(root.right, low, high)
         return root
 
+    def trimBST3(self, root: Optional[TreeNode], low: int, high: int) -> Optional[TreeNode]:
+        stack = [(root, None)]
+        while stack:
+            node, parent = stack.pop()
+            if parent:
+                if node.val < low:
+                    parent.left = node.right
+                    if node.right:
+                        stack.append((node.right, parent))
+                elif node.val > high:
+                    parent.right = node.left
+                    if node.left:
+                        stack.append((node.left, parent))
+                else:
+                    if node.right:
+                        stack.append((node.right, node))
+                    if node.left:
+                        stack.append((node.left, node))
+
+            else:
+                if node.val < low:
+                    root = node.right
+                    if root:
+                        stack.append((root, None))
+                elif node.val > high:
+                    root = node.left
+                    if root:
+                        stack.append((root, None))
+                else:
+                    if node.right:
+                        stack.append((node.right, node))
+                    if node.left:
+                        stack.append((node.left, node))
+
+        return root
+
 
 # Unit Tests
-funcs = [Solution().trimBST, Solution().trimBST2]
+funcs = [Solution().trimBST, Solution().trimBST2, Solution().trimBST3]
 
 
 class TestTrimBST(unittest.TestCase):
