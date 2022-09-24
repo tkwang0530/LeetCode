@@ -22,7 +22,8 @@ root is guaranteed to be a valid binary search tree.
 
 """
 Note:
-1. Iteration (BFS) : O(n) time | O(n) space - where n is the number of nodes in the tree
+1. Iterative BFS : O(n) time | O(n) space - where n is the number of nodes in the tree
+2. Recursive DFS (PostOrder Traversal): O(n) time | O(n) space - where n is the number of nodes in the tree
 """
 
 
@@ -72,9 +73,21 @@ class Solution:
                     queue.append((root, None))
         return root
 
+    def trimBST2(self, root: Optional[TreeNode], low: int, high: int) -> Optional[TreeNode]:
+        if not root:
+            return None
+        if root.val < low:
+            return self.trimBST2(root.right, low, high)
+        elif root.val > high:
+            return self.trimBST2(root.left, low, high)
+
+        root.left = self.trimBST2(root.left, low, high)
+        root.right = self.trimBST2(root.right, low, high)
+        return root
+
 
 # Unit Tests
-funcs = [Solution().trimBST]
+funcs = [Solution().trimBST, Solution().trimBST2]
 
 
 class TestTrimBST(unittest.TestCase):
