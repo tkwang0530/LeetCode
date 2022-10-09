@@ -44,57 +44,62 @@ Note:
 1. dfs + HashTable: O(n^3) time | O(n^2) space - where n is the number of bombs
 """
 
+
+
+
+import unittest
 import collections
 from typing import List
 class Solution:
     def maximumDetonation(self, bombs: List[List[int]]) -> int:
         n = len(bombs)
         graph = collections.defaultdict(list)
+
         def isBomb(i, j):
             return (bombs[i][0]-bombs[j][0])**2 + (bombs[i][1]-bombs[j][1])**2 <= bombs[i][-1]**2
-        
+
         for i in range(n):
             for j in range(i+1, n):
                 if isBomb(i, j):
                     graph[i].append(j)
                 if isBomb(j, i):
                     graph[j].append(i)
-        
-        def dfs(i, container, visited):
+
+        def dfs(i, visited):
             for neighbor in graph[i]:
                 if neighbor in visited:
                     continue
                 visited.add(neighbor)
-                container[0] += 1
-                dfs(neighbor, container, visited)
-            return container[0]
-        
+                dfs(neighbor, visited)
+
         maxBombs = 0
         for i in range(n):
-            container = [1]
             visited = set([i])
-            maxBombs = max(maxBombs, dfs(i, container, visited))
+            dfs(i, visited)
+            maxBombs = max(maxBombs, len(visited))
         return maxBombs
 
+
 # Unit Tests
-import unittest
 funcs = [Solution().maximumDetonation]
+
 
 class TestMaximumDetonation(unittest.TestCase):
     def testMaximumDetonation1(self):
         for func in funcs:
-            bombs = [[2,1,3],[6,1,4]]
+            bombs = [[2, 1, 3], [6, 1, 4]]
             self.assertEqual(func(bombs=bombs), 2)
 
     def testMaximumDetonation2(self):
         for func in funcs:
-            bombs = [[1,1,5],[10,10,5]]
+            bombs = [[1, 1, 5], [10, 10, 5]]
             self.assertEqual(func(bombs=bombs), 1)
 
     def testMaximumDetonation3(self):
         for func in funcs:
-            bombs = [[1,2,3],[2,3,1],[3,4,2],[4,5,3],[5,6,4]]
+            bombs = [[1, 2, 3], [2, 3, 1], [3, 4, 2], [4, 5, 3], [5, 6, 4]]
             self.assertEqual(func(bombs=bombs), 5)
+
 
 if __name__ == "__main__":
     unittest.main()
