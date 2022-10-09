@@ -18,7 +18,7 @@ Output: false
 """
 Note:
 1. Recursion: O(n) time | O(n) space
-2. Iteratiion (DFS PreOrder Traversal): O(n) time | O(n) space
+2. Iteration (DFS PreOrder Traversal): O(n) time | O(n) space
 3. Iteration (BFS) : O(n) time | O(n) space
 """
 
