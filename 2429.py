@@ -1,5 +1,6 @@
 """
-2429. Given two positive integers num1 and num2, find the integer x such that:
+2429. Minimize XOR
+Given two positive integers num1 and num2, find the integer x such that:
 - x has the same number of set bits as num2, and
 - The value x XOR num1 is minimal.
 
