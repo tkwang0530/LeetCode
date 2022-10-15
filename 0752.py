@@ -36,7 +36,7 @@ target and deadends[i] consist of digits only.
 
 """
 Note:
-1. BFS: O(4^10) time | O(4^10) space
+1. BFS: O(10^4) time | O(10^4) space
 """
 
 
