@@ -38,7 +38,7 @@ Constraints:
 
 """
 Note:
-1. Greedy + Sort: O(nlogn) time | O(1) space
+1. Greedy + Sort: O(nlogn) time | O(1) space - where n is the length of arr
 """
 
 
