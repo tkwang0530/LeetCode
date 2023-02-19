@@ -30,13 +30,16 @@ Constraints:
 """
 Note:
 1. Two pointers: O(n) time | O(1) space - where n is the length of array arr
+
+2. Binary Search: O(nlogn) time | O(1) space - where n is the length of array arr
 """
 
 
 
 
-import unittest
 from  typing import List
+import unittest
+import bisect
 class Solution:
     def findLengthOfShortestSubarray(self, arr: List[int]) -> int:
         n = len(arr)
@@ -51,25 +54,40 @@ class Solution:
             right -= 1
 
         minRemove = min(n-(left+1), right)
-        #   i         L    R
-        # [1,2,3,10,4,2,3,5]
-
-        #   i        L     R
-        # [4,5,6,10,4,2,3,5]
 
         # merge left subarray and right subarray
         for i in range(left+1):
             if arr[i] <= arr[right]:
                 minRemove = min(minRemove, right - (i+1))
             elif right < n-1:  # choose a larger right
-                right + 1
+                right += 1
             else:
                 break
         return minRemove
 
+    def findLengthOfShortestSubarray2(self, arr: List[int]) -> int:
+        n = len(arr)
+        left, right = 0, n - 1
+        while left < right and arr[left+1] >= arr[left]:
+            left += 1
+
+        if left == right:
+            return 0
+
+        while right > left and arr[right-1] <= arr[right]:
+            right -= 1
+
+        minRemove = min(n-(left+1), right)
+
+        for i in range(left+1):
+            idx = bisect.bisect_left(arr, x=arr[i], lo=right)
+            minRemove = min(minRemove, idx - (i + 1))
+        return minRemove
+
 
 # Unit Tests
-funcs = [Solution().findLengthOfShortestSubarray]
+funcs = [Solution().findLengthOfShortestSubarray,
+         Solution().findLengthOfShortestSubarray2]
 
 
 class TestFindLengthOfShortestSubarray(unittest.TestCase):
