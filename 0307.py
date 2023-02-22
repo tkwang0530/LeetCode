@@ -36,19 +36,23 @@ Note:
 1. Segment Tree
 Space complexity: O(n)
 Time complexity:
-- __init__: O(n) 
+- __init__: O(n)
 - update: O(logn)
 - sumRange: O(logn)
 
 2. Binary Indexed Tree
 Space complexity: O(n)
-Time complexity: 
-- __init__: O(n) 
+Time complexity:
+- __init__: O(n)
 - update: O(logn)
 - sumRange: O(logn)
 """
-from typing import List
 
+
+
+
+import unittest
+from typing import List
 class TreeNode:
     def __init__(self, start, end) -> None:
         self.left = None
@@ -56,6 +60,7 @@ class TreeNode:
         self.start = start
         self.end = end
         self.sum = 0
+
 
 class NumArray:
 
@@ -75,7 +80,6 @@ class NumArray:
 
         self.root = buildTree(nums, 0, len(nums) - 1)
 
-
     def update(self, index: int, val: int) -> None:
         def updateHelper(root: TreeNode, index: int, val: int) -> None:
             if root.start == root.end:
@@ -86,10 +90,8 @@ class NumArray:
                     updateHelper(root.left, index, val)
                 else:
                     updateHelper(root.right, index, val)
-                root.sum  = root.left.sum + root.right.sum
+                root.sum = root.left.sum + root.right.sum
         updateHelper(self.root, index, val)
-        
-
 
     def sumRange(self, left: int, right: int) -> int:
         def query(root: TreeNode, i: int, j: int) -> int:
@@ -102,7 +104,7 @@ class NumArray:
                 return query(root.right, i, j)
             else:
                 return query(root.left, i, mid) + query(root.right, mid+1, j)
-        
+
         return query(self.root, left, right)
 
 
@@ -113,18 +115,25 @@ class NumArray:
 
 class BIT:
     def __init__(self, n):
-        self.arr = [0] * (n+1)
+        # n+1 because BIT starts from 1
+        self.arr = [0] * (n + 1)
 
+    # return the last 1 bit of x
+    def __lowbit(self, x):
+        return x & -x
+
+    # update the value of index i by delta
     def update(self, i, delta):
         while i < len(self.arr):
             self.arr[i] += delta
-            i += i & -i
-    
+            i += self.__lowbit(i)
+
+    # query the sum of [1, i]
     def query(self, i):
         ans = 0
         while i > 0:
             ans += self.arr[i]
-            i -= i & -i
+            i -= self.__lowbit(i)
         return ans
 
 
@@ -132,20 +141,28 @@ class NumArray2:
     def __init__(self, nums: List[int]):
         self.nums = nums
         self.bit = BIT(len(nums))
+
+        # initialize the BIT with nums
         for i, num in enumerate(nums):
+            # BIT starts from 1, so we need to add 1 to i
             self.bit.update(i+1, num)
-        
-    def update(self, index: int, val: int) -> None:
-        delta = val - self.nums[index]
-        self.bit.update(index+1, delta)
-        self.nums[index] = val
+
+    def update(self, i: int, val: int) -> None:
+        # the difference between the new value and the old value
+        delta = val - self.nums[i]
+
+        # update the BIT
+        self.bit.update(i+1, delta)
+        self.nums[i] = val
 
     def sumRange(self, left: int, right: int) -> int:
         return self.bit.query(right+1) - self.bit.query(left)
 
+
 # Unit Tests
-import unittest
 classes = [NumArray, NumArray2]
+
+
 class TestNumArray(unittest.TestCase):
     def testNumArray1(self):
         for MyClass in classes:
