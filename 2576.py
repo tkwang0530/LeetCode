@@ -71,9 +71,26 @@ class Solution:
                 j += 1
         return sum(marks)
 
+    def maxNumOfMarkedIndices2(self, nums: List[int]) -> int:
+        n = len(nums)
+        if n == 1:
+            return 0
+
+        nums.sort()
+        i = 0
+        output = 0
+
+        for j in range(n-n//2, n):
+            num1 = nums[i]
+            num2 = nums[j]
+            if 2 * num1 <= num2:
+                output += 2
+                i += 1
+        return output
+
 
 # Unit Tests
-funcs = [Solution().maxNumOfMarkedIndices]
+funcs = [Solution().maxNumOfMarkedIndices, Solution().maxNumOfMarkedIndices2]
 
 
 class TestMaxNumOfMarkedIndices(unittest.TestCase):
