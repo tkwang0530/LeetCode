@@ -36,7 +36,7 @@ Position x is not forbidden.
 
 """
 Note:
-1. BFS (layer order traversal): O(4000) time | O(4000) space
+1. BFS (layer order traversal): O(n) time | O(n) space - where n is max(x, max(forbidden))+a+b
 """
 
 
@@ -46,7 +46,7 @@ import unittest
 from typing import List
 class Solution:
     def minimumJumps(self, forbidden: List[int], a: int, b: int, x: int) -> int:
-        maxVal = 2000 + a + b
+        maxVal = max(x, max(forbidden)) + a + b
         forbiddenSet = set(forbidden)
         visited = set()
         currentSet = set([(0, 0)])
