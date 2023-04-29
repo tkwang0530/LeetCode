@@ -21,7 +21,8 @@ Constraints:
 
 """
 Note:
-1. Binary Search: O(n^2) time | O(n) space - where n is the length of array nums
+1. Sort + Binary Search: O(n^2) time | O(n) space - where n is the length of array nums
+2. Sort + Two Pointers: O(n^2) time | O(n) space - where n is the length of array nums
 """
 
 
@@ -44,9 +45,23 @@ class Solution:
                 count += (idx-j-1)
         return count
 
+    def triangleNumber2(self, nums: List[int]) -> int:
+        nums.sort()
+        n = len(nums)
+        count = 0
+        for k in range(2, n):
+            i, j = 0, k-1
+            while i < j:
+                if nums[i] + nums[j] > nums[k]:
+                    count += (j-i)
+                    j -= 1
+                else:
+                    i += 1
+        return count
+
 
 # Unit Tests
-funcs = [Solution().triangleNumber]
+funcs = [Solution().triangleNumber, Solution().triangleNumber2]
 
 
 class TestTriangleNumber(unittest.TestCase):
