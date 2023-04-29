@@ -21,7 +21,7 @@ Constraints:
 
 """
 Note:
-1. Sort + Binary Search: O(n^2) time | O(n) space - where n is the length of array nums
+1. Sort + Binary Search: O(n^2*log(n)) time | O(n) space - where n is the length of array nums
 2. Sort + Two Pointers: O(n^2) time | O(n) space - where n is the length of array nums
 """
 
