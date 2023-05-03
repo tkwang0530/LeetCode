@@ -26,13 +26,14 @@ Constraints:
 """
 Note:
 1. Binary Search + Sort: O(nlog(r)) time | O(1) space - where n is the length of array nums, r is the range of nums[i]
+2. dfs + memo + Sort: O(nlogn + np) time | O(np) space  - where n is the length of array nums
 """
 
 
 
 
 from typing import List
-import unittest
+import unittest, functools
 class Solution:
     def minimizeMax(self, nums: List[int], p: int) -> int:
         nums.sort()
@@ -60,9 +61,27 @@ class Solution:
                 left = mid + 1
         return left
 
+    def minimizeMax2(self, nums: List[int], p: int) -> int:
+        nums.sort()
+
+        @functools.lru_cache(None)
+        def dfs(i, p):
+            if i >= len(nums)-1 or p == 0:
+                if p > 0:
+                    return float("inf")
+                return float("-inf")
+
+            maxVal1 = max(abs(nums[i]-nums[i+1]), dfs(i+2, p-1))
+            maxVal2 = dfs(i+1, p)
+            return min(maxVal1, maxVal2)
+
+        if p == 0:
+            return 0
+        return dfs(0, p)
+
 
 # Unit Tests
-funcs = [Solution().minimizeMax]
+funcs = [Solution().minimizeMax, Solution().minimizeMax2]
 
 
 class TestMinimizeMax(unittest.TestCase):
