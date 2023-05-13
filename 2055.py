@@ -32,7 +32,8 @@ queries[i].length == 2
 """
 Note:
 1. prefixSums + binary search: O(n+qlogn) time | O(n+q) space - where n is the length of string s and q is the length of array queries
-2. prefixSums + suffixSums: O(n+q) time | O(n+q) space - where n is the length of string s and q is the length of array queries
+2. prefixSums + prefix + suffix: O(n+q) time | O(n+q) space - where n is the length of string s and q is the length of array queries
+For each indice, find the nearest candle index on the left and on the right.
 """
 
 
