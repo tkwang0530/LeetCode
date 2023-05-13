@@ -31,7 +31,8 @@ queries[i].length == 2
 
 """
 Note:
-1. prefixSums + binary search: O(n+qlogn) time | O(n) space - where n is the length of string s and q is the length of array queries
+1. prefixSums + binary search: O(n+qlogn) time | O(n+q) space - where n is the length of string s and q is the length of array queries
+2. prefixSums + suffixSums: O(n+q) time | O(n+q) space - where n is the length of string s and q is the length of array queries
 """
 
 
@@ -78,9 +79,48 @@ class Solution:
                 answer.append(0)
         return answer
 
+    def platesBetweenCandles2(self, s: str, queries: List[List[int]]) -> List[int]:
+        n = len(s)
+        prefixSums = [0] * (n+1)
+        for i in range(1, n+1):
+            prefixSums[i] = prefixSums[i-1] + (s[i-1] == "*")
+
+        candleIndice = []
+        for i, char in enumerate(s):
+            if char == "|":
+                candleIndice.append(i)
+
+        def countPlates(left, right):
+            return prefixSums[right+1] - prefixSums[left]
+        
+        nearestLeftCandle = [0] * n
+        nearestRightCandle = [0] * n
+
+        candle = -1
+        for i, char in enumerate(s):
+            if char == "|":
+                candle = i
+            nearestLeftCandle[i] = candle
+
+        candle = -1
+        for i in range(n-1, -1, -1):
+            if s[i] == "|":
+                candle = i
+            nearestRightCandle[i] = candle
+        
+        answer = []
+        for left, right in queries:
+            leftCandle = nearestRightCandle[left]
+            rightCandle  = nearestLeftCandle[right]
+            if leftCandle == -1 or rightCandle == -1 or leftCandle >= rightCandle:
+                answer.append(0)
+                continue
+
+            answer.append(countPlates(leftCandle, rightCandle))
+        return answer
 
 # Unit Tests
-funcs = [Solution().platesBetweenCandles]
+funcs = [Solution().platesBetweenCandles, Solution().platesBetweenCandles2]
 
 
 class TestPlatesBetweenCandles(unittest.TestCase):
