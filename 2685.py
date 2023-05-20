@@ -33,20 +33,27 @@ Note:
 """
 from typing import List
 class UnionFind:
-    def __init__(self, total):
-        self.parents = [i for i in range(total)]
-        self.ranks = [1 for _ in range(total)]
-        self.parentsCount = 0
-        
-    def find(self, u):
+    def __init__(self, n: int, edges: List[List[int]]) -> None:
+        self.edgeMap = [set() for _ in range(n)]
+        self.ranks = [1 for _ in range(n)]
+        self.nodes = [1 for _ in range(n)]
+        self.parents = [i for i in range(n)]
+        for node1, node2 in edges:
+            node1, node2 = sorted([node1, node2])
+            self.edgeMap[node1].add((node1, node2))
+            self.edgeMap[node2].add((node1, node2))
+    
+    def find(self, u) -> int:
         if u != self.parents[u]:
             self.parents[u] = self.find(self.parents[u])
+        
         return self.parents[u]
     
-    def union(self, u, v):
+    def union(self, u, v) -> bool:
         pu, pv = self.find(u), self.find(v)
         if pu == pv:
             return False
+
         if self.ranks[pu] < self.ranks[pv]:
             self.parents[pu] = pv
         elif self.ranks[pv] < self.ranks[pu]:
@@ -54,51 +61,50 @@ class UnionFind:
         else:
             self.parents[pv] = pu
             self.ranks[pu] += 1
-        self.parentsCount -= 1
+
+        if self.ranks[pv] > self.ranks[pu]:
+            for edge in self.edgeMap[pu]:
+                self.edgeMap[pv].add(edge)
+            self.nodes[pv] += self.nodes[pu]
+        else:
+            for edge in self.edgeMap[pv]:
+                self.edgeMap[pu].add(edge)
+            self.nodes[pu] += self.nodes[pv]
+        
         return True
+        
 
 class Solution:
-    def numIslands2(self, m: int, n: int, positions: List[List[int]]) -> List[int]:
-        output = []
-        unionFind = UnionFind(m*n)
-        def findIndex(row, col):
-            return row*n + col
-        
-        landsSet = set()
-        for row, col in positions:
-            if (row, col) not in landsSet:
-                unionFind.parentsCount += 1
-            landsSet.add((row, col))
-            for diffRow, diffCol in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
-                nextRow, nextCol = row+diffRow, col+diffCol
-                if nextRow in (-1,m) or nextCol in (-1,n):
-                    continue
-                
-                if (nextRow, nextCol) not in landsSet:
-                    continue
-                
-                unionFind.union(findIndex(row, col), findIndex(nextRow, nextCol))
-            output.append(unionFind.parentsCount)
-                
-        return output
+    def countCompleteComponents(self, n: int, edges: List[List[int]]) -> int:
+        uf = UnionFind(n, edges)
+        for node1, node2 in edges:
+            uf.union(node1, node2)
+
+        total = 0
+        for node in range(n):
+            if uf.find(node) != node:
+                continue
+
+            N = uf.nodes[node]
+            E = len(uf.edgeMap[node])
+            total += ((N*(N-1)//2) == E) or (E == 0 and N == 1)
+        return total
 
 # Unit Tests
 import unittest
-funcs = [Solution().numIslands2]
-class TestNumIslands2(unittest.TestCase):
-    def testNumIslands2_1(self):
+funcs = [Solution().countCompleteComponents]
+class TestCountCompleteComponents(unittest.TestCase):
+    def testCountCompleteComponents1(self):
         for func in funcs:
-            m = 3
-            n = 3
-            positions = [[0,0],[0,1],[1,2],[2,1]]
-            self.assertEqual(func(m=m, n=n, positions=positions), [1,1,2,3])
+            n = 6
+            edges = [[0,1],[0,2],[1,2],[3,4]]
+            self.assertEqual(func(n=n, edges=edges), 3)
 
-    def testNumIslands2_2(self):
+    def testCountCompleteComponents2(self):
         for func in funcs:
-            m = 1
-            n = 1
-            positions = [[0,0]]
-            self.assertEqual(func(m=m, n=n, positions=positions), [1])
+            n = 6
+            edges = [[0,1],[0,2],[1,2],[3,4],[3,5]]
+            self.assertEqual(func(n=n, edges=edges), 1)
 
 if __name__ == "__main__":
     unittest.main()
