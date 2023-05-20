@@ -86,11 +86,6 @@ class Solution:
         for i in range(1, n+1):
             prefixSums[i] = prefixSums[i-1] + (s[i-1] == "*")
 
-        candleIndice = []
-        for i, char in enumerate(s):
-            if char == "|":
-                candleIndice.append(i)
-
         def countPlates(left, right):
             return prefixSums[right+1] - prefixSums[left]
         
