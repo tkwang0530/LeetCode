@@ -29,7 +29,7 @@ Constraints:
 
 """
 Note:
-1. stack: O(n) time | O(n) space - where n is the length of string s
+1. Two Pointers: O(n) time | O(n) space - where n is the length of string s
 """
 
 import unittest
