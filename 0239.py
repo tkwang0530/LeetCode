@@ -44,6 +44,7 @@ Note:
 1. monotonically decreasing queue: O(n) time | O(k) space
 2. max Heap: O(n * logn) time | O(n) space
 3. max Heap (improve): O(n * logn) time | O(n) space
+4. BST: O(nlogk) time | O(k) space
 """
 
 import heapq
