@@ -47,12 +47,13 @@ Note:
 """
 
 import heapq
-from collections import deque
+import collections
+from sortedcontainers import SortedList
 from typing import List
 class Solution(object):
     def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
         result = []
-        queue = deque()
+        queue = collections.deque()
         left = right = 0
         while right < len(nums):
             # pop smaller values from queue
@@ -99,11 +100,27 @@ class Solution(object):
             heapq.heappush(maxHeap, (-nums[right], right))
             result.append(-maxHeap[0][0])
         return result
+    
+    def maxSlidingWindow4(self, nums: List[int], k: int) -> List[int]:
+        n = len(nums)
+        queue = collections.deque([])
+        bst = SortedList()
+        for i in range(k):
+            queue.append(nums[i])
+            bst.add(nums[i])
+
+        output = [bst[-1]]
+        for i in range(k, n):
+            queue.append(nums[i])
+            bst.add(nums[i])
+            bst.remove(queue.popleft())
+            output.append(bst[-1])
+        return output
 
 
 # Unit Tests
 import unittest
-funcs = [Solution().maxSlidingWindow, Solution().maxSlidingWindow2, Solution().maxSlidingWindow3]
+funcs = [Solution().maxSlidingWindow, Solution().maxSlidingWindow2, Solution().maxSlidingWindow3, Solution().maxSlidingWindow4]
 
 class TestMaxSlidingWindow(unittest.TestCase):
     def testMaxSlidingWindow1(self):
