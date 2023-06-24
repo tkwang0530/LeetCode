@@ -35,8 +35,8 @@ import unittest
 from typing import List
 class Solution:
     def maxProfit(self, prices: List[int], fee: int) -> int:
-        idle = 0 # T[i=0][k][0]
-        hold = -float("inf") # T[i=0][k][1]
+        idle = 0 # T[i=-1][k][0]
+        hold = -float("inf") # T[i=-1][k][1]
 
         for price in prices:
             hold = max(hold, idle - price)
