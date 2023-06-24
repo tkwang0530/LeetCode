@@ -34,9 +34,12 @@ Constraints:
 
 """
 Note:
-1. One pass: O(n) time | O(1) space
-oneBuy -> oneProfit -> twoBuy -> twoProfit
-# when you buy the share the second time, it's like you bought it one time if you bought it at the price at price - oneProfit
+1. DP: O(n) time | O(1) space
+Now we have four variables instead of two on each day:
+T[i][1][1] = max(T[i-1][1][1], T[i-1][0][0] - prices[i]) = max(T[i-1][1][1], -prices[i])
+T[i][1][0] = max(T[i-1][1][0], T[i-1][1][1] + prices[i])
+T[i][2][1] = max(T[i-1][2][1], T[i-1][1][0] - prices[i])
+T[i][2][0] = max(T[i-1][2][0], T[i-1][2][1] + prices[i])
 """
 
 
@@ -46,17 +49,16 @@ from typing import List
 import unittest
 class Solution:
     def maxProfit(self, prices: List[int]) -> int:
-        firstBuyLowestPrice = secondBuyLowestPrice = float("inf")
-        firstProfit = secondProfit = 0
+        firstHold = -float("inf")
+        firstIdle = 0
+        secondHold = -float("inf")
+        secondIdle = 0
         for price in prices:
-            firstBuyLowestPrice = min(firstBuyLowestPrice, price)
-            firstProfit = max(firstProfit, price - firstBuyLowestPrice)
-
-            # when you buy the share the second time, it's like you bought it one time if you bought it at the price at price - firstProfit
-            secondBuyLowestPrice = min(
-                secondBuyLowestPrice, price - firstProfit)
-            secondProfit = max(secondProfit, price - secondBuyLowestPrice)
-        return secondProfit
+            secondIdle = max(secondIdle, secondHold + price)
+            secondHold = max(secondHold, firstIdle - price)
+            firstIdle = max(firstIdle, firstHold + price)
+            firstHold = max(firstHold, -price)
+        return secondIdle
 
 
 # Unit Tests
