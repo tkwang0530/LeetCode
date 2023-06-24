@@ -45,8 +45,9 @@ class Solution:
         hold = -float("inf") # T[i=-1][k=inf][1]
         idle = 0 # T[i=-1][k=inf][0]
         for price in prices:
-            hold = max(hold, idle - price)
+            oldIdle = idle
             idle = max(idle, hold + price)
+            hold = max(hold, oldIdle - price)
         return idle
 
 # Unit Tests
