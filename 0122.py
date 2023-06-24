@@ -30,19 +30,24 @@ Constraints:
 
 """
 Note:
-1. One pass: O(n) time | O(1) space
-if tomorrow's price > today's price: we buy stock today, and sell the stock in the next day
+1. DP: O(n) time | O(1) space
+if k is positive infinity, then there isn't any difference between k and k-1, 
+which implies T[i-1][k-1][0] = T[i-1][k][0] and T[i-1][k-1][1] = T[i-1][k][1]
+Therefore,
+T[i][k][0] = max(T[i-1][k][0], T[i-1][k][1] + prices[i])
+T[i][k][1] = max(T[i-1][k][1], T[i-1][k-1][0] - prices[i]) = max(T[i-1][k][1], T[i-1][k][0] - prices[i])
 """
 
 from typing import List
 import unittest
 class Solution:
     def maxProfit(self, prices: List[int]) -> int:
-        profit = 0
-        for i in range(1, len(prices)):
-            if prices[i] > prices[i-1]:
-                profit += prices[i] - prices[i-1]
-        return profit
+        hold = -float("inf") # T[i=-1][k=inf][1]
+        idle = 0 # T[i=-1][k=inf][0]
+        for price in prices:
+            hold = max(hold, idle - price)
+            idle = max(idle, hold + price)
+        return idle
 
 # Unit Tests
 funcs = [Solution().maxProfit]
