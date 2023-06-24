@@ -25,8 +25,10 @@ Constraints:
 """
 Note:
 1. Brute Force: O(n^2) time | O(1) space
-2. Greedy algorithm: O(n) time | O(1) space
-keep track 2 vars: minPrice, maxPro (maxProfit)
+2. DP: O(n) time | O(1) space
+k=1 case
+hold = T[i][1][1] = max(T[i-1][1][1], T[i-1][0][0] - prices[i]) = max(T[i-1][1][1], -prices[i])
+idle = T[i][1][0] = max(T[i-1][1][0], T[i-1][1][1] + prices[i])
 """
 
 from typing import List
@@ -41,15 +43,12 @@ class Solution:
 
 
     def maxProfit2(self, prices: List[int]) -> int:
-        minPrice = float("inf")
-        maxPro = 0
+        hold = -float("inf") # T[i=-1][1][1]
+        idle = 0 # T[i=-1][1][0]
         for price in prices:
-            minPrice = min(minPrice, price)
-            maxPro = max(maxPro, price - minPrice)
-        return maxPro
-
-
-
+            hold = max(hold, -price)
+            idle = max(idle, hold + price)
+        return idle
 
 # Unit Tests
 funcs = [Solution().maxProfit,Solution().maxProfit2]
