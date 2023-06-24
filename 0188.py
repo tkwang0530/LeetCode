@@ -25,6 +25,11 @@ Constraints:
 """
 Note:
 1. DP: O(n*k) time | O(k) space
+critical value of k is n/2
+if k >= n/2, we can extend k to positive infinity and the problem is equivalent to LC122
+Otherwise,
+T[i][k][0] = max(T[i-1][k][0], T[i-1][k][1] + prices[i])
+T[i][k][1] = max(T[i-1][k][1], T[i-1][k-1][0] - prices[i])
 """
 
 
@@ -34,16 +39,22 @@ from typing import List
 import unittest
 class Solution:
     def maxProfit(self, k: int, prices: List[int]) -> int:
-        if k == 0:
-            return 0
-        lowestPrices = [float("inf")] * k
-        profits = [0] * k
+        if k >= len(prices) // 2:
+            hold = -float("inf")
+            idle = 0
+            for price in prices:
+                oldIdle = idle
+                idle = max(idle, hold+price)
+                hold = max(hold, oldIdle-price)
+            return idle
+        
+        T_ik0 = [0] * (k+1)
+        T_ik1 = [-float("inf")] * (k+1)
         for price in prices:
-            for i in range(k):
-                lowestPrices[i] = min(
-                    lowestPrices[i], price if i == 0 else price - profits[i-1])
-                profits[i] = max(profits[i], price - lowestPrices[i])
-        return profits[-1]
+            for j in range(k, 0, -1):
+                T_ik0[j] = max(T_ik0[j], T_ik1[j]+price)
+                T_ik1[j] = max(T_ik1[j], T_ik0[j-1]-price)
+        return T_ik0[k]
 
 
 # Unit Tests
