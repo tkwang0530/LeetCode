@@ -52,6 +52,10 @@ pickIndex will be called at most 10000 times.
 1. Prefix Sum
 O(n) time | O(n) space for __init__
 O(logn) time | O(1) space for pickIndex
+
+2. Use tuple as value range
+O(n) time | O(n) space for __init__
+O(logn) time | O(1) space for pickIndex
 """
 
 from typing import List
@@ -74,13 +78,39 @@ class Solution:
             else:
                 right = mid
         return left
+    
+class Solution2:
+
+    def __init__(self, w: List[int]):
+        self.weightedIndice = []
+        total = 0
+        for currentWeight in w:
+            self.weightedIndice.append((total, total+currentWeight))
+            total += currentWeight
+        self.weightSum = total
+
+    def pickIndex(self) -> int:
+        left, right = 0, len(self.weightedIndice)
+        pickValue = random.randint(0, self.weightSum-1)
+        while left < right:
+            mid = left + (right - left) // 2
+            weightIndex = self.weightedIndice[mid]
+            if weightIndex[0] <= pickValue < weightIndex[1]:
+                return mid
+            elif pickValue < weightIndex[0]:
+                right = mid
+            else:
+                left = mid + 1
+        return left
 
 # Unit Tests
 import unittest
+classes = [Solution, Solution2]
 class TestPickIndex(unittest.TestCase):
     def testPickIndex1(self):
-        obj = Solution([1, 3])
-        self.assertTrue(obj.pickIndex() in (1, 0))
+        for myclass in classes:
+            obj = myclass([1, 3])
+            self.assertTrue(obj.pickIndex() in (1, 0))
 
 if __name__ == "__main__":
     unittest.main()
