@@ -23,36 +23,42 @@ Constraints:
 
 """
 Note:
-1. recursion + caching: O(n) time | O(n) space
+1. dfs+memo: O(n) time | O(n) space
+2. dp: O(n) time | O(1) space
+T[i][k][0] = max(T[i-1][k][0], T[i-1][k][1] + prices[i])
+T[i][k][1] = max(T[i-1][k][1], T[i-2][k-1][0] - prices[i])
+                = max(T[i-1][k][1], T[i-2][k][0] - prices[i])
 """
 
-from typing import Dict, List
+from typing import List
+import functools
 class Solution:
     def maxProfit(self, prices: List[int]) -> int:
-        cache = {} # <(i, buying), maxProfit>
-        return self.dfs(prices, 0, True, cache)
+        @functools.lru_cache(None)
+        def dfs(i, buying) -> int:
+            if i >= len(prices):
+                return 0
+            cooldown = dfs(i+1, buying)
+            if buying:
+                buy = dfs(i+1, not buying) - prices[i]
+                return max(buy, cooldown)
+            else:
+                sell = dfs(i+2, not buying) + prices[i]
+                return max(sell, cooldown)
+        return dfs(0, True)
 
-    def dfs(self, prices: List[int], i: int, buying: bool, cache: Dict) -> int:
-        if i >= len(prices):
-            return 0
-        if (i, buying) in cache:
-            return cache[(i, buying)]
-
-        # always have cooldown option
-        cooldown = self.dfs(prices, i+1, buying, cache)
-
-        # if current run buying, next run selling (not buying)
-        if buying:
-            buy = self.dfs(prices, i+1, not buying, cache) - prices[i]
-            cache[(i, buying)] = max(buy, cooldown)
-        else:
-            sell = self.dfs(prices, i+2, not buying, cache) + prices[i]
-            cache[(i, buying)] = max(sell, cooldown)
-        return cache[(i, buying)]
+    def maxProfit2(self, prices: List[int]) -> int:
+        hold = float("-inf")
+        preIdle = idle = 0
+        for price in prices:
+            hold = max(hold, preIdle - price)
+            preIdle = idle
+            idle = max(idle, hold + price)
+        return idle
 
 # Unit Tests
 import unittest
-funcs = [Solution().maxProfit]
+funcs = [Solution().maxProfit, Solution().maxProfit2]
 
 
 class TestMaxProfit(unittest.TestCase):
