@@ -25,21 +25,30 @@ Constraints:
 Notes:
 1. Sliding Window: O(n) time | O(1) space - where n is the length of s
 2. Binary Search: O(nlogn) time | O(1) space - where n is the length of s
+3. Binary Search: O(nlogn) time | O(n) space - where n is the length of s
 """
-
+import bisect
 from typing import List
 class Solution(object):
     def minSubArrayLen(self, target: int, nums: List[int]) -> int:
-        start = end = 0
+        if sum(nums) < target:
+            return 0
+        
+        n = len(nums)
+        start = 0
         currentSum = 0
-        minLength = float("inf")
-        for end in range(len(nums)):
+        minLength = n
+        for end in range(n):
             currentSum += nums[end]
-            while currentSum >= target and start <= end:
-                minLength = min(minLength, end - start + 1)
+            
+            # 達成最小滿足條件
+            while start < end and currentSum - nums[start] >= target:
                 currentSum -= nums[start]
                 start += 1
-        return minLength if minLength <= len(nums) else 0
+            
+            if currentSum >= target:
+                minLength = min(minLength, end-start+1)
+        return minLength
     
     def minSubArrayLen2(self, target: int, nums: List[int]) -> int:
         minLength = float("inf")
@@ -61,9 +70,27 @@ class Solution(object):
                 right = mid
         return left
 
+    def minSubArrayLen3(self, target: int, nums: List[int]) -> int:
+        if sum(nums) < target:
+            return 0
+        
+        n = len(nums)
+        preSums = [0] * (n+1)
+        for i in range(1, n+1):
+            preSums[i] = preSums[i-1] + nums[i-1]
+        
+        minLength = n
+        for i in range(n):
+            A = target+preSums[i]
+            j = bisect.bisect_left(preSums, A)
+            if 0 <= j < len(preSums):
+                minLength = min(minLength, j-i)
+            
+        return minLength
+
 # Unit Tests
 import unittest
-funcs = [Solution().minSubArrayLen, Solution().minSubArrayLen2]
+funcs = [Solution().minSubArrayLen, Solution().minSubArrayLen2, Solution().minSubArrayLen3]
 
 class TestMinSubArrayLen(unittest.TestCase):
     def testMinSubArrayLen1(self):
