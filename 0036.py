@@ -45,10 +45,11 @@ board[i][j] is a digit 1-9 or '.' .
 """
 Note:
 1. Use // operator to determine block region: O(1) time | O(1) space
+2. HashTable: O(1) time | O(1) space
 """
 
 from typing import List
-import unittest
+import unittest, collections
 class Solution:
     def isValidSudoku(self, board: List[List[str]]) -> bool:
         rows, cols = len(board), len(board[0])
@@ -81,8 +82,28 @@ class Solution:
                     return False
         return True
 
+    def isValidSudoku2(self, board: List[List[str]]) -> bool:
+        rows = len(board)
+        cols = len(board[0])
+        blockNums = collections.defaultdict(set)
+        rowNums = collections.defaultdict(set)
+        colNums = collections.defaultdict(set)
+
+        for row in range(rows):
+            for col in range(cols):
+                val = board[row][col]
+                if val == ".":
+                    continue
+                if val in blockNums[(row//3, col//3)]:
+                    return False
+                if val in rowNums[row] or val in colNums[col]:
+                    return False
+                blockNums[(row//3, col//3)].add(val)
+                rowNums[row].add(val)
+                colNums[col].add(val)
+        return True
 # Unit Tests
-funcs = [Solution().isValidSudoku]
+funcs = [Solution().isValidSudoku, Solution().isValidSudoku2]
 
 
 class TestIsValidSudoku(unittest.TestCase):
