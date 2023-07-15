@@ -31,8 +31,11 @@ The number of nodes in the tree is in the range [1, 100]
 
 """
 Note:
-1. Iterative BFS: O(n) time | O(n) space
+1. BFS: O(n) time | O(n) space
 Track the hasNone property
+
+2. BFS (layer order traversal): O(n) time | O(n) space
+Trace the hasFoundEmpty, hasFoundNotFullLevel property
 """
 
 
@@ -62,10 +65,41 @@ class Solution:
             queue.append(node.right)
         return True
 
+    def isCompleteTree2(self, root: Optional[TreeNode]) -> bool:
+        level = 1
+        currentNodes = [root]
+        hasFoundEmpty = False
+        hasFoundNotFullLevel = False
+        while currentNodes:
+            nextNodes = []
+            for node in currentNodes:
+                if node.left:
+                    nextNodes.append(node.left)
+                    if hasFoundEmpty:
+                        return False
+                else:
+                    hasFoundEmpty = True
 
+                if node.right:
+                    nextNodes.append(node.right)
+                    if hasFoundEmpty:
+                        return False
+                else:
+                    hasFoundEmpty = True
+
+            if hasFoundNotFullLevel and len(nextNodes) > 0:
+                return False
+            
+            if len(nextNodes) < 2**level:
+                hasFoundNotFullLevel = True
+
+            hasFoundEmpty = False
+            level += 1
+            currentNodes = nextNodes
+        return True
 
 # Unit Tests
-funcs = [Solution().isCompleteTree]
+funcs = [Solution().isCompleteTree, Solution().isCompleteTree2]
 
 
 class TestIsCompleteTree(unittest.TestCase):
