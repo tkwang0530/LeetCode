@@ -63,15 +63,17 @@ class Solution(object):
         return result
 
     def minMeetingRooms3(self, intervals: List[List[int]]) -> int:
-        startIncreaseRooms = collections.defaultdict(int)
+        sweep = collections.defaultdict(int)
         for start, end in intervals:
-            startIncreaseRooms[start] += 1
-            startIncreaseRooms[end] -= 1
+            sweep[start] += 1
+            sweep[end] -= 1
+        
+        minimumRooms = 0
+        meetingRooms = 0
+        for time in sorted(sweep.keys()):
+            meetingRooms += sweep[time]
+            minimumRooms = max(minimumRooms, meetingRooms)
 
-        currentRooms = minimumRooms = 0
-        for start in sorted(startIncreaseRooms.keys()):
-            currentRooms += startIncreaseRooms[start]
-            minimumRooms = max(minimumRooms, currentRooms)
         return minimumRooms
 
 
