@@ -15,9 +15,10 @@ Explanation: Intervals [1,4] and [4,5] are considered overlapping.
 
 """
 Note:
-1. Sort + one pass: O(nlogn) time | O(n) space
+1. Sort + one pass: O(nlogn) time | O(n) space - where n is the length of array intervals
+2. Sort + Sweep Line (Reverse): O(nlogn) time | O(n) space - where n is the length of array intervals
 """
-
+import collections
 from typing import List
 class Solution:
     def merge(self, intervals: List[List[int]]) -> List[List[int]]:
@@ -33,10 +34,29 @@ class Solution:
             
         return mergedIntervals
 
+    def merge2(self, intervals: List[List[int]]) -> List[List[int]]:
+        sweep = collections.defaultdict(int)
+        for start, end in intervals:
+            sweep[start] += 1
+            sweep[end] -= 1
+        
+        current = 0
+        mergedIntervals = []
+        added = False
+        for time in sorted(sweep.keys()):
+            current += sweep[time]
+            if current == sweep[time]:
+                mergedIntervals.append([time, -1])
+                added = True
+            
+            if current == 0 and added:
+                mergedIntervals[-1][1] = time
+                added = False
+        return mergedIntervals
 
 # Unit Tests
 import unittest
-funcs = [Solution().merge]
+funcs = [Solution().merge, Solution().merge2]
 class TestMerge(unittest.TestCase):
     def testMerge1(self):
         for func in funcs:
