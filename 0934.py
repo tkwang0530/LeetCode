@@ -38,42 +38,42 @@ class Solution:
         rows = len(grid)
         cols = len(grid[0])
 
+        currentPointSet = set()
         def dfs(row, col, label):
             for nextRow, nextCol in [(row+1, col), (row-1, col), (row, col+1), (row, col-1)]:
                 if nextRow in (-1, rows) or nextCol in (-1, cols) or grid[nextRow][nextCol] != 1:
                     continue
 
                 grid[nextRow][nextCol] = label
+                currentPointSet.add((nextRow, nextCol))
                 dfs(nextRow, nextCol, label)
 
         label = 2
+        found = False
         for row in range(rows):
             for col in range(cols):
                 if grid[row][col] == 1:
                     grid[row][col] = label
-                    dfs(row, col, label)
-                    label += 1
-
-        currentPointSet = set()
-        for row in range(rows):
-            for col in range(cols):
-                if grid[row][col] == 2:
                     currentPointSet.add((row, col))
-        
+                    dfs(row, col, label)
+                    found = True
+                    break
+            if found:
+                break
         
         steps = 0
         while currentPointSet:
             nextPointSet = set()
             for row, col in currentPointSet:
                 for nextRow, nextCol in [(row+1, col), (row-1, col), (row, col+1), (row, col-1)]:
-                    if nextRow in (-1, rows) or nextCol in (-1, cols) or grid[nextRow][nextCol] == 2:
+                    if nextRow in (-1, rows) or nextCol in (-1, cols) or grid[nextRow][nextCol] == label:
                         continue
-                    if grid[nextRow][nextCol] == 3:
+                    if grid[nextRow][nextCol] == 1:
                         return steps
 
                     # grid[nextRow][nextCol] = 0
                     nextPointSet.add((nextRow, nextCol))
-                    grid[nextRow][nextCol] = 2
+                    grid[nextRow][nextCol] = label
             
             currentPointSet = nextPointSet
             steps += 1
