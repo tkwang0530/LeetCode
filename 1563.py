@@ -29,39 +29,50 @@ Constraints:
 2. dp (TLE): O(n^3) time | O(n^2) space - where n is the length of stoneValue
 """
 
+import functools
 from typing import List
-class Solution(object):
+class Solution:
     def stoneGameV(self, stoneValue: List[int]) -> int:
         n = len(stoneValue)
         preSums = [0] * (n+1)
         for i in range(1, n+1):
             preSums[i] = preSums[i-1] + stoneValue[i-1]
 
-        memo = {}
-        def dfs(i, j):
-            if (i, j) in memo:
-                return memo[(i, j)]
+        # rangeSum returns rangeSum from i to j inclusive
+        def rangeSum(i, j):
+            return preSums[j+1] - preSums[i]
 
-            if i >= j:
+        @functools.lru_cache(None)
+        def dfs(i: int, j: int) -> int:
+            if i == j:
                 return 0
 
-            score = 0
-            for k in range(i, j):
-                # k is the endIndex of the left, left:[..., k], right:[k+1, ...]
-                leftSum = preSums[k+1] - preSums[i]
-                rightSum = preSums[j+1] - preSums[k+1]
-
-                if leftSum < rightSum:
-                    score = max(score, dfs(i, k) + leftSum)
-                elif leftSum > rightSum:
-                    score = max(score, dfs(k+1, j) + rightSum)
+            maxScore = 0
+            # separate subarry[i:j] to [i:k-1] and [k:j]
+            for k in range(i+1, j+1):
+                leftSum = rangeSum(i, k-1)
+                rightSum = rangeSum(k, j)
+                if leftSum == rightSum:
+                    maxScore = max(
+                        maxScore,
+                        leftSum + max(dfs(i, k-1), dfs(k, j))
+                    )
+                elif leftSum < rightSum:
+                    maxScore = max(
+                        maxScore,
+                        leftSum + dfs(i, k-1)
+                    )
                 else:
-                    score = max(score, dfs(i, k) + leftSum, dfs(k+1, j) + rightSum)
-            memo[(i, j)] = score
-            return memo[(i, j)]
+                    maxScore = max(
+                        maxScore,
+                        rightSum + dfs(k, j)
+                    )
+            return maxScore
+
         return dfs(0, n-1)
 
-    def stoneGameV2(self, stoneValue: List[int]) -> int:
+class Solution2:
+    def stoneGameV(self, stoneValue: List[int]) -> int:
         n = len(stoneValue)
         preSums = [0] * (n+1)
         for i in range(1, n+1):
@@ -85,7 +96,7 @@ class Solution(object):
 
 # Unit Tests
 import unittest
-funcs = [Solution().stoneGameV, Solution().stoneGameV2]
+funcs = [Solution().stoneGameV, Solution2().stoneGameV]
 
 
 class TestStoneGameV(unittest.TestCase):
