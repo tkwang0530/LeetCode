@@ -6,6 +6,10 @@ description: https://leetcode.com/problems/find-latest-group-of-size-m/descripti
 """
 Note:
 1. bst + counter: O(nlogn) time | O(n) space - where n is the length of array arr
+2. Count the length of Groups: O(n) time | O(n) space - where n is the length of array arr
+the length value is updated on the leftmost and the right most bit of the group
+The length value inside the group may be outdated
+ref: https://leetcode.com/problems/find-latest-group-of-size-m/solutions/806786/java-c-python-count-the-length-of-groups-o-n/
 """
 
 from typing import List
@@ -42,9 +46,23 @@ class Solution:
             split(bst, arr[i])
         return -1
 
+class Solution2:
+    def findLatestStep(self, arr: List[int], m: int) -> int:
+        n = len(arr)
+        if n == m:
+            return m
+        sizes = [0] * (n+2)
+        candidate = -1
+        for i, idx in enumerate(arr):
+            sizeLeft, sizeRight = sizes[idx-1], sizes[idx+1]
+            if m in (sizeLeft, sizeRight):
+                candidate = i
+            sizes[idx-sizeLeft] = sizes[idx+sizeRight] = sizeLeft+sizeRight+1
+        return candidate
+
 # Unit Tests
 import unittest
-funcs = [Solution().findLatestStep]
+funcs = [Solution().findLatestStep, Solution2().findLatestStep]
 class TestFindLatestStep(unittest.TestCase):
     def testFindLatestStep1(self):
         for findLatestStep in funcs:
