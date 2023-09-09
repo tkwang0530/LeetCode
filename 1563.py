@@ -25,8 +25,10 @@ Constraints:
 """
 
 """ 
-1. max recursion + memo (TLE): O(n^3) time | O(n^2) space - where n is the length of stoneValue
-2. dp (TLE): O(n^3) time | O(n^2) space - where n is the length of stoneValue
+1. max recursion + memo (TLE): O(n^3) time | O(n^2) space - where n is the length of array stoneValue
+2. dp (TLE): O(n^3) time | O(n^2) space - where n is the length of array stoneValue
+3. optimized dp: O(n^2) time | O(n^2) space - where n is the length of array stoneValue
+ref: https://leetcode.com/problems/stone-game-v/solutions/2709223/python-o-n-2-dp-solution-faster-than-100-1399ms/
 """
 
 import functools
@@ -94,9 +96,43 @@ class Solution2:
                 dp[i][j] = score
         return dp[0][n-1]
 
+class Solution3:
+    def stoneGameV(self, stoneValue: List[int]) -> int:
+        n = len(stoneValue)
+        dp = [[0] * n for _ in range(n)]
+        maxScore = [[0] * n for _ in range(n)]
+
+        for i in range(n):
+            maxScore[i][i] = stoneValue[i]
+
+        
+        for k in range(1, n):
+            mid = k
+            rangeSum = stoneValue[k]
+            rightSum = 0
+            for i in range(k-1, -1, -1):
+                # rangeSum = sum of stoneValue from i to k inclusive
+                rangeSum += stoneValue[i]
+                while (rightSum + stoneValue[mid]) * 2 <= rangeSum:
+                    rightSum += stoneValue[mid]
+                    mid -= 1
+
+                # at this moment, rightSum + stoneValue[mid] > rangeSum
+                # leftSum, stoneValue[mid], rightSum
+                # check max left
+                dp[i][k] = maxScore[i][mid] if rightSum * 2 == rangeSum else (0 if mid == i else maxScore[i][mid - 1])
+
+                # check max right
+                dp[i][k] = max(dp[i][k], 0 if mid == k else maxScore[k][mid + 1])
+
+                # update maxScore
+                maxScore[i][k] = max(maxScore[i][k - 1], dp[i][k] + rangeSum)
+                maxScore[k][i] = max(maxScore[k][i + 1], dp[i][k] + rangeSum)
+        return dp[0][n - 1]
+
 # Unit Tests
 import unittest
-funcs = [Solution().stoneGameV, Solution2().stoneGameV]
+funcs = [Solution().stoneGameV, Solution2().stoneGameV, Solution3().stoneGameV]
 
 
 class TestStoneGameV(unittest.TestCase):
