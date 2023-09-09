@@ -5,8 +5,8 @@ description: https://leetcode.com/problems/most-visited-sector-in-a-circular-tra
 
 """
 Note:
-1. Simulation: O(nm) time | O(n) space
-2. Greedy
+1. Simulation: O(nm) time | O(n) space - where m is the length of array rounds
+2. Greedy: O(n) time | O(n) space
                           s------n
 1----------------------n
 1 ---------------------n
