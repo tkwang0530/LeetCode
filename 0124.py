@@ -1,32 +1,6 @@
 """
 124. Binary Tree Maximum Path Sum
-A path in a binary tree is a sequence of nodes where each pair of adjacent nodes in the sequence has an edge connecting them. A node can be only appear in the sequence at most once. Note that the path does not need to pass through the root.
-
-The path sum of a path is the sum of the node's values in the path.
-
-Given the root of a binary tree, return the maximum path sum of any path.
-
-Example1:
-            1
-         /     \
-       2       3
-Input: root = [1,2,3]
-Output: 6
-Explanation: The optimal path is 2 -> 1 -> 3 with a path sum of 2 + 1 + 3 = 6.
-
-Example2:
-        -10
-       /      \
-     9        20
-             /     \
-           15     7            
-Input: root = [-10,9,20,null,null,15,7]
-Output: 42
-Explanation: The optimal path is 15 -> 20 -> 7 with a path sum of 15 + 20 + 7 = 42.
-
-Constraints:
-The number of nodes in the tree is in the range [1, 3 * 10^4].
--1000 <= Node.val <= 1000
+description: https://leetcode.com/problems/binary-tree-maximum-path-sum/description/
 """
 
 """
@@ -36,7 +10,7 @@ Note:
 (2) return the splitSum to its parent for further computation
 Note that the nonSplitSum must include root.val
 
-2. Iteration (DFS - PreOrder like Traversal): O(n) time | O(n) space
+2. Iteration (DFS - PostOrder like Traversal): O(n) time | O(n) space
 """
 
 from typing import List, Optional
@@ -49,26 +23,26 @@ class TreeNode:
 
 class Solution:
     def maxPathSum(self, root: Optional[TreeNode]) -> int:
-        if not root:
-            return 0
-        result = [root.val] # [maxSum]
-        self.dfs(root, result)
-        return result[0]
+        # dfs returns the maximum non-split sum for tree with root
+        # in the same time, tracing the max path sum using container
+        def dfs(root, container):
+            if not root:
+                return 0
 
-    def dfs(self, root: Optional[TreeNode], result: List[int]) -> int:
-        if not root:
-            return 0
+            leftNonSplitSum = max(0, dfs(root.left, container))
+            rightNonSplitSum = max(0, dfs(root.right, container))
+            
+            # note: maxSplitSum must include root's val (a.k.a maxIncludeRootSum)
+            maxSplitSum = root.val + leftNonSplitSum + rightNonSplitSum
+            container[0] = max(container[0] , maxSplitSum)
+            return root.val + max(leftNonSplitSum, rightNonSplitSum)
 
-        leftNonSplitSum = self.dfs(root.left, result)
-        rightNonSplitSum = self.dfs(root.right, result)
-        
-        leftNonSplitSum = max(0, leftNonSplitSum)
-        rightNonSplitSum = max(0, rightNonSplitSum)
-        maxSplitSum = root.val + leftNonSplitSum + rightNonSplitSum
-        result[0] = max(result[0], maxSplitSum)
-        return root.val + max(leftNonSplitSum, rightNonSplitSum)
+        container = [root.val]
+        dfs(root, container)
+        return container[0]
 
-    def maxPathSum2(self, root: Optional[TreeNode]) -> int:
+class Solution2:
+    def maxPathSum(self, root: Optional[TreeNode]) -> int:
         maxSum = root.val
         nodeToValue = {None: 0}
         for node in self.getPostOrder(root):
@@ -94,7 +68,7 @@ class Solution:
 
 # Unit Tests
 import unittest
-funcs = [Solution().maxPathSum, Solution().maxPathSum2]
+funcs = [Solution().maxPathSum, Solution2().maxPathSum]
 
 
 class TestMaxPathSum(unittest.TestCase):
