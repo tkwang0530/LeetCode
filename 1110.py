@@ -5,7 +5,8 @@ description: https://leetcode.com/problems/delete-nodes-and-return-forest/descri
 
 """
 Note:
-1. DFS (PostOrder Traversal Twice) + HashTable: O(n) time | O(n+h) space - where n is the number of nodes, h is the height of the tree
+1. DFS (PostOrder Traversal) + HashTable: O(n) time | O(n+h) space - where n is the number of nodes, h is the height of the tree
+ref: https://leetcode.com/problems/delete-nodes-and-return-forest/solutions/328853/java-c-python-recursion-solution/
 """
 
 from typing import List, Optional
@@ -18,55 +19,20 @@ class TreeNode:
 class Solution:
     def delNodes(self, root: Optional[TreeNode], to_delete: List[int]) -> List[TreeNode]:
         toDeleteSet = set(to_delete)
-        parents = {root.val: -1}
-        valueToNode = {}
-        def dfs(root):
-            if not root:
-                return
-            
-            valueToNode[root.val] = root
-            if root.left:
-                parents[root.left.val] = root.val
-                dfs(root.left)
-            
-            if root.right:
-                parents[root.right.val] = root.val
-                dfs(root.right)
-        
-        dfs(root)
-
-        def removeNodesHelper(root):
-            if not root:
-                return
-
-            if root.left:
-                removeNodesHelper(root.left)
-
-            if root.right:
-                removeNodesHelper(root.right)
-
-            if root.val in toDeleteSet:
-                if root.left:
-                    parents[root.left.val] = -1
-                if root.right:
-                    parents[root.right.val] = -1
-                
-                root.left = None
-                root.right = None
-
-                if parents[root.val] != -1:
-                    parent = valueToNode[parents[root.val]]
-                    if parent.left == root:
-                        parent.left = None
-                    elif parent.right == root:
-                        parent.right = None
-        removeNodesHelper(root)
-
         output = []
-        for nodeVal, parentVal in parents.items():
-            if parentVal == -1 and nodeVal not in toDeleteSet:
-                output.append(valueToNode[nodeVal])
+        def dfs(root, hasParent):
+            if not root:
+                return None
 
+            rootDeleted = root.val in toDeleteSet
+            if not hasParent and not rootDeleted:
+                output.append(root)
+            
+            root.left = dfs(root.left, not rootDeleted)
+            root.right = dfs(root.right, not rootDeleted)
+            return None if rootDeleted else root
+
+        dfs(root, False)
         return output
 
 # Unit Tests
