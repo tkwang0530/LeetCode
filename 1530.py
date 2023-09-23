@@ -1,36 +1,14 @@
 """
 1530. Number of Good Leaf Nodes Pairs
-You are given the root of a binary tree and an integer distance. A pair of two different leaf nodes of a binary tree is said to be good if the length of the shortest path between them is less than or equal to distance.
-
-Return the number of good leaf node pairs in the tree.
-
-Example1:
-Input: root = [1,2,3,null,4], distance = 3
-Output: 1
-Explanation: The leaf nodes of the tree are 3 and 4 and the length of the shortest path between them is 3. This is the only good pair.
-
-
-Example2:
-Input: root = [1,2,3,4,5,6,7], distance = 3
-Output: 2
-Explanation: The good pairs are [4,5] and [6,7] with shortest path = 2. The pair [4,6] is not good because the length of ther shortest path between them is 4.
-
-Example3:
-Input: root = [7,1,4,6,null,5,3,null,null,null,null,null,2], distance = 3
-Output: 1
-Explanation: The only good pair is [2,5].
-
-Constraints:
-The number of nodes in the tree is in the range [1, 2^10].
-1 <= Node.val <= 100
-1 <= distance <= 10
+description: https://leetcode.com/problems/number-of-good-leaf-nodes-pairs/description/
 """
 
 """
 Note:
-1. DFS (Bottom up): O(100n) time | O(n) space - where n is the number of nodes
+1. DFS (PostOrder Traversal): O(distance^2 * n) time | O(distance * h) space - where n is the number of nodes, h is the height of the tree
 """
 
+from typing import List
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
         self.val = val
@@ -39,31 +17,32 @@ class TreeNode:
 
 class Solution:
     def countPairs(self, root: TreeNode, distance: int) -> int:
-        goodPairs = 0     
-        def dfs(node):
-            nonlocal goodPairs
-            if not node:
-                return {}
-            if not node.left and not node.right:
-                return {1:1}
+        container = [0]
+        def dfs(root, container) -> List[int]:
+            arr = [0] * (distance+1)
+            if not root:
+                return arr
+
+            if not root.left and not root.right:
+                arr[0] = 1
+                return arr
             
-            left = dfs(node.left)
-            right = dfs(node.right)
+            left = dfs(root.left, container)
+            right = dfs(root.right, container)
+            for disL in range(distance): # 0 ~ distance-1
+                for disR in range(distance):
+                    if (disL+1) + (disR+1) <= distance:
+                        container[0] += left[disL]*right[disR]
             
-            sortedLeft = sorted(left.keys())
-            sortedRight = sorted(right.keys())
+            # shift by 1
+            # arr[i+1] = left[i]+right[i]
+            for i in range(distance):
+                arr[i+1] = left[i]+right[i]
             
-            for l in sortedLeft:
-                for r in sortedRight:
-                    if l + r > distance:
-                        break
-                    goodPairs += left[l] * right[r]
-            
-            result = {key+1: left.get(key, 0) + right.get(key, 0) for key in range(1, distance) if left.get(key, 0) + right.get(key, 0) > 0}
-                
-            return result
-        dfs(root)
-        return goodPairs
+            return arr
+        
+        dfs(root, container)
+        return container[0]
 
 # Unit Tests
 import unittest
