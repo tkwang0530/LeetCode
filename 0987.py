@@ -1,64 +1,13 @@
 """
 987. Vertical Order Traversal of a Binary Tree
-Given the root of a binary tree, calculate the vertical order traversal of the binary tree.
-
-For each node at position (row, col), its left and right children will be at positions (row + 1, col - 1) and (row + 1, col + 1) respectively. The root of the tree is at (0, 0).
-
-The vertical order Traversal of a binary tree is a list of top-to-bottom orderings for each column index starting from the leftmost column and ending on the rightmost column. There may be multiple nodes in the same row and same column. In such a case, sort these nodes by their values.
-
-Return the vertical order traversal of the binary tree.
-
-Example1:
-        3
-      /    \
-    9      20
-           /    \
-        15      7
-Input: root = [3,9,20,null,null,15,7]
-Output: [[9],[3,15],[20],[7]]
-Explanation:
-Column -1: Only node 9 is in this column.
-Column 0: Nodes 3 and 15 are in this column in that order from top to bottom.
-Column 1: Only node 20 is in this column.
-Column 2: Only node 7 is in this column.
-
-Example2:
-Input: root = [1,2,3,4,5,6,7]
-Output: [[4],[2],[1,5,6],[3],[7]]
-Explanation:
-Column -2: Only node 4 is in this column.
-Column -1: Only node 2 is in this column.
-Column 0: Nodes 1, 5, and 6 are in this column.
-          1 is at the top, so it comes first.
-          5 and 6 are at the same position (2, 0), so we order them by their value, 5 before 6.
-Column 1: Only node 3 is in this column.
-Column 2: Only node 7 is in this column.
-
-Example3:
-Input: root = [1,2,3,4,5,6,7]
-Output: [[4],[2],[1,5,6],[3],[7]]
-Explanation:
-Column -2: Only node 4 is in this column.
-Column -1: Only node 2 is in this column.
-Column 0: Nodes 1, 5, and 6 are in this column.
-          1 is at the top, so it comes first.
-          5 and 6 are at the same position (2, 0), so we order them by their value, 5 before 6.
-Column 1: Only node 3 is in this column.
-Column 2: Only node 7 is in this column.
-
-Constraints:
-The number of the nodes in the tree is in the range [1, 1000].
-0 <= Node.val <= 1000
+description: https://leetcode.com/problems/vertical-order-traversal-of-a-binary-tree/description/
 """
 
 """
 Note:
-1. BFS + HashMap + Sort: O(nlogn) time | O(n) space
-2. BFS + HashMap: O(n) time | O(n) space
+1. BFS + HashMap + Sort: O(nlogn) time | O(n) - where n is the number of nodes in the tree
+2. BFS (layerOrder Traversal) + HashMap: O(n) time | O(n) space - where n is the number of nodes in the tree
 """
-
-
-
 
 from typing import List, Optional
 import unittest, collections
@@ -90,39 +39,35 @@ class Solution:
             result.append(temp)
         return result
 
-    def verticalTraversal2(self, root: Optional[TreeNode]) -> List[List[int]]:
-        queue = collections.deque([(root, 0, 0)])
+class Solution2:
+    def verticalTraversal(self, root: Optional[TreeNode]) -> List[List[int]]:
+        table = [[] for _ in range(1999)]
+        currentItems = [(root, 0)]
 
-        colRows = collections.defaultdict(list)
-        positionVals = collections.defaultdict(list)
+        def getIdx(pos: int) -> int:
+            return pos+999
 
-        smallestCol = float("inf")
-        largestCol = float("-inf")
-        while queue:
-            node, row, col = queue.popleft()
-            positionVals[(row, col)].append(node.val)
-            if not colRows[col] or colRows[col][-1] < row:
-                colRows[col].append(row)
-            if node.left:
-                queue.append((node.left, row+1, col-1))
-
-            if node.right:
-                queue.append((node.right, row+1, col+1))
-
-            smallestCol = min(smallestCol, col)
-            largestCol = max(largestCol, col)
-
+        while currentItems:
+            nextItems = []
+            tempTable = collections.defaultdict(list)
+            for node, pos in currentItems:
+                tempTable[getIdx(pos)].append(node.val)
+                if node.left:
+                    nextItems.append((node.left, pos-1))
+                if node.right:
+                    nextItems.append((node.right, pos+1))
+            for pos, arr in tempTable.items():
+                table[pos].extend(sorted(arr))
+            currentItems = nextItems
         output = []
-        for col in range(smallestCol, largestCol+1):
-            output.append([])
-            for row in colRows[col]:
-                output[-1].extend(sorted(positionVals[(row, col)]))
-
+        for arr in table:
+            if not arr:
+                continue
+            output.append(arr)
         return output
 
-
 # Unit Tests
-funcs = [Solution().verticalTraversal, Solution().verticalTraversal2]
+funcs = [Solution().verticalTraversal, Solution2().verticalTraversal]
 
 
 class TestVerticalTraversal(unittest.TestCase):
