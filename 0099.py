@@ -37,7 +37,7 @@ there are two main cases:
 (1) swap happened on adjacent nodes => 1, 2, 4, 3, 5. In this case, we have only one oddity: 4 and 3 => candidates = [(4, 3)]
 (2)swap happened on not adjacent nodes =>  1, 2, 5, 4, 3. In this case we have two oddities: 5 and 4; 4 and 3. => candidates = [(5, 4), (4, 3)]
 But in both cases, it's okay to run candidates[0][0].val, candidates[-1][1].val = candidates[-1][1].val, candidates[0][0].val
-2. Recursion (inorder traversal): O(n) time | O(n) space
+2. Recursion (inorder traversal): O(n) time | O(h) space
 """
 
 
@@ -74,35 +74,36 @@ class Solution:
                     current = current.right
         candidates[0][0].val, candidates[-1][1].val = candidates[-1][1].val, candidates[0][0].val
 
-    def recoverTree2(self, root: Optional[TreeNode]) -> None:
+class Solution2:
+    def recoverTree(self, root: Optional[TreeNode]) -> None:
         """
         Do not return anything, modify root in-place instead.
         """
         candidates = []
-        temp = [None] # prev
-        self.dfs(root, temp, candidates)
-        candidates[0][0].val, candidates[-1][1].val = candidates[-1][1].val, candidates[0][0].val
+        container = [None]
+        def dfs(root):
+            if root.left:
+                dfs(root.left)
+            if container[0] and container[0].val > root.val:
+                candidates.append(container[0])
+                candidates.append(root)
+            container[0] = root
+            if root.right:
+                dfs(root.right)
         
-    def dfs(self, root, temp, candidates) -> None:
-        if not root or len(candidates) == 2:
-            return
-        self.dfs(root.left, temp, candidates)
-        if temp[0] and temp[0].val >= root.val:
-            candidates.append((temp[0], root))
-        
-        temp[0] = root
-        self.dfs(root.right, temp, candidates)
+        dfs(root)
+        candidates[0].val, candidates[-1].val = candidates[-1].val, candidates[0].val
 
 # Unit Tests
 import unittest
-funcs = [Solution().recoverTree, Solution().recoverTree2]
+funcs = [Solution().recoverTree, Solution2().recoverTree]
 
 
 class TestRecoverTree(unittest.TestCase):
     def testRecoverTree1(self):
-        for func in funcs:
+        for recoverTree in funcs:
             root = TreeNode(1, TreeNode(3, None, TreeNode(2)))
-            func(root=root)
+            recoverTree(root=root)
             self.assertEqual(root.val, 3)
             self.assertEqual(root.left.val, 1)
             self.assertEqual(root.right, None)
