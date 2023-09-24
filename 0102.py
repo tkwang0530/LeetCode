@@ -1,35 +1,18 @@
 """
 102. Binary Tree Level Order Traversal
-Given a binary tree, return the level order traversal of its nodes' values. (ie, from left to right, level by level).
-
-Example1:
-Input: root = [3, 9, 20, null, null, 15, 7]
-            3
-         /      \
-      9          20
-                  /   \
-              15       7
-
-Outputs:
-[
-    [3],
-    [9, 20],
-    [15, 7]
-]
+description: https://leetcode.com/problems/binary-tree-level-order-traversal/description/
 """
 
 """
 Note:
-1. Iterative BFS: O(n) time | O(n) space
-2. Recursive DFS (PreOrder Traversal): O(n) time | O(n) space
+1. BFS (layer order traversal): O(n) time | O(n) space - where n is the number of nodes in the tree
 """
 
 
 
 
-from typing import List
+from typing import List, Optional
 import unittest
-from collections import deque
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
         self.val = val
@@ -38,60 +21,44 @@ class TreeNode:
 
 
 class Solution:
-    def levelOrder(self, root: TreeNode) -> List[List[int]]:
-        results = []
-        if root is None:
-            return results
-        q = deque([root])
-        while len(q) != 0:
-            count = len(q)
-            temp = []
-            for _ in range(count):
-                treeNode = q.popleft()
-                temp.append(treeNode.val)
-                if treeNode.left is not None:
-                    q.append(treeNode.left)
-                if treeNode.right is not None:
-                    q.append(treeNode.right)
-            results.append(temp)
-        return results
-    
-    def levelOrder2(self, root: TreeNode) -> List[List[int]]:
+    def levelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
         if not root:
             return []
-        result = []
-        self.dfs(root, 0, result)
-        return result
-    
-    def dfs(self, root: TreeNode, level: int, result: List[int]) -> None:
-        if len(result) < level+1:
-            result.append([])
-        result[level].append(root.val)
-        if root.left:
-            self.dfs(root.left, level+1, result)
-        if root.right:
-            self.dfs(root.right, level+1, result)
 
+        output = []
+        currentNodes = [root]
+        while currentNodes:
+            nextNodes = []
+            levelVals = []
+            for node in currentNodes:
+                levelVals.append(node.val)
+                if node.left:
+                    nextNodes.append(node.left)
+                if node.right:
+                    nextNodes.append(node.right)
+            output.append(levelVals)
+            currentNodes = nextNodes
+        return output
 
 # Unit Tests
 
-funcs = [Solution().levelOrder, Solution().levelOrder2]
+funcs = [Solution().levelOrder]
 class TestLevelOrder(unittest.TestCase):
     def testLevelOrder1(self):
-        for func in funcs:
+        for levelOrder in funcs:
             root = TreeNode(3, TreeNode(9), TreeNode(
                 20, TreeNode(15), TreeNode(7)))
-            self.assertEqual(func(root=root), [[3], [9, 20], [15, 7]])
+            self.assertEqual(levelOrder(root=root), [[3], [9, 20], [15, 7]])
 
     def testLevelOrder2(self):
-        for func in funcs:
+        for levelOrder in funcs:
             root = TreeNode(1)
-            self.assertEqual(func(root=root), [[1]])
+            self.assertEqual(levelOrder(root=root), [[1]])
 
     def testLevelOrder3(self):
-        for func in funcs:
+        for levelOrder in funcs:
             root = None
-            self.assertEqual(func(root=root), [])
+            self.assertEqual(levelOrder(root=root), [])
 
 
 if __name__ == "__main__":
