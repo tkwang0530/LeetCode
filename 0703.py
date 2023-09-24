@@ -26,10 +26,9 @@ kthLargest.add(4);   // return 8
 Note:
 1. min heap: O(logk) time | O(k) space
 keep a min heap, add to heap O(logk), pop one element out if size exceeds k, get min element.
+
+2. bst: O(logn) time | O(n) space - where n is the number of elements in the bst
 """
-
-
-
 
 import unittest
 import heapq
@@ -49,17 +48,28 @@ class KthLargest:
             heapq.heappushpop(self.heap, val)
         return self.heap[0]
 
+from sortedcontainers import SortedList
+class KthLargest2:
+
+    def __init__(self, k: int, nums: List[int]):
+        self.bst = SortedList(nums)
+        self.k = k
+
+    def add(self, val: int) -> int:
+        self.bst.add(val)
+        return self.bst[-1*self.k]
+
 # Unit Tests
-
-
+classes = [KthLargest, KthLargest2]
 class TestKthLargest(unittest.TestCase):
     def testKthLargest(self):
-        kthLargest = KthLargest(3, [4, 5, 8, 2])
-        self.assertEqual(kthLargest.add(3), 4)
-        self.assertEqual(kthLargest.add(5), 5)
-        self.assertEqual(kthLargest.add(10), 5)
-        self.assertEqual(kthLargest.add(9), 8)
-        self.assertEqual(kthLargest.add(4), 8)
+        for myclass in classes:
+            kthLargest = myclass(3, [4, 5, 8, 2])
+            self.assertEqual(kthLargest.add(3), 4)
+            self.assertEqual(kthLargest.add(5), 5)
+            self.assertEqual(kthLargest.add(10), 5)
+            self.assertEqual(kthLargest.add(9), 8)
+            self.assertEqual(kthLargest.add(4), 8)
 
 
 if __name__ == "__main__":
