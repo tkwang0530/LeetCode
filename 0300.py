@@ -48,6 +48,15 @@ Each time we only do one of the two:
 
 3. DP + Greedy + Binary Search (With bisect_left): O(nlogn) time | O(n) space
 AKA Patience sorting
+dp[i]: the smallest ending numbe of a subsequence with length i+1
+Init: dp = []
+For each num, we can use it to:
+(1) Extend the longest subsequence
+(2) Replace a number to generate a better subsequence
+
+dp is increasing, so we can use binary search to find the position to insert num
+
+ref: https://www.youtube.com/watch?v=l2rCz7skAlk
 """
 
 
@@ -65,7 +74,8 @@ class Solution:
                 dp[i] = max(dp[i], dp[j] + 1) if nums[i] > nums[j] else dp[i]
         return max(dp)
 
-    def lengthOfLIS2(self, nums: List[int]) -> int:
+class Solution2:
+    def lengthOfLIS(self, nums: List[int]) -> int:
         n = len(nums)
         # tails[lengthOfSubsequence] = smallestTail
         tails = [float("inf")] * (n+1)
@@ -87,7 +97,8 @@ class Solution:
             maxSize = max(maxSize, left)
         return maxSize
 
-    def lengthOfLIS3(self, nums: List[int]) -> int:
+class Solution3:
+    def lengthOfLIS(self, nums: List[int]) -> int:
         dp = []
         for num in nums:
             idx = bisect.bisect_left(dp, num)
@@ -99,8 +110,8 @@ class Solution:
 
 
 # Unit Tests
-funcs = [Solution().lengthOfLIS, Solution().lengthOfLIS2,
-         Solution().lengthOfLIS3]
+funcs = [Solution().lengthOfLIS, Solution2().lengthOfLIS,
+         Solution3().lengthOfLIS]
 
 
 class TestLengthOfLIS(unittest.TestCase):
