@@ -95,21 +95,32 @@ class Solution:
         return dummy.next
 
     def mergeKLists2(self, lists: List[Optional[ListNode]]) -> Optional[ListNode]:
-        if len(lists) == 0:
-            return None
-        return self.mergeKListsHelper(lists, 0, len(lists) - 1)
+        def mergeTwoLists(l1: ListNode, l2: ListNode) -> ListNode:
+            current = dummy = ListNode(0)
+            while l1 or l2:
+                val1 = l1.val if l1 else float("inf")
+                val2 = l2.val if l2 else float("inf")
+                if val1 < val2:
+                    current.next = l1
+                    l1 = l1.next
+                else:
+                    current.next = l2
+                    l2 = l2.next
+                current = current.next
+            return dummy.next
 
-    def mergeKListsHelper(self, lists: List[Optional[ListNode]], start: int, end: int) -> Optional[ListNode]:
-        if end < start:
-            return None
-        if start == end:
-            return lists[start]
-        mid = start + (end - start) // 2
-        left = self.mergeKListsHelper(lists, start, mid)
-        right = self.mergeKListsHelper(lists, mid + 1, end)
-        return self.mergeTwoLists(left, right)
+        def mergeKListsHelper(start: int, end: int) -> Optional[ListNode]:
+            if end < start:
+                return None
+            if start == end:
+                return lists[start]
+            
+            mid = start + (end - start) // 2
+            left = mergeKListsHelper(start, mid)
+            right = mergeKListsHelper(mid+1, end)
+            return mergeTwoLists(left, right)
 
-    def mergeTwoLists(self, l1: ListNode, l2: ListNode) -> ListNode:
+        return mergeKListsHelper(0, len(lists)-1)
         dummy = head = ListNode(0)
         while l1 and l2:
             if l1.val < l2.val:
