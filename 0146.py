@@ -130,10 +130,68 @@ class LRUCache2:
         if len(self.cache) > self.capacity:
             self.cache.popitem(last=False)
     
+class LRUCache3:
+    # Initialize the LRU cache with positive size capacity.
+    def __init__(self, capacity: int):
+        self.capacity = capacity
+        self.count = 0
+        self.dummyHead = ListNode(-1,-1)
+        self.dummyTail = ListNode(-1,-1)
+        self.dummyHead.next, self.dummyTail.prev = self.dummyTail, self.dummyHead
+        self.nodeMap = {} #<key, node>
+    
+    def __moveToTail(self, node):
+        prev, next = node.prev, node.next
+        prev.next, next.prev = next, prev
+        beforeTail = self.dummyTail.prev
+        beforeTail.next = self.dummyTail.prev = node
+        node.prev, node.next = beforeTail, self.dummyTail
+
+    def __evictFromHead(self):
+        nodeToRemove = self.dummyHead.next
+        afterNode = nodeToRemove.next
+        afterNode.prev, self.dummyHead.next = self.dummyHead, afterNode
+        self.count -= 1
+        del self.nodeMap[nodeToRemove.key]
+
+    def __insertFromTail(self, key: int, val: int):
+        newNode = ListNode(key, val)
+        beforeTail = self.dummyTail.prev
+        beforeTail.next = self.dummyTail.prev = newNode
+        newNode.prev, newNode.next = beforeTail, self.dummyTail
+        self.nodeMap[key] = newNode
+        self.count += 1
+
+    # Return the value of the key if the key exists, otherwise return -1
+    def get(self, key: int) -> int:
+        if key not in self.nodeMap:
+            return -1
+        node = self.nodeMap[key]
+        self.__moveToTail(node)
+        return node.val
+
+        
+        
+    # Update the value of the key if the key exists. Otherwise, add the key-value pair to the cache. 
+    # If the number of keys exceeds the capacity from this operation, evict the least recently used key.  
+    def put(self, key: int, value: int) -> None:
+        if key in self.nodeMap:
+            # update key's val
+            nodeToUpdate = self.nodeMap[key]
+            nodeToUpdate.val = value
+            self.__moveToTail(nodeToUpdate)
+            return
+
+        # insert node
+        self.__insertFromTail(key, value)
+
+        if self.count > self.capacity:
+            self.__evictFromHead()
+        
 
 
 # Unit Tests
-classes = [LRUCache, LRUCache2]
+classes = [LRUCache, LRUCache2, LRUCache3]
 
 class TestLRUCache(unittest.TestCase):
     def testLRUCache1(self):
