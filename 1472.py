@@ -40,6 +40,9 @@ At most 5000 calls will be made to visit, back, and forward.
 Note:
 1. Singly LinkedList + HashTable
 All methods are O(1) time and O(1) space
+
+2. Single Stack
+All methods are O(1) time and O(1) space
 """
 class ListNode:
     def __init__(self, order: int, url: str) -> None:
@@ -77,9 +80,34 @@ class BrowserHistory:
         self.current = self.orderNodeMap[self.current.order+steps]
         return self.current.url
 
+class BrowserHistory2:
+
+    def __init__(self, homepage: str):
+        self.histories = [homepage]
+        self.H = self.T = self.C = 0
+        
+
+    def visit(self, url: str) -> None:
+        if len(self.histories) < self.C+2:
+            self.histories.append(url)
+        else:
+            self.histories[self.C+1] = url
+        self.C = self.T = self.C+1
+        
+        
+
+    def back(self, steps: int) -> str:
+        self.C = max(self.H, self.C-steps)
+        return self.histories[self.C]
+        
+
+    def forward(self, steps: int) -> str:
+        self.C = min(self.T, self.C+steps)
+        return self.histories[self.C]
+
 # Unit Tests
 import unittest
-classes = [BrowserHistory]
+classes = [BrowserHistory, BrowserHistory2]
 
 class TestBrowserHistory(unittest.TestCase):
     def testBrowserHistory1(self):
