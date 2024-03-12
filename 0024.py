@@ -20,7 +20,7 @@ Note:
 
 
 
-
+from typing import Optional
 import unittest
 class ListNode:
     def __init__(self, val=0, next=None) -> None:
@@ -59,18 +59,42 @@ class Solution:
             prev, head = firstNode, firstNode.next
         return dummy.next
 
-    def swapPairs2(self, head: ListNode) -> ListNode:
-        if not head or not head.next:
-            return head
-        firstNode = head
-        secondNode = head.next
-        firstNode.next = self.swapPairs(secondNode.next)
-        secondNode.next = firstNode
-        return secondNode
+class Solution2:
+        def swapPairs(self, head: ListNode) -> ListNode:
+            if not head or not head.next:
+                return head
+            firstNode = head
+            secondNode = head.next
+            firstNode.next = self.swapPairs(secondNode.next)
+            secondNode.next = firstNode
+            return secondNode
 
+class Solution3:
+    def swapPairs(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        prev = dummy = ListNode(0)
+        A = head
+        while A:
+            B = A.next
+            C = B.next if B else None
+            if A and B and C:
+                prev.next = B
+                B.next = A
+                prev = A
+                A = C
+            elif A and B:
+                prev.next = B
+                B.next = A
+                A.next = None
+                return dummy.next
+            else:
+                prev.next = A
+                A.next = None
+                return dummy.next
+
+        return dummy.next
 
 # Unit Tests
-funcs = [Solution().swapPairs, Solution().swapPairs2]
+funcs = [Solution().swapPairs, Solution2().swapPairs, Solution3().swapPairs]
 
 
 class TestSwapPairs(unittest.TestCase):
