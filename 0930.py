@@ -1,6 +1,6 @@
 """
-1268. Search Suggestion System
-description: https://leetcode.com/problems/search-suggestions-system/description/
+930. Binary Subarrays With Sum
+description: https://leetcode.com/problems/binary-subarrays-with-sum/description/
 """
 
 """ 
