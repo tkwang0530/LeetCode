@@ -26,24 +26,14 @@ class Solution:
 
 class Solution2:
     def numSubarraysWithSum(self, nums: List[int], goal: int) -> int:
-        n = len(nums)
-        preSums = [0] * (n+1)
-        for i in range(1, n+1):
-            preSums[i] = preSums[i-1] + nums[i-1]
-        
+        counter = collections.defaultdict(int)
+        counter[0] = 1
+        preSum = 0
         count = 0
-        numRanges = collections.defaultdict(list)
-        for i, num in enumerate(preSums):
-            if num not in numRanges:
-                numRanges[num] = [i,i]
-            else:
-                numRanges[num][-1] = i
-
-        for i in range(n):
-            target = goal+preSums[i]
-            left = numRanges[target][0] if target in numRanges else n+1
-            right = numRanges[target][1] if target in numRanges else n+1
-            count += right-max(i+1,left)+1 if left < n+1 else 0
+        for num in nums:
+            preSum += num
+            count += counter[preSum-goal]
+            counter[preSum] += 1
         return count
 
 # Unit Tests
