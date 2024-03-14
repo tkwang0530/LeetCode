@@ -6,6 +6,8 @@ description: https://leetcode.com/problems/search-suggestions-system/description
 """ 
 1. PreSum + Binary Search: O(n+nlogn) time | O(n) space - where n is array nums
 2. PreSum + HashMap: O(n) time | O(n) space - where n is array nums
+3. Sliding Window: O(n) time | O(1) space - where n is array nums
+ref: https://leetcode.com/problems/binary-subarrays-with-sum/solutions/186683/c-java-python-sliding-window-o-1-space
 """
 import bisect, collections
 from typing import List
@@ -35,10 +37,26 @@ class Solution2:
             count += counter[preSum-goal]
             counter[preSum] += 1
         return count
+    
+class Solution3:
+    def numSubarraysWithSum(self, nums: List[int], goal: int) -> int:
+        def atMost(s):
+            if s < 0:
+                return 0
+
+            count = start = 0
+            for end in range(len(nums)):
+                s -= nums[end]
+                while s < 0:
+                    s += nums[start]
+                    start += 1
+                count += end - start + 1
+            return count
+        return atMost(goal) - atMost(goal-1)
 
 # Unit Tests
 import unittest
-funcs = [Solution().numSubarraysWithSum, Solution2().numSubarraysWithSum]
+funcs = [Solution().numSubarraysWithSum, Solution2().numSubarraysWithSum, Solution3().numSubarraysWithSum]
 
 
 class TestNumSubarraysWithSum(unittest.TestCase):
