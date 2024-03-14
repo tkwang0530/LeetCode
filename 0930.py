@@ -40,15 +40,16 @@ class Solution2:
     
 class Solution3:
     def numSubarraysWithSum(self, nums: List[int], goal: int) -> int:
-        def atMost(s):
-            if s < 0:
+        def atMost(goal):
+            if goal < 0:
                 return 0
 
             count = start = 0
+            current = 0
             for end in range(len(nums)):
-                s -= nums[end]
-                while s < 0:
-                    s += nums[start]
+                current += nums[end]
+                while current > goal:
+                    current -= nums[start]
                     start += 1
                 count += end - start + 1
             return count
