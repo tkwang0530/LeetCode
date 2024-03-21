@@ -5,7 +5,7 @@ description: https://leetcode.com/problems/maximum-length-of-a-concatenated-stri
 
 """
 Note:
-1. backtracking: O(n) time | O(n) space - where n is the length of arr
+1. backtracking: O(2^16 * 26) time | O(n+26) space - where n is the length of arr
 """
 
 from typing import List
