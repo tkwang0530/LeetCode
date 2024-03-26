@@ -35,14 +35,22 @@ import unittest
 from typing import List
 class Solution:
     def maxProfit(self, prices: List[int], fee: int) -> int:
-        idle = 0 # T[i=-1][k][0]
-        hold = -float("inf") # T[i=-1][k][1]
+        currentStock, currentCash = -float("inf"), 0
+        for day, price in enumerate(prices):
+            prevStock, prevCash = currentStock, currentCash
 
-        for price in prices:
-            hold = max(hold, idle - price)
-            idle = max(idle, hold + price - fee)
+            # buy stock today or already buy stock and keep it
+            currentStock = max(
+                prevCash - price - fee,
+                prevStock
+            )
 
-        return idle
+            # sell stock today or don't have stock and do nothing
+            currentCash = max(
+                prevStock + price,
+                prevCash
+            )
+        return currentCash
 
 # Unit Tests
 import unittest
