@@ -39,6 +39,9 @@ T[i][k][1] = max(T[i-1][k][1], T[i-1][k-1][0] - prices[i]) = max(T[i-1][k][1], T
 
 2. DP: O(n) time | O(n) space - where n is the length of prices
 ref: https://vocus.cc/article/65fd41d2fd897800015721f3
+
+3. 2. DP (space optimized): O(n) time | O(1) space - where n is the length of prices
+ref: https://vocus.cc/article/65fd41d2fd897800015721f3
 """
 
 from typing import List
@@ -81,9 +84,34 @@ class Solution2:
         
         lastDay = len(prices) - 1
         return dp[lastDay, KEEP_CASH]
+    
+class Solution3:
+    def maxProfit(self, prices: List[int]) -> int:
+        # state
+        HOLD_STOCK, KEEP_CASH = 0, 1
+        currentStock, currentCash = -float("inf"), 0
+
+        for day, price in enumerate(prices):
+            prevStock, prevCash = currentStock, currentCash
+
+            # either today buy stock or
+            # buy stock before today but keep it
+            currentStock = max(
+                prevCash - prices[day],
+                prevStock
+            )
+
+            # either today sell stock or
+            # don't have stock and don't buy stock today
+            currentCash = max(
+                prevStock + prices[day],
+                prevCash
+            )
+        
+        return currentCash
 
 # Unit Tests
-funcs = [Solution().maxProfit, Solution2().maxProfit]
+funcs = [Solution().maxProfit, Solution2().maxProfit, Solution3().maxProfit]
 
 
 class TestMaxProfit(unittest.TestCase):
