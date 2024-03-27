@@ -34,32 +34,49 @@ Constraints:
 
 """
 Note:
-1. DP: O(n) time | O(1) space
-Now we have four variables instead of two on each day:
-T[i][1][1] = max(T[i-1][1][1], T[i-1][0][0] - prices[i]) = max(T[i-1][1][1], -prices[i])
-T[i][1][0] = max(T[i-1][1][0], T[i-1][1][1] + prices[i])
-T[i][2][1] = max(T[i-1][2][1], T[i-1][1][0] - prices[i])
-T[i][2][0] = max(T[i-1][2][0], T[i-1][2][1] + prices[i])
+1. DP: O(n) time | O(1) space - where n is the length of prices
+ref: https://vocus.cc/article/65fd41d2fd897800015721f3
 """
 
 
 
 
 from typing import List
-import unittest
+import unittest, collections
 class Solution:
     def maxProfit(self, prices: List[int]) -> int:
-        firstHold = -float("inf")
-        firstIdle = 0
-        secondHold = -float("inf")
-        secondIdle = 0
-        for price in prices:
-            secondIdle = max(secondIdle, secondHold + price)
-            secondHold = max(secondHold, firstIdle - price)
-            firstIdle = max(firstIdle, firstHold + price)
-            firstHold = max(firstHold, -price)
-        return secondIdle
+        # status
+        HOLD_STOCK, KEEP_CASH = 0, 1
+        dp = collections.defaultdict(int) # <(status, trans)>
+        dp[HOLD_STOCK,0] = -float("inf")
+        dp[HOLD_STOCK,1] = -float("inf")
+        dp[HOLD_STOCK,2] = -float("inf")
 
+        for price in prices:
+            # first transaction
+            # without stock and donothing or sell stock today
+            dp[KEEP_CASH, 1] = max(
+                dp[KEEP_CASH,1],
+                dp[HOLD_STOCK,1] + price
+            )
+            # buy stock today or already buy before and keep
+            dp[HOLD_STOCK, 1] = max(
+                dp[HOLD_STOCK, 1],
+                dp[KEEP_CASH,0] - price
+            )
+
+            # second transaction
+            # without stock and donothing or sell stock today
+            dp[KEEP_CASH, 2] = max(
+                dp[KEEP_CASH,2],
+                dp[HOLD_STOCK,2] + price
+            )
+            # buy stock today or already buy before and keep
+            dp[HOLD_STOCK, 2] = max(
+                dp[HOLD_STOCK, 2],
+                dp[KEEP_CASH, 1] - price
+            )
+        return dp[KEEP_CASH, 2]
 
 # Unit Tests
 funcs = [Solution().maxProfit]
