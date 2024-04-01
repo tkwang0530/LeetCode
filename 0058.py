@@ -12,7 +12,6 @@ Note:
 from typing import List
 class Solution:
     def lengthOfLastWord(self, s: str) -> int:
-        chars = []
         i = len(s) - 1
         end = start = -1
         while i >= 0 and s[i] == " ":
