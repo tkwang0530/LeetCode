@@ -5,7 +5,7 @@ description: https://leetcode.com/problems/integer-break/description/
 
 """
 Note:
-1. dp+memo: O(n) time | O(n) space
+1. dp+memo: O(n^2) time | O(n) space
 """
 
 import functools
