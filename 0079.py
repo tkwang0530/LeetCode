@@ -39,59 +39,54 @@ board and word consists of only lowercase and uppercase English letters.
 
 """
 Note:
-1. Recursive Backtracking (DFS with set): O(n * m * 4^L) time | O(L) space
-2. Recursive Backtracking (DFS without set): O(n * m * 4^L) time | O(L) space
+1. backtracking: O(n * m * 4^L) time | O(L) space - where n is the number of rows in the board, m is the number of columns in the board, and L is the length of the word
 """
 
 from typing import List
 import unittest
 class Solution:
     def exist(self, board: List[List[str]], word: str) -> bool:
-        rows, cols = len(board), len(board[0])
-        path = set()
+        rows = len(board)
+        cols = len(board[0])
+        visited = set()
+
+        def dfs(row: int, col: int, i: int) -> bool:
+            if i == len(word):
+                return True
+
+            char = board[row][col]
+            if char != word[i]:
+                return False
+
+            if i == len(word) - 1:
+                return True
+            
+            canAchieve = False
+            for nextRow, nextCol in [(row+1, col), (row-1, col), (row, col+1), (row, col-1)]:
+                if nextRow in (-1, rows) or nextCol in (-1, cols):
+                    continue
+
+                if (nextRow, nextCol) in visited:
+                    continue
+
+                visited.add((nextRow, nextCol))
+                canAchieve = canAchieve or dfs(nextRow, nextCol, i+1)
+                visited.remove((nextRow, nextCol))
+            
+            return canAchieve
+
+        visited = set()
         for row in range(rows):
             for col in range(cols):
-                if self.dfs(board, row, col, word, 0, path):
-                    return True
+                if board[row][col] == word[0]:
+                    visited.add((row, col))
+                    if dfs(row, col, 0):
+                        return True
+                    visited.remove((row, col))
         return False
-
-    def dfs(self, board, row, col, word, index, path):
-        if index == len(word):
-            return True
-        if row < 0 or col < 0 or row == len(board) or col == len(board[0]) or word[index] != board[row][col] or (row, col) in path:
-            return False
-        path.add((row, col))
-        result = (self.dfs(board, row + 1, col, word, index + 1, path) or
-                        self.dfs(board, row - 1, col, word, index + 1, path) or
-                        self.dfs(board, row, col + 1, word, index + 1, path) or
-                        self.dfs(board, row, col - 1, word, index + 1, path))
-        path.remove((row, col))
-        return result
-
-    def exist2(self, board: List[List[str]], word: str) -> bool:
-        rows, cols = len(board), len(board[0])
-        for row in range(rows):
-            for col in range(cols):
-                if self.dfs2(board, row, col, word, 0):
-                    return True
-        return False
-        
-    def dfs2(self, board, row, col, word, index) -> bool:
-        if index == len(word):
-            return True
-        if row < 0 or col < 0 or row == len(board) or col == len(board[0]) or board[row][col] != word[index]:
-            return False
-        temp, board[row][col] = board[row][col], "#"
-        result = (self.dfs2(board, row - 1, col, word, index + 1) or
-                 self.dfs2(board, row + 1, col, word, index + 1) or
-                 self.dfs2(board, row, col - 1, word, index + 1) or
-                 self.dfs2(board, row, col + 1, word, index + 1))
-        board[row][col] = temp
-        return result
-
 
 # Unit Tests
-funcs = [Solution().exist, Solution().exist2]
+funcs = [Solution().exist]
 
 
 class TestExist(unittest.TestCase):
