@@ -1,19 +1,12 @@
 """
 5. Longest Palindromic Substring
-Given a string s, return the longest palindromic substring in s.
-Examples:
-    Given "babad", the answer is "bab". "aba" is also a valid answer.
-    Given "cbbd", the answer is "bb".
-    Given "a", the answer is "a". 
-    Given "ac", the answer is "a". 
-Constraints:
-1 <= s.length <= 1000
-s consist of only digits and English letters (lower-case and/or upper-case),
+description: https://leetcode.com/problems/longest-palindromic-substring/description/
 """
 
 """
 Note:
-1. Odd and even Palindrome: O(n^2) time | O(1+n) space
+1. Two Pointers 1: O(n^2) time | O(1+n) space
+2. Two Pointers 2: O(n^2) time | O(n) space
 """
 
 import unittest
@@ -35,6 +28,36 @@ class Solution(object):
             rightIdx += 1
 
         return [leftIdx + 1, rightIdx - 1]  # [1 , 0]
+    
+class Solution2:
+    def longestPalindrome(self, s: str) -> str:
+        n = len(s)
+        def expansionOdd(i):
+            left = right = i
+            while left >= 0 and right < n and s[left] == s[right]:
+                left -= 1
+                right += 1
+            return s[left+1:right]
+
+        def expansionEven(i):
+            left, right = i, i+1
+            if right == n or s[left] != s[right]:
+                return ""
+
+            while left >= 0 and right < n and s[left] == s[right]:
+                left -= 1
+                right += 1
+            return s[left+1:right]
+
+        longest = ""
+        for i in range(n):
+            longest = max(
+                expansionOdd(i),
+                expansionEven(i),
+                longest,
+                key = lambda x: len(x)
+            )
+        return longest
 
 # Unit Tests
 funcs = [Solution().longestPalindrome]
