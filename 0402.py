@@ -36,14 +36,9 @@ class Solution:
                 stack.pop()
                 k -= 1
             stack.append(digit)
-
-        result = ""
-        for i, digit in enumerate(stack):
-            if digit != "0":
-                result = "".join(stack[i:len(stack) - k])
-                break
-        
-        return "0" if result == "" else result
+    
+        result = "".join(stack[:len(stack)-k]).lstrip("0")
+        return result if result else "0"
 
 # Unit Tests
 import unittest
