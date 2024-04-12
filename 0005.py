@@ -7,6 +7,8 @@ description: https://leetcode.com/problems/longest-palindromic-substring/descrip
 Note:
 1. Two Pointers 1: O(n^2) time | O(1+n) space
 2. Two Pointers 2: O(n^2) time | O(n) space
+3. dp: O(n^2) time | O(n^2) space
+ref: https://leetcode.com/problems/longest-palindromic-substring/solutions/4212564/beats-96-49-5-different-approaches-brute-force-eac-dp-ma-recursion
 """
 
 import unittest
@@ -58,9 +60,29 @@ class Solution2:
                 key = lambda x: len(x)
             )
         return longest
+    
+class Solution3:
+    def longestPalindrome(self, s: str) -> str:
+        if len(s) <= 1:
+            return s
+        
+        n = len(s)
+        maxLen = 1
+        maxStr=s[0]
+
+        dp = [[False]*n for _ in range(n)]
+        for i in range(n):
+            dp[i][i] = True
+            for j in range(i):
+                if s[j] == s[i] and (i-j <= 2 or dp[j+1][i-1]):
+                    dp[j][i] = True
+                    if i-j+1 > maxLen:
+                        maxLen = i-j+1
+                        maxStr = s[j:i+1]
+        return maxStr
 
 # Unit Tests
-funcs = [Solution().longestPalindrome]
+funcs = [Solution().longestPalindrome, Solution2().longestPalindrome, Solution3().longestPalindrome]
 
 class TestLongestPalindrome(unittest.TestCase):
     def testLongestPalindrome1(self):
