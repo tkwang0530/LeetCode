@@ -37,36 +37,36 @@ class TreeNode:
 
 class Solution:
     def sumOfLeftLeaves(self, root: Optional[TreeNode]) -> int:
-        if not root:
-            return 0
-
         container = [0]
-        def dfs(root, parent, container):
-            if not root:
+        def dfs(node, parent):
+            if not node.left and not node.right:
+                if parent and parent.left == node:
+                    container[0] += node.val
                 return
-            if not root.left and not root.right and parent and parent.left == root:
-                container[0] += root.val
-            dfs(root.left, root, container)
-            dfs(root.right, root, container)
 
-        parent = None
-        dfs(root, parent, container)
+            if node.left:
+                dfs(node.left, node)
+
+            if node.right:
+                dfs(node.right, node)
+        
+        dfs(root, None)
         return container[0]
 
-    def sumOfLeftLeaves2(self, root: Optional[TreeNode]) -> int:
+class Solution2:
+    def sumOfLeftLeaves(self, root: Optional[TreeNode]) -> int:
         if not root:
             return 0
+        
         result = 0
-        if root.left:
-            if not root.left.left and not root.left.right:
-                result += root.left.val
-            else:
-                result += self.sumOfLeftLeaves2(root.left)
-
-        result += self.sumOfLeftLeaves2(root.right)
+        if root.left and not root.left.left and not root.left.right:
+            result += root.left.val
+        
+        result += self.sumOfLeftLeaves(root.left)+self.sumOfLeftLeaves(root.right)
         return result
 
-    def sumOfLeftLeaves3(self, root: Optional[TreeNode]) -> int:
+class Solution3:
+    def sumOfLeftLeaves(self, root: Optional[TreeNode]) -> int:
         if not root:
             return 0
         stack = [root]
@@ -82,7 +82,8 @@ class Solution:
                     stack.append(node.left)
         return result
 
-    def sumOfLeftLeaves4(self, root: Optional[TreeNode]) -> int:
+class Solution4:
+    def sumOfLeftLeaves(self, root: Optional[TreeNode]) -> int:
         if not root:
             return 0
         result = 0
@@ -98,9 +99,11 @@ class Solution:
                 queue.append(node.right)
         return result
 
-    def sumOfLeftLeaves5(self, root: Optional[TreeNode]) -> int:
+class Solution5:
+    def sumOfLeftLeaves(self, root: Optional[TreeNode]) -> int:
         if not root:
             return 0
+
         result = 0
         while root:
             if not root.left:
@@ -114,8 +117,6 @@ class Solution:
                     predecessor = predecessor.right
                 if not predecessor.right:
                     predecessor.right = root
-                    if root.left and not root.left.left and not root.left.right:
-                        result += root.left.val
                     root = root.left
                 else:
                     predecessor.right = None
@@ -124,7 +125,7 @@ class Solution:
 
 # Unit Tests
 import unittest
-funcs = [Solution().sumOfLeftLeaves, Solution().sumOfLeftLeaves2, Solution().sumOfLeftLeaves3, Solution().sumOfLeftLeaves4, Solution().sumOfLeftLeaves5]
+funcs = [Solution().sumOfLeftLeaves, Solution2().sumOfLeftLeaves, Solution3().sumOfLeftLeaves, Solution4().sumOfLeftLeaves, Solution5().sumOfLeftLeaves]
 
 class TestSumOfLeftLeaves(unittest.TestCase):
     def testSumOfLeftLeaves1(self):
