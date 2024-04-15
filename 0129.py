@@ -1,50 +1,21 @@
 """
 129. Sum Root to Leaf Numbers
-You are given the root of a binary tree containing digits from 0 to 9 only.
-Each root-to-leaf path in the tree represents a number.
-- For example, the root-to-leaf path 1->2->3 represents the number 123.
-
-Return the total sum of all root-to-leaf numbers. Test cases are generated so that the answer will fit in a 32-bit integer.
-
-A leaf node is a node with no children.
-
-Example1:
-        1
-      /   \
-    2     3 
-Input: root = [1,2,3]
-Output: 25
-Explanation:
-The root-to-leaf path 1->2 represents the number 12.
-The root-to-leaf path 1->3 represents the number 13.
-Therefore, sum = 12 + 13 = 25.
-
-Example2:
-               4
-            /      \
-          9         0
-        /   \
-      5      1        
-Input: root = [4,9,0,5,1]
-Output: 1026
-Explanation:
-The root-to-leaf path 4->9->5 represents the number 495.
-The root-to-leaf path 4->9->1 represents the number 491.
-The root-to-leaf path 4->0 represents the number 40.
-Therefore, sum = 495 + 491 + 40 = 1026.
+description: https://leetcode.com/problems/sum-root-to-leaf-numbers/description/
 """
 
 """
 Note:
 1. Recursive DFS: O(n) time | O(h) space
-2. Iterative DFS: O(n) time | O(h) space
-3. Iterative BFS: O(n) time | O(n) space
+2. Recursive DFS (PostOrder Traversal): O(n) time | O(h) space
+ref: https://leetcode.com/problems/sum-root-to-leaf-numbers/solutions/1556417/c-python-recursive-iterative-dfs-bfs-morris-traversal-o-1-beats-100
+3. Iterative DFS: O(n) time | O(h) space
+4. Iterative BFS: O(n) time | O(n) space
 """
 
 
 
 
-from typing import List
+from typing import Optional
 from collections import deque
 import unittest
 class TreeNode:
@@ -55,22 +26,33 @@ class TreeNode:
 
 
 class Solution:
+    def sumNumbers(self, root: Optional[TreeNode]) -> int:
+        container = [0]
+        def dfs(root, preVal):
+            if not root.left and not root.right:
+                container[0] += preVal*10+root.val
+
+            if root.left:
+                dfs(root.left, preVal*10+root.val)
+            if root.right:
+                dfs(root.right, preVal*10+root.val)
+        dfs(root, 0)
+        return container[0]
+
+class Solution2:
+    def sumNumbers(self, root: Optional[TreeNode]) -> int:
+        def dfs(root, result):
+            if not root:
+                return 0
+            result = result * 10 + root.val
+            if not root.left and not root.right:
+                return result
+            return dfs(root.left, result) + dfs(root.right, result)
+
+        return dfs(root, 0)
+    
+class Solution3:
     def sumNumbers(self, root: TreeNode) -> int:
-        result = [0]
-        self.dfs(root, 0, result)
-        return result[0]
-
-    def dfs(self, root: TreeNode, temp: int, result: List[int]):
-        if not root.left and not root.right:
-            result[0] += temp * 10 + root.val
-            return
-        if root.left:
-            self.dfs(root.left, temp * 10 + root.val, result)
-        if root.right:
-            self.dfs(root.right, temp * 10 + root.val, result)
-        return
-
-    def sumNumbers2(self, root: TreeNode) -> int:
         total = 0
         if not root:
             return 0
@@ -88,7 +70,8 @@ class Solution:
                     stack.append((node.left, currentSum))
         return total
 
-    def sumNumbers3(self, root: TreeNode) -> int:
+class Solution4:
+    def sumNumbers(self, root: TreeNode) -> int:
         queue, result = deque([]), 0
         queue.append(root)
         while queue:
@@ -106,7 +89,7 @@ class Solution:
 
 
 # Unit Tests
-funcs = [Solution().sumNumbers, Solution().sumNumbers2, Solution().sumNumbers3]
+funcs = [Solution().sumNumbers, Solution2().sumNumbers, Solution3().sumNumbers, Solution4().sumNumbers]
 
 
 class TestSumNumbers(unittest.TestCase):
