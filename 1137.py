@@ -11,13 +11,10 @@ Output: 4
 
 """
 Note:
-1. Recursion
-O(3^n) time | O(n) space
+1. Recursion: O(3^n) time | O(n) space
 
-2. Iteration
+2. Iteration: O(n) time | O(1) space
 """
-
-from typing import List
 
 
 class Solution:
@@ -28,23 +25,34 @@ class Solution:
             return 1
         return self.tribonacci(n - 1) + self.tribonacci(n - 2) + self.tribonacci(n - 3)
 
-    def tribonacci2(self, n: int) -> int:
-        a, b, c = 0, 1, 1
-        for i in range(n):
-            a, b, c = b, c, a + b + c
-        return a
+class Solution2:
+    def tribonacci(self, n: int) -> int:
+        if n == 0:
+            return 0
+        elif n <= 2:
+            return 1
+
+        n1, n2, n3 = 0, 1, 1
+        for _ in range(n-2):
+            n1, n2, n3 = n2, n3, n1+n2+n3
+        return n3
 
 
 # Unit Tests
 import unittest
 
 
+funcs = [Solution().tribonacci, Solution2().tribonacci]
 class TestTribonacci(unittest.TestCase):
     def testTribonacci1(self):
-        func = Solution().tribonacci
-        func2 = Solution().tribonacci2
-        self.assertEqual(func(n=4), 4)
-        self.assertEqual(func2(n=4), 4)
+        for func in funcs:
+            n = 4
+            self.assertEqual(func(n), 4)
+
+    def testTribonacci2(self):
+        for func in funcs:
+            n = 25
+            self.assertEqual(func(n), 1389537)
 
 
 if __name__ == "__main__":
