@@ -47,7 +47,7 @@ class Solution2:
 
 # Unit Tests
 import unittest
-funcs = [Solution2().longestIdealString]
+funcs = [Solution().longestIdealString, Solution2().longestIdealString]
 
 class TestLongestIdealString(unittest.TestCase):
     def testLongestIdealString1(self):
