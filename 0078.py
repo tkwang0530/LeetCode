@@ -1,21 +1,6 @@
 """
 78. Subsets
-Given an integer array nums of unique elements, return all possible subsets (the power set).
-
-The solution set must not contain duplicate subsets. Return the solution in any order.
-
-Example1:
-Input: nums = [1,2,3]
-Output: [[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
-
-Example2:
-Input: nums = [0]
-Output: [[],[0]]
-
-Constraints:
-1 <= nums.length <= 10
--10 <= nums[i] <= 10
-All the numbers of nums are unique.
+description: https://leetcode.com/problems/subsets/description/
 """
 
 """
@@ -39,20 +24,28 @@ class Solution:
                 subsets.append(currentSubset + [num])
         return subsets
 
-    def subsets2(self, nums: List[int]) -> List[List[int]]:
-        result = []
-        nums.sort()
-        self.dfs(nums, result, [], 0)
-        return result
-    
-    def dfs(self, nums: List[int], result: List[List[int]], subset: List[int], index: int):
-        result.append(subset[:])
-        for i in range(index, len(nums)):
-            subset.append(nums[i])
-            self.dfs(nums, result, subset, i + 1)
-            subset.pop()
+class Solution2:
+    def subsets(self, nums: List[int]) -> List[List[int]]:
+        n = len(nums)
+        output = []
+        current = []
+        def backtrack(i):
+            if i == n:
+                output.append(current.copy())
+                return
 
-    def subsets3(self, nums: List[int]) -> List[List[int]]:
+            # skip
+            backtrack(i+1)
+
+            # include
+            current.append(nums[i])
+            backtrack(i+1)
+            current.pop()
+        backtrack(0)
+        return output
+
+class Solution3:
+    def subsets(self, nums: List[int]) -> List[List[int]]:
         result = []
         nums.sort()
         self.dfs2(nums, result, [], 0)
@@ -70,7 +63,7 @@ class Solution:
 
 
 # Unit Tests
-funcs = [Solution().subsets, Solution().subsets2, Solution().subsets3]
+funcs = [Solution().subsets, Solution2().subsets, Solution3().subsets]
 
 
 class TestSubsets(unittest.TestCase):
