@@ -1,14 +1,6 @@
 """
 90. Subsets II
-Given an integer array nums that may contain duplicates, resultsurn all possible subsets (the power set)
-
-Example1:
-    Input: nums = [1,2,2]
-    Output: [[],[1],[1,2],[1,2,2],[2],[2,2]]
-
-Example2:
-    Input: nums = [0]
-    Output: [[],[0]]
+description: https://leetcode.com/problems/subsets-ii/description/
 """
 
 """
@@ -27,6 +19,8 @@ Note:
 3. DFS (append to result during traversal): O(n * 2^n) time | O(n * 2^n) space
 (1) sort nums before dfs
 (2) if not subset or subset[-1] != nums[index]: do the "not pick" dfs
+
+4. DFS + hashSet: O(n * 2^n) time | O(n * 2^n) space
 """
 
 from typing import List
@@ -45,7 +39,8 @@ class Solution:
                 subsets.append(currSubset + [nums[i]])
         return subsets
 
-    def subsetsWithDup2(self, nums: List[int]) -> List[List[int]]:
+class Solution2:
+    def subsetsWithDup(self, nums: List[int]) -> List[List[int]]:
         result = []
         nums.sort()
         self.dfs(nums, result, [], 0)
@@ -60,25 +55,46 @@ class Solution:
             self.dfs(nums, result, subset, i + 1)
             subset.pop()
 
-    def subsetsWithDup3(self, nums: List[int]) -> List[List[int]]:
+class Solution3:
+    def subsetsWithDup(self, nums: List[int]) -> List[List[int]]:
         result = []
         nums.sort()
-        self.dfs2(nums, result, [], 0)
+        self.dfs(nums, result, [], 0)
         return result
 
-    def dfs2(self, nums: List[int], result: List[List[int]], subset: List[int], index: int) -> None:
+    def dfs(self, nums: List[int], result: List[List[int]], subset: List[int], index: int) -> None:
         if index == len(nums):
             result.append(subset[:])
         else:
             if not subset or subset[-1] != nums[index]:
-                self.dfs2(nums, result, subset, index + 1)
+                self.dfs(nums, result, subset, index + 1)
             subset.append(nums[index])
-            self.dfs2(nums, result, subset, index + 1)
+            self.dfs(nums, result, subset, index + 1)
             subset.pop()
 
+class Solution4:
+    def subsetsWithDup(self, nums: List[int]) -> List[List[int]]:
+        n = len(nums)
+        nums.sort()
+        output = set()
+        current = []
+        def backtrack(i):
+            if i == n:
+                output.add(tuple(current))
+                return
+            
+            # skip
+            backtrack(i+1)
+
+            # include
+            current.append(nums[i])
+            backtrack(i+1)
+            current.pop()
+        backtrack(0)
+        return [list(subset) for subset in output]
 # Unit Tests
 import unittest
-funcs = [Solution().subsetsWithDup, Solution().subsetsWithDup2, Solution().subsetsWithDup3]
+funcs = [Solution().subsetsWithDup, Solution2().subsetsWithDup, Solution3().subsetsWithDup, Solution4().subsetsWithDup]
 
 class TestSubsetsWithDup(unittest.TestCase):
     def testSubsetsWithDup1(self):
