@@ -28,16 +28,18 @@ Follow up: Could you implement a solution that runs in O(n) time complexity and 
 Notes:
 1. One pass: O(n) time | O(1) space - where n is the length of array nums
 Start with the maximum numbers for the first and second element. Then
-(1) Find the first smallest numbe in the 3 subsequence
+(1) Find the first smallest number in the 3 subsequence
 (2) Find the second one greater than the first element, reset the first one if it's smaller
 
 2. PrefixMax + SuffixMax: O(n) time | O(n) space - where n is the length of array nums
+
+3. modified LIS: O(n) time | O(1) space - where n is the length of array nums
 """
 
 
 
 
-import unittest
+import unittest, bisect
 from typing import List
 class Solution(object):
     def increasingTriplet(self, nums: List[int]) -> bool:
@@ -53,7 +55,8 @@ class Solution(object):
                 return True
         return False
 
-    def increasingTriplet2(self, nums: List[int]) -> bool:
+class Solution2(object):
+    def increasingTriplet(self, nums: List[int]) -> bool:
         n = len(nums)
         prefixMin = [float("inf")] * (n+1)
         suffixMax = [float("-inf")] * (n+1)
@@ -69,9 +72,21 @@ class Solution(object):
 
         return False
 
+class Solution3:
+    def increasingTriplet(self, nums: List[int]) -> bool:
+        dp = []
+        for num in nums:
+            idx = bisect.bisect_left(dp, num)
+            if idx == len(dp):
+                dp.append(num)
+                if len(dp) == 3:
+                    return True
+            else:
+                dp[idx] = num
+        return False
 
 # Unit Tests
-funcs = [Solution().increasingTriplet, Solution().increasingTriplet2]
+funcs = [Solution().increasingTriplet, Solution2().increasingTriplet, Solution3().increasingTriplet]
 
 
 class TestIncreasingTriplet(unittest.TestCase):
