@@ -7,6 +7,12 @@ description: https://leetcode.com/problems/minimum-operations-to-make-a-subseque
 Note:
 1. LCS (TLE): O(mn) time | O(min(m, n)) space - where m is  length of array target and n is the length of array arr
 2. Reduce to LIS: O(nlogm) time | O(2m) space - where m is the length of array target and n is the length of array arr
+Key: numbers in target are distinct
+    1. Ignore numbers that are not in target
+    2. Convert numbers to indices
+ex:
+    target = [6,4,8,1,3,2] => [0,1,2,3,4,5] -> [0,2,3]
+    arr = [4,7,6,2,3,8,6,1] => [1,0,5,4,2,0,3] -> [0,2,3]
 
 ref: https://www.youtube.com/watch?v=5vBPESNPEu4
 """
