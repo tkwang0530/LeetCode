@@ -22,7 +22,7 @@ Constraints:
 Note:
 1. Recursion with concatenation: O(n*n!) time | O(n^2) space
 2. Recursion (swap element + snapshot + set): O(n*n!) time | O(n) space
-3. Recursion (number count + backtracking): O(n*n!) time | O(n) space
+3. backtrack + hashSet: O(n*n!) time | O(n) space - where n is the length of nums
 """
 
 
@@ -47,12 +47,13 @@ class Solution:
             self.helper(nums[0:i] + nums[i + 1:], curr, answers)
             curr.pop()
 
-    def permuteUnique2(self, nums: List[int]) -> List[List[int]]:
+class Solution2:
+    def permuteUnique(self, nums: List[int]) -> List[List[int]]:
         permutations = []
-        self.helper2(nums, 0, permutations)
+        self.helper(nums, 0, permutations)
         return permutations
 
-    def helper2(self, nums, i, permutations):
+    def helper(self, nums, i, permutations):
         if i == len(nums) - 1:
             permutations.append(nums[:])
         else:
@@ -61,35 +62,36 @@ class Solution:
                 if nums[j] not in visited:
                     visited.add(nums[j])
                     self.swap(nums, i, j)
-                    self.helper2(nums, i + 1, permutations)
+                    self.helper(nums, i + 1, permutations)
                     self.swap(nums, i, j)
 
-    def permuteUnique3(self, nums: List[int]) -> List[List[int]]:
-        result = []
-        count = {num: 0 for num in nums}
-        for num in nums:
-            count[num] += 1
-        self.dfs(nums, [], result, count)
-        return result
+    def swap(self, nums, i, j):
+        nums[i], nums[j] = nums[j], nums[i]
 
-    def dfs(self, nums, current, result, count) -> None:
-        if len(current) == len(nums):
-            result.append(current[:])
-            return
-        for num in count:
-            if count[num] > 0:
-                current.append(num)
-                count[num] -= 1
-                self.dfs(nums, current, result, count)
-                count[num] += 1
-                current.pop()
+class Solution3:
+    def permuteUnique(self, nums: List[int]) -> List[List[int]]:
+        n = len(nums)
+        nums.sort()
+        output = []
+        def backtrack(i):
+            if i == n-1:
+                output.append(nums.copy())
+                return
 
-    def swap(self, arr, i, j):
-        arr[i], arr[j] = arr[j], arr[i]
+            visited = set()
+            for j in range(i, n):
+                if nums[j] in visited:
+                    continue
 
+                visited.add(nums[j])
+                nums[i], nums[j] = nums[j], nums[i]
+                backtrack(i+1)
+                nums[i], nums[j] = nums[j], nums[i]
+        backtrack(0)
+        return output
 
 # Unit Tests
-funcs = [Solution().permuteUnique, Solution().permuteUnique2, Solution().permuteUnique3]
+funcs = [Solution().permuteUnique, Solution2().permuteUnique, Solution3().permuteUnique]
 
 
 class TestPermuteUnique(unittest.TestCase):
