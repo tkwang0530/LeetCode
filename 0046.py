@@ -1,28 +1,11 @@
 """
 46. Permutations
-Given a collection of distinct integers, return all possible permutations.
-
-Example1:
-    Input: [1, 2, 3]
-    Output: [
-        [1, 2, 3],
-        [1, 3, 2],
-        [2, 1, 3],
-        [2, 3, 1],
-        [3, 1, 2],
-        [3, 2, 1]
-    ]
-
-Constraints:
-1 <= nums.length <= 6
--10 <= nums[i] <= 10
-All the integers of nums are unique.
+description: https://leetcode.com/problems/permutations/description/
 """
 
 """
 Note:
-1. Recursion with concatenation: O(n^2*n!) time | O(n + n*n!) space
-2. Recursion (swap element + snapshot): O(n*n!) time | O(n + n*n!) space
+1. backtrack O(n*n!) time | O(n + n*n!) space - where n is the length of nums
 """
 
 
@@ -32,41 +15,23 @@ import unittest
 from typing import List
 class Solution:
     def permute(self, nums: List[int]) -> List[List[int]]:
-        permutations = []
-        self.permutationsHelper(nums, [], permutations)
-        return permutations
+        n = len(nums)
+        output = []
+        def dfs(i):
+            if i == n - 1:
+                output.append(nums.copy())
+                return
 
-    def permutationsHelper(self, nums: List[int], currentPermutation: List[int], permutations: List[int]):
-        if len(nums) == 0:
-            permutations.append(currentPermutation[:])
-        else:
-            for i in range(len(nums)):
-                newArray = nums[:i] + nums[i+1:]
-                currentPermutation.append(nums[i])
-                self.permutationsHelper(
-                    newArray, currentPermutation, permutations)
-                currentPermutation.pop()
-
-    def permute2(self, nums: List[int]) -> List[List[int]]:
-        permutations = []
-        self.permutationsHelper2(nums, 0, permutations)
-        return permutations
-
-    def permutationsHelper2(self, nums: List[int], i: int, permutations: List[List[int]]):
-        if i == len(nums) - 1:
-            permutations.append(nums[:])
-        else:
-            for j in range(i, len(nums)):
-                self.swap(nums, i, j)
-                self.permutationsHelper2(nums, i + 1, permutations)
-                self.swap(nums, i, j)
-
-    def swap(self, arr: List[int], i: int, j: int):
-        arr[i], arr[j] = arr[j], arr[i]
+            for j in range(i, n):
+                nums[i], nums[j] = nums[j], nums[i]
+                dfs(i+1)
+                nums[i], nums[j] = nums[j], nums[i]
+        dfs(0)
+        return output
 
 
 # Unit Tests
-funcs = [Solution().permute, Solution().permute2]
+funcs = [Solution().permute]
 
 
 class TestPermute(unittest.TestCase):
