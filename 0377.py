@@ -1,34 +1,6 @@
 """
 377. Combination Sum IV
-Given an array of distinct integers nums and a target integer target, return the number of possible combinations that add up to target.
-
-The answer is guaranteed to fit in a 32-bit integer.
-
-Example1:
-Input: nums = [1,2,3], target = 4
-Output: 7
-Explanation:
-The possible combination ways are:
-(1, 1, 1, 1)
-(1, 1, 2)
-(1, 2, 1)
-(1, 3)
-(2, 1, 1)
-(2, 2)
-(3, 1)
-Note that different sequences are counted as different combinations.
-
-Example2:
-Input: nums = [9], target = 3
-Output: 0
-
-Constraints:
-1 <= nums.length <= 200
-1 <= nums[i] <= 1000
-All the elements of nums are unique.
-1 <= target <= 1000
-
-Follow up: What if negative numbers are allowed in the given array? How does it change the problem? What limitation we need to add to the question to allow negative numbers?
+description: https://leetcode.com/problems/combination-sum-iv/description/
 """
 
 """
@@ -46,6 +18,7 @@ dp(nums, target): => all combinations that uses nums to sumup to target
 4. DFS + memo: O(target*n) time | O(target) space
 """
 
+import functools
 from typing import List
 class Solution:
     def combinationSum4(self, nums: List[int], target: int) -> int:
@@ -65,7 +38,8 @@ class Solution:
             for i in range(0, len(nums)):
                 self.dfs(nums, target - nums[i], result)
 
-    def combinationSum4_2(self, nums: List[int], target: int) -> int:
+class Solution2:
+    def combinationSum4(self, nums: List[int], target: int) -> int:
         cache = [-1] * (target+1)
         cache[0] = 1
         return self.dp(nums, target, cache)
@@ -81,7 +55,8 @@ class Solution:
         cache[target] = result
         return cache[target]
 
-    def combinationSum4_3(self, nums: List[int], target: int) -> int:
+class Solution3:
+    def combinationSum4(self, nums: List[int], target: int) -> int:
         dp = [0] * (target + 1)
         dp[0] = 1
         for i in range(1, target+1):
@@ -90,25 +65,24 @@ class Solution:
                 dp[i] += times
         return dp[target]
     
-    def combinationSum4_4(self, nums: List[int], target: int) -> int:
-        memo = {}
-        def dfs(target) -> int:
+class Solution4:
+    def combinationSum4(self, nums: List[int], target: int) -> int:
+        @functools.lru_cache(None)
+        def dfs(target):
             if target == 0:
                 return 1
-            if target in memo:
-                return memo[target]
-            count = 0
-            for num in nums:
-                if num > target:
-                    continue
-                count += dfs(target-num)
-            memo[target] = count
-            return memo[target]
+
+            combinations = 0
+            for i in range(len(nums)):
+                if target-nums[i] >= 0:
+                    combinations += dfs(target-nums[i])
+            return combinations
         return dfs(target)
+
 
 # Unit Tests
 import unittest
-funcs = [Solution().combinationSum4, Solution().combinationSum4_2, Solution().combinationSum4_3, Solution().combinationSum4_4]
+funcs = [Solution().combinationSum4, Solution2().combinationSum4, Solution3().combinationSum4, Solution4().combinationSum4]
 
 
 class TestCombinationSum(unittest.TestCase):
