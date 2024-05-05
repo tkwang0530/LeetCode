@@ -1,33 +1,12 @@
 """
 77. Combinations
-Given two integers n and k, return all possible combinations of k numbers out of the range [1, n].
-
-You may return the answer in any order.
-
-Example1:
-    Input: n = 4, k = 2
-    Output: 
-    [
-        [2,4],
-        [3,4],
-        [2,3],
-        [1,2],
-        [1,3],
-        [1,4],
-    ]
-Example2:
-    Input: n = 1, k = 1
-    Output: [[1]]
-
-Constraints:
-1 <= n <= 20
-1 <= k <= n
+description: https://leetcode.com/problems/combinations/description/
 """
 
 """
 Note:
-1. Recursion with backtracking (1): O(k * C(n,k)) time | O(k) space
-2. Recursion with backtracking (2): O(k * C(n,k)) time | O(k) space
+1. backtracking (1): O(k * C(n,k)) time | O(k) space
+2. backtraking (2): O(k * C(n,k)) time | O(k) space
 """
 
 
@@ -50,28 +29,26 @@ class Solution:
                 self.helper(n, k, i + 1, combination, combinations)
                 combination.pop()
 
-    def combine2(self, n: int, k: int) -> List[List[int]]:
-        combinations = []
-        self.helper2(n, k, 1, [], combinations)
-        return combinations
+class Solution2:
+    def combine(self, n: int, k: int) -> List[List[int]]:
+        output = []
+        current = []
+        def backtrack(i):
+            if len(current) == k:
+                output.append(current.copy())
+                return
 
-    def helper2(self, n, k, start, combination, result):
-        if len(combination) == k:  # backtrack
-            result.append(combination.copy())
-            return
-        if start == n + 1:  # can't add n+1 to combination
-            return
-        # exclude start
-        self.helper2(n, k, start + 1, combination, result)
+            for j in range(i, n+1):
+                current.append(j)
+                backtrack(j+1)
+                current.pop()
 
-        # include start
-        combination.append(start)
-        self.helper2(n, k, start + 1, combination, result)
-        combination.pop()
+        backtrack(1)
+        return output
 
 
 # Unit Tests
-funcs = [Solution().combine, Solution().combine2]
+funcs = [Solution().combine, Solution2().combine]
 
 
 class TestCombine(unittest.TestCase):
