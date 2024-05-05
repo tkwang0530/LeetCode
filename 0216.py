@@ -1,74 +1,35 @@
 """
 216. Combination Sum III
-Find all valid combinations of k numbers that sum up to n such that the following conditions are true:
-- Only numbers 1 through 9 are used.
-- Each number is used at most once.
-
-Example1:
-Input: k = 3, n = 7
-Output: [[1,2,4]]
-Explanation:
-1 + 2 + 4 = 7
-There are no other valid combinations.
-
-Example2:
-Input: k = 3, n = 9
-Output: [[1,2,6],[1,3,5],[2,3,4]]
-Explanation:
-1 + 2 + 6 = 9
-1 + 3 + 5 = 9
-2 + 3 + 4 = 9
-There are no other valid combinations.
-
-Example3:
-Input: k = 4, n = 1
-Output: []
-Explanation: There are no valid combinations.
-Using 4 different numbers in the range [1,9], the smallest sum we can get is 1+2+3+4 = 10 and since 10 > 1, there are no valid combination.
-
-Example4:
-Input: k = 3, n = 2
-Output: []
-Explanation: There are no valid combinations.
-
-Example5:
-Input: k = 9, n = 45
-Output: [[1,2,3,4,5,6,7,8,9]]
-Explanation:
-1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 = 45
-There are no other valid combinations.
-
-Constraints:
-2 <= k <= 9
-1 <= n <= 60
+description: https://leetcode.com/problems/combination-sum-iii/description/
 """
 
 """
 Note:
-1. DFS + backtracking (1): O(k * C(n,k)) time | O(k) space
+1. backtracking: O(k * C(n,k)) time | O(k) space
 """
 
 import unittest
 from typing import List
 class Solution:
     def combinationSum3(self, k: int, n: int) -> List[List[int]]:
-        digits = [i for i in range(1, 10)]
+        output = []
         current = []
-        result = []
-        def dfs(i, k, current, currentSum, result):
-            if currentSum == n and k == 0:
-                result.append(current[:])
+        def backtrack(k, n, minNum):
+            if k == 0:
+                if n == 0:
+                    output.append(current.copy())
                 return
-            
-            if currentSum > n or k == 0:
+
+            if n <= 0:
                 return
-            
-            for j in range(i, len(digits)):
-                current.append(digits[j])
-                dfs(j+1, k-1, current, currentSum + digits[j], result)
+
+            for num in range(minNum, 9+1):
+                current.append(num)
+                backtrack(k-1, n-num, num+1)
                 current.pop()
-        dfs(0, k, current, 0, result)
-        return result
+        
+        backtrack(k, n, 1)
+        return output
 
 # Unit Tests
 funcs = [Solution().combinationSum3]
