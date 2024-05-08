@@ -1,32 +1,16 @@
 """
 198. House Robber
-You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed, the only constraint stopping you from robbing each of them is that adjacent houses have security systems connected and it will automatically contact the police if two adjacent houses were broken into on the same night.
-
-Given an integer array nums representing the amount of money of each house, return the maximum amount of money you can rob tonight without alerting the police.
-
-Example1:
-Input: nums = [1,2,3,1]
-Output: 4
-Explanation: Rob house 1 (money = 1) and then rob house 3 (money = 3).
-Total amount you can rob = 1 + 3 = 4.
-
-Example2:
-Input: nums = [2,7,9,3,1]
-Output: 12
-Explanation: Rob house 1 (money = 2), rob house 3 (money = 9) and rob house 5 (money = 1).
-Total amount you can rob = 2 + 9 + 1 = 12.
-
-Constraints:
-1 <= nums.length <= 100
-0 <= nums[i] <= 400
+description: https://leetcode.com/problems/house-robber/description/
 """
 
 """
 Notes:
-1. DP (improved): O(n) time | O(1) space
-2. DP: O(n) time | O(n) space
+1. DP (improved): O(n) time | O(1) space - where n is the length of nums
+2. DP: O(n) time | O(n) space - where n is the length of nums
+3. dfs+memo: O(n) time | O(n) space - where n is the length of nums
 """
 
+import functools
 from typing import List
 
 class Solution(object):
@@ -36,7 +20,8 @@ class Solution(object):
             last, now = now, max(last + num, now)
         return now
 
-    def rob2(self, nums: List[int]) -> int:
+class Solution2:
+    def rob(self, nums: List[int]) -> int:
         if not nums:
             return 0
         if len(nums) == 1:
@@ -46,12 +31,35 @@ class Solution(object):
         result[1] = max(result[0], nums[1])
         for i in range(2, len(nums)):
             result[i] = max(result[i-1], result[i-2] + nums[i])
-            print(result[i])
         return result[-1]
+
+class Solution3:
+    def rob(self, nums: List[int]) -> int:
+        n = len(nums)
+        @functools.lru_cache(None)
+        def dfs(i: int, isSafe: bool) -> int:
+            if i == n:
+                return 0
+
+            maxAmount = 0
+            # skip
+            maxAmount = max(
+                maxAmount, 
+                dfs(i+1, True)
+            )
+
+            # rob if isSafe
+            if isSafe:
+                maxAmount = max(
+                    maxAmount, 
+                    nums[i] + dfs(i+1, False)
+                )
+            return maxAmount
+        return dfs(0, True)
 
 # Unit Tests
 import unittest
-funcs = [Solution().rob, Solution().rob2]
+funcs = [Solution().rob, Solution2().rob, Solution3().rob]
 
 class TestRob(unittest.TestCase):
     def testRob1(self):
