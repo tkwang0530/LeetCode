@@ -5,56 +5,39 @@ description: https://leetcode.com/problems/construct-product-matrix/description/
 
 """
 Note:
-1. Math: O(mn) time | O(mn) space - where m is len(grid) and n is len(grid[0])
+1. PreSum: O(mn) time | O(mn) space - where m is len(grid) and n is len(grid[0])
 """
 
+from itertools import product
 from typing import List
 class Solution:
     def constructProductMatrix(self, grid: List[List[int]]) -> List[List[int]]:
         rows = len(grid)
         cols = len(grid[0])
-        three = five = eightTwoThree = 0
-        product = 1
-        for row in range(rows):
-            for col in range(cols):
-                current = grid[row][col]
-                while not current % 3:
-                    current //= 3
-                    three += 1
-                
-                while not current % 5:
-                    current //= 5
-                    five += 1
+        M = 12345
+        n = rows * cols
 
-                while not current % 823:
-                    current //= 823
-                    eightTwoThree += 1
-                
-                product *= current
-                product %= 12345
-        
+        prefixProducts = [1] * (rows*cols+1)
+        suffixProducts = [1] * (rows*cols+1)
 
-        output = [[1] * cols for _ in range(rows)]
-        for row in range(rows):
-            for col in range(cols):
-                current = grid[row][col]
-                nThree = three
-                nFive = five
-                nEightTwoThree = eightTwoThree
-                while not current % 3:
-                    current //= 3
-                    nThree -= 1
-                
-                while not current % 5:
-                    current //= 5
-                    nFive -= 1
+        def getPos(idx):
+            return idx // cols, idx % cols
 
-                while not current % 823:
-                    current //= 823
-                    nEightTwoThree -= 1
+        def getIdx(row, col):
+            return row * cols + col
 
-                output[row][col] = (pow(3, nThree, 12345) * pow(5, nFive, 12345) * pow(823, nEightTwoThree, 12345) * pow(current, -1, 12345) * product) % 12345
-        return output
+        for i in range(1, n+1):
+            row, col = getPos(i-1)
+            prefixProducts[i] = (prefixProducts[i-1]*grid[row][col]) % M
+
+        for i in range(n-2, -1, -1):
+            row, col = getPos(i+1)
+            suffixProducts[i] = (suffixProducts[i+1]*grid[row][col]) % M
+
+        for row,col in product(range(rows), range(cols)):
+            idx = getIdx(row, col)
+            grid[row][col] = (prefixProducts[idx] * suffixProducts[idx]) % M
+        return grid
 
 # Unit Tests
 import unittest
