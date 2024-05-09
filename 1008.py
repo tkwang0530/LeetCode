@@ -1,26 +1,6 @@
 """
 1008. Construct Binary Search Tree from Preorder Traversal
-Given an array of integers preorder, which represents the preorder traversal of a BST, construct the tree and return its root.
-
-It is guaranteed that there is always possible to find a binary search tree with the given requirements for the given test cases.
-
-A binary search tree is a binary tree where for every node, any descendant of Node.left has a value strictly less than Node.val, and any descendant of Node.right has a value strictly greater than Node.val.
-
-Example1:
-Input: preorder = [8, 5, 1, 7, 10, 12]
-Output: [8, 5, 10, 1, 7, null, 12]
-        8
-      /    \
-    5     10
-   /  \        \
- 1    7       12 
-
-Example2:
-Input: preorder = [1, 3]
-Output: [1, null, 3]
-        1
-           \
-            3
+description: https://leetcode.com/problems/construct-binary-search-tree-from-preorder-traversal/description/
 """
 
 """
@@ -33,12 +13,13 @@ The right recursion will take the remaining elements smaller than bound
 
 3. Linear Search with array slicing: O(n^2) time | O(n^2) space
 4. Linear Search with array and indices: O(n^2) time | O(h) space
+5. monotonic stack+recursion: O(n) time | O(n) space
 """
 
 
 
 
-from typing import List
+from typing import List, Optional
 import bisect
 import unittest
 class TreeNode:
@@ -67,7 +48,8 @@ class Solution:
         root.right = self.helper(preorder, mid, endIdx)
         return root
 
-    def bstFromPreorder2(self, preorder: List[int]) -> TreeNode:
+class Solution2:
+    def bstFromPreorder(self, preorder: List[int]) -> TreeNode:
         return self.buildTree(preorder[::-1], float('inf'))
 
     def buildTree(self, arr: List[int], upper) -> TreeNode:
@@ -78,18 +60,20 @@ class Solution:
         root.right = self.buildTree(arr, upper)
         return root
 
-    def bstFromPreorder3(self, preorder: List[int]) -> TreeNode:
+class Solution3:
+    def bstFromPreorder(self, preorder: List[int]) -> TreeNode:
         if len(preorder) == 0:
             return None
         root = TreeNode(preorder[0])
         i = 1
         while i < len(preorder) and preorder[i] < root.val:
             i += 1
-        root.left = self.bstFromPreorder3(preorder[1:i])
-        root.right = self.bstFromPreorder3(preorder[i:])
+        root.left = self.bstFromPreorder(preorder[1:i])
+        root.right = self.bstFromPreorder(preorder[i:])
         return root
 
-    def bstFromPreorder4(self, preorder: List[int]) -> TreeNode:
+class Solution4:
+    def bstFromPreorder(self, preorder: List[int]) -> TreeNode:
         if len(preorder) == 0:
             return None
 
@@ -106,13 +90,39 @@ class Solution:
         root.right = self.construct(preorder, i, endIdx)
         return root
 
+class Solution5:
+    def bstFromPreorder(self, preorder: List[int]) -> Optional[TreeNode]:
+        n = len(preorder)
+        nextLargerIndice = {} #<currentIdx, nextLargetIndex>  右邊第一個比自己的值大的element的index
+        stack = [] #[(num, i)]
+        for i, num in enumerate(preorder):
+            while stack and stack[-1][0] < num:
+                _, idx = stack.pop()
+                nextLargerIndice[idx] = i
+            stack.append((num, i))
+        
+        def dfs(left, right):
+            if left > right:
+                return None
+            if left == right:
+                return TreeNode(preorder[left])
 
+            root = TreeNode(preorder[left])
+            if left in nextLargerIndice:
+                root.right = dfs(nextLargerIndice[left], right)
+            
+            if left in nextLargerIndice:
+                root.left = dfs(left+1, nextLargerIndice[left]-1)
+            else:
+                root.left = dfs(left+1, right)
+
+            return root
+
+        return dfs(0, n-1)
+    
 # Unit Tests
-
-funcs = [Solution().bstFromPreorder, Solution().bstFromPreorder2,
-         Solution().bstFromPreorder3, Solution().bstFromPreorder4]
-
-
+funcs = [Solution().bstFromPreorder, Solution2().bstFromPreorder,
+         Solution3().bstFromPreorder, Solution4().bstFromPreorder, Solution5().bstFromPreorder]
 class TestBstFromPreorder(unittest.TestCase):
 
     def testBstFromPreorder1(self):
