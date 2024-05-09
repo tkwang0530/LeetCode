@@ -1,32 +1,13 @@
 """
 967. Numbers With Same Consecutive Differences
-Return all non-negative integers of length n such that the absolute difference between every two consecutive digits is k.
-
-Note that every number in the answer must not have leading zeros. For example, 01 has one leading zero and is invalid.
-
-You may return the answer in any order.
-
-Example1:
-Input: n = 3, k = 7
-Output: [181,292,707,818,929]
-Explanation: Note that 070 is not a valid number, because it has leading zeroes.
-
-Example2:
-Input: n = 2, k = 1
-Output: [10,12,21,23,32,34,43,45,54,56,65,67,76,78,87,89,98]
-
-Constraints:
-2 <= n <= 9
-0 <= k <= 9
+description: https://leetcode.com/problems/numbers-with-same-consecutive-differences/description/
 """
 
 """
 Note:
 1. Iterative BFS: O(2^n) time | O(2^n) space
+2. backtrack + HashSet: O(2^n * n) time | O(2^n) space
 """
-
-
-
 
 import unittest
 from typing import List
@@ -43,10 +24,44 @@ class Solution:
                     nextNums.add(num*10 + y - k)
             currentNums = nextNums
         return list(currentNums)
+    
+class Solution2:
+    def numsSameConsecDiff(self, n: int, k: int) -> List[int]:
+        output = set()
+        current = []
+
+        def hasLeadingZero(current):
+            return len(current) >= 2 and current[0] == 0
+
+        def backtrack(n):
+            if n == 0:
+                if not hasLeadingZero(current):
+                    numStr = "".join([str(num) for num in current])
+                    output.add(int(numStr))
+                return
+
+            # add k
+            if current[-1]+k <= 9:
+                current.append(current[-1]+k)
+                backtrack(n-1)
+                current.pop()
+
+            # minus k
+            if current[-1]-k >= 0:
+                current.append(current[-1]-k)
+                backtrack(n-1)
+                current.pop()
+
+        for i in range(0, 9+1):
+            current.append(i)
+            backtrack(n-1)
+            current.pop()
+
+        return list(output)
 
 
 # Unit Tests
-funcs = [Solution().numsSameConsecDiff]
+funcs = [Solution().numsSameConsecDiff, Solution2().numsSameConsecDiff]
 
 
 class TestNumsSameConsecDiff(unittest.TestCase):
