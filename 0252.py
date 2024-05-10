@@ -20,9 +20,12 @@ They overlapped if the first meeting end time > the second meeting start time.
 
 2. Sort + One pass (use while): O(nlogn) time | O(n) space
 
-3. Buckets Sort: O(max(start) + n) time | O(n) space  
+3. Buckets Sort: O(max(start) + n) time | O(n) space
+
+4. Line Sweep: O(n+klogk) time | O(k) space - where n is the length of intervals and k is the number of unique timestamps
 """
 
+import collections
 import unittest
 from typing import List
 class Solution(object):
@@ -35,7 +38,8 @@ class Solution(object):
             preEnd = end
         return True
 
-    def canAttendMeetings2(self, intervals: List[List[int]]) -> bool:
+class Solution2:
+    def canAttendMeetings(self, intervals: List[List[int]]) -> bool:
         intervals.sort(key = lambda x: x[0])
         i = 1
         while i < len(intervals):
@@ -44,7 +48,8 @@ class Solution(object):
             i += 1
         return True
 
-    def canAttendMeetings3(self, intervals: List[List[int]]) -> bool:
+class Solution3:
+    def canAttendMeetings(self, intervals: List[List[int]]) -> bool:
         maxStart = max([start for start, _ in intervals])
         buckets = [[] for _ in range(maxStart+1)]
         for start, end in intervals:
@@ -61,8 +66,22 @@ class Solution(object):
             preEnd = end
         return True
 
+class Solution4:
+    def canAttendMeetings(self, intervals: List[List[int]]) -> bool:
+        sweepLine = collections.defaultdict(int)
+        for start, end in intervals:
+            sweepLine[start] += 1
+            sweepLine[end] -= 1
+        
+        overLaps = 0
+        for time in sorted(sweepLine.keys()):
+            overLaps += sweepLine[time]
+            if overLaps > 1:
+                return False
+        return True
+
 # Unit Tests
-funcs = [Solution().canAttendMeetings, Solution().canAttendMeetings2, Solution().canAttendMeetings3]
+funcs = [Solution().canAttendMeetings, Solution2().canAttendMeetings, Solution3().canAttendMeetings, Solution4().canAttendMeetings]
 
 
 class TestCanAttendMeetings(unittest.TestCase):
