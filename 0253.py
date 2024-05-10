@@ -1,15 +1,6 @@
 """
 253. Meeting Rooms II
-Given an array of meeting time intervals consisting of start and end times 
-[[s1, e1], [s2, e2], ...] (si < ei), find the minimum number of conference rooms required.
-
-Example1:
-Input: [[0, 30], [5, 10], [15, 20]]
-Output: 2
-
-Example2:
-Input: [[7, 10], [2, 4]]
-Output: 1
+description: https://leetcode.com/problems/meeting-rooms-ii/description/
 """
 
 """
@@ -27,7 +18,7 @@ the idea is if the room is used, mark the room with its end time.
 (3) iterate through the two arrays
     increase the count by 1 and s+= 1 if start[s] < end[e] otherwise, count -= 1 and e+=1
 
-3. Line Sweep: O(nlogn) time | O(n) space
+3. Line Sweep: O(n+klogk) time | O(k) space - where n is the length of intervals and k is the number of unique timestamps
 """
 
 import heapq
