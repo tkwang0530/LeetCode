@@ -7,6 +7,7 @@ description: https://leetcode.com/problems/the-skyline-problem/description/
 Note:
 1. events and heap: O(nlogn) time | O(n) space - where n is the length of array buildings
 2. bst + HashTable: O(nlogn) time | O(n) space - where n is the length of array buildings
+3. minHeap + maxHeap + hashTable: O(nlogn) time | O(n) space - where n is the length of array buildings
 """
 
 import collections
@@ -68,9 +69,55 @@ class Solution2:
             maxHeight = newMaxHeight
         return output
 
+class Solution3:
+    def getSkyline(self, buildings: List[List[int]]) -> List[List[int]]:
+        startPairsMap = collections.defaultdict(list) # <startTime, [(end, height)]>
+        positions = set()
+        for start, end, height in buildings:
+            startPairsMap[start].append((end, height))
+            positions.add(start)
+            positions.add(end)
+
+        # minHeap is for remove height
+        minHeap = [] # (end, height)
+        # maxHeap is for find the highest building in certain moment
+        maxHeap = [] # (-height)
+
+        # prevHeight is for finding the next different height time
+        prevHeight = 0
+        
+        # heightCounter
+        heightCounter = collections.defaultdict(int)
+
+        output = []
+        for pos in sorted(list(positions)):
+            # remove deprecated height
+            while minHeap and minHeap[0][0] == pos:
+                _, h = heapq.heappop(minHeap)
+                heightCounter[h] -= 1
+
+            # add new building
+            for end, height in startPairsMap[pos]:
+                heightCounter[height] += 1
+                heapq.heappush(minHeap, (end, height))
+                heapq.heappush(maxHeap, -height)
+
+            # remove height count == 0 from top
+            while maxHeap and heightCounter[-maxHeap[0]] == 0:
+                heapq.heappop(maxHeap)
+
+            # find current peak, if peak != prevHeight, append to output
+            peak = -maxHeap[0] if maxHeap else 0
+            
+            if peak != prevHeight:
+                output.append([pos, peak])
+            
+            prevHeight = peak
+        return output
+
 # Unit Tests
 import unittest
-funcs = [Solution().getSkyline, Solution2().getSkyline]
+funcs = [Solution().getSkyline, Solution2().getSkyline, Solution3().getSkyline]
 
 
 class TestGetSkyline(unittest.TestCase):
