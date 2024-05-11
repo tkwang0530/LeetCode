@@ -1,28 +1,6 @@
 """
 857. Minimum Cost to Hire K Workers
-There are n workers. You are given two integer arrays quality and wage where quality[i] is the quality of the i-th worker and wage[i] is the minimum wage expectation for the i-th worker.
-
-We want to hire exactly k workers to form a paid group. To hire a group of k workers, we must pay them according to the following rules:
-1. Every worker in the paid group should be paid in the ratio of their quality compared to other workers in the paid group.
-
-2. Every worker in the paid group must be paid at least their minimum wage expectation.
-
-Given the integer k, return the least amount of money needed to form a paid group satisfying the above conditions. Answers within 10^-5 of the actual answer will be accepted.
-
-Example1:
-Input: quality = [10,20,5], wage = [70,50,30], k = 2
-Output: 105.00000
-Explanation: We pay 70 to 0th worker and 35 to 2nd worker.
-
-Example2:
-Input: quality = [3,1,10,10,1], wage = [4,8,2,2,7], k = 3
-Output: 30.66667
-Explanation: We pay 4 to 0th worker, 13.33333 to 2nd and 3rd workers separately.
-
-Constraints:
-n == quality.length == wage.length
-1 <= k <= n <= 10^4
-1 <= quality[i], wage[i] <= 10^4
+description: https://leetcode.com/problems/minimum-cost-to-hire-k-workers/description/
 """
 
 """
@@ -55,7 +33,8 @@ class Solution:
                 minTotalWage = min(minTotalWage, currentSum * ratio)
         return minTotalWage
 
-    def mincostToHireWorkers2(self, quality: List[int], wage: List[int], k: int) -> float:
+class Solution2:
+    def mincostToHireWorkers(self, quality: List[int], wage: List[int], k: int) -> float:
         wageQuality = [(w, q) for w, q in zip(wage, quality)]
         wageQuality.sort(key = lambda x: x[0]/x[1])
 
@@ -84,7 +63,7 @@ class Solution:
 
 # Unit Tests
 import unittest
-funcs = [Solution().mincostToHireWorkers, Solution().mincostToHireWorkers2]
+funcs = [Solution().mincostToHireWorkers, Solution2().mincostToHireWorkers]
 class TestMincostToHireWorkers(unittest.TestCase):
     def testMincostToHireWorkers1(self):
         for func in funcs:
