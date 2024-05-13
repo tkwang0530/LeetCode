@@ -6,12 +6,9 @@ description: https://leetcode.com/problems/linked-list-in-binary-tree/descriptio
 """
 Note:
 1. dfs+memo: O(nm) time | O(nm) space - where n is the number of nodes in the tree and m is the number of nodes in the linked list
+2. dfs 2: O(nm) time | O(n) space - where n is the number of nodes in the tree and m is the number of nodes in the linked list
 """
 
-
-
-
-from collections import deque
 import functools
 from typing import Optional
 import unittest
@@ -46,8 +43,29 @@ class Solution:
             return hasSubPath
         return dfs(head, root)
 
+class Solution2:
+    def isSubPath(self, head: Optional[ListNode], root: Optional[TreeNode]) -> bool:
+
+        def dfs(head, root, canSkip) -> bool:
+            if not head:
+                return True
+
+            if not root:
+                return False
+
+            if head.val == root.val:
+                if dfs(head.next, root.left, False) or dfs(head.next, root.right, False):
+                    return True
+
+            if not canSkip:
+                return False
+
+            return dfs(head, root.left, True) or dfs(head, root.right, True)
+
+        return dfs(head, root, True)
+
 # Unit Tests
-funcs = [Solution().isSubPath]
+funcs = [Solution().isSubPath, Solution2().isSubPath]
 
 
 class TestIsSubPath(unittest.TestCase):
