@@ -44,6 +44,7 @@ There is at least one thief in the grid.
 """
 Note:
 1. BFS + Dijkstra: O(n^2*log(n)) time | O(n^2) space - where n is the length of array grid
+2. BFS (layer order traversal) + Dijkstra (max heap): O(n^2*log(n)) time | O(n^2) space - where n is the length of array grid
 """
 
 import collections
@@ -99,9 +100,66 @@ class Solution:
                 visited.add((nextRow, nextCol))
         return safeness
 
+class Solution2:
+    def maximumSafenessFactor(self, grid: List[List[int]]) -> int:
+        if grid[0][0] == 1 or grid[-1][-1] == 1:
+            return 0
+
+        rows = len(grid)
+        cols = len(grid[0])
+        currentNodes = []
+        for row in range(rows):
+            for col in range(cols):
+                if grid[row][col] == 1:
+                    currentNodes.append((row, col))
+
+        # BFT (layer order traversal)
+        number = 2
+        while currentNodes:
+            nextNodes = []
+            for r, c in currentNodes:
+                for nextRow, nextCol in [(r+1, c), (r-1, c), (r, c+1), (r, c-1)]:
+                    if nextRow in (-1, rows) or nextCol in (-1, cols):
+                        continue
+
+                    if grid[nextRow][nextCol] > 0:
+                        continue
+
+                    grid[nextRow][nextCol] = number
+                    nextNodes.append((nextRow, nextCol))
+            currentNodes = nextNodes
+            number += 1
+        
+        # dijkstra algorithm
+        maxHeap = [(-grid[0][0], 0, 0)] # (-number, row, col)
+        locMinNumber = collections.defaultdict(lambda: float("-inf"))
+        locMinNumber[(0,0)] = grid[0][0]
+        while maxHeap:
+            negNumber, row, col = heapq.heappop(maxHeap)
+            number = -negNumber
+
+            if number < locMinNumber[(row, col)]:
+                continue
+
+            locMinNumber[(row, col)] = number
+            if row == rows-1 and col == cols-1:
+                return number-1
+
+            for nextRow, nextCol in [(row+1, col), (row-1, col), (row, col+1), (row, col-1)]:
+                if nextRow in (-1, rows) or nextCol in (-1, cols):
+                    continue
+
+                newMinNumber = min(number, grid[nextRow][nextCol])
+                if newMinNumber <= locMinNumber[(nextRow, nextCol)]:
+                    continue
+
+                locMinNumber[(nextRow, nextCol)] = newMinNumber
+                heapq.heappush(maxHeap, (-newMinNumber, nextRow, nextCol))
+        return -1
+
 # Unit Tests
 import unittest
-funcs = [Solution().maximumSafenessFactor]
+funcs = [Solution().maximumSafenessFactor, Solution2().maximumSafenessFactor]
 
 
 class TestMaximumSafenessFactor(unittest.TestCase):
