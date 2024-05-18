@@ -1,26 +1,6 @@
 """
 979. Distribute Coins in Binary Tree
-You are given the root of a binary tree with n nodes where each node in the tree has node.val coins. There are n coins in total throughout the whole tree.
-
-In one move, we may choose two adjacent nodes and move one coin from one node to another. A move may be from parent to child, or from child to parent.
-
-Return the minimum number of moves required to make every node have exactly one coin.
-
-Example1:   
-Input: root = [3,0,0]
-Output: 2
-Explanation: From the root of the tree, we move one coin to its left child, and one coin to its right child.
-
-Example2:
-Input: root = [0,3,0]
-Output: 3
-Explanation: From the left child of the root, we move two coins to the root [taking two moves]. Then, we move one coin from the root of the tree to the right child.
-
-Constraints:
-The number of coins in the tree is n.
-1 <= n <= 100
-0 <= Node.val <= n
-The sum of all Node.val is n.
+description: https://leetcode.com/problems/distribute-coins-in-binary-tree/description/
 """
 
 """
@@ -30,9 +10,11 @@ return the number of coins given to the parent
 
 2. DFS with preNode (PostOrder Traversal): O(n) time | o(h) space
 give the parent node so we can move the coins to the parent directly
+
+3. DFS (PostOrder Traversal): O(n) time | O(h) space
 """
 
-from typing import Optional
+from typing import Optional, Tuple
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
         self.val = val
@@ -52,7 +34,8 @@ class Solution:
         dfs(root, container)
         return container[0]
 
-    def distributeCoins2(self, root: Optional[TreeNode]) -> int:
+class Solution2:
+    def distributeCoins(self, root: Optional[TreeNode]) -> int:
         preNode = None
         def dfs(root, preNode):
             if not root:
@@ -62,10 +45,34 @@ class Solution:
                 preNode.val += (root.val - 1)
             return left + right + abs(root.val - 1)
         return dfs(root, preNode)
+    
+class Solution3:
+    def distributeCoins(self, root: Optional[TreeNode]) -> int:
+        def dfs(node) -> Tuple[int, int]: # subtree sum, number of nodes, moves
+            if not node.left and not node.right:
+                return node.val, 1, abs(node.val-1)
+
+            subtreeSum = node.val
+            moves = 0
+            count = 1
+            if node.left:
+                val, c, subMoves = dfs(node.left)
+                subtreeSum += val
+                count += c
+                moves += subMoves
+            
+            if node.right:
+                val, c, subMoves = dfs(node.right)
+                subtreeSum += val
+                count += c
+                moves += subMoves
+
+            return subtreeSum, count, abs(subtreeSum-count)+moves
+        return dfs(root)[2]
 
 # Unit Tests
 import unittest
-funcs = [Solution().distributeCoins, Solution().distributeCoins2]
+funcs = [Solution().distributeCoins, Solution2().distributeCoins]
 
 
 class TestDistributeCoins(unittest.TestCase):
