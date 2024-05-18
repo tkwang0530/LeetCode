@@ -72,7 +72,7 @@ class Solution3:
 
 # Unit Tests
 import unittest
-funcs = [Solution().distributeCoins, Solution2().distributeCoins]
+funcs = [Solution().distributeCoins, Solution2().distributeCoins, Solution3().distributeCoins]
 
 
 class TestDistributeCoins(unittest.TestCase):
