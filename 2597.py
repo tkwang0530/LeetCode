@@ -1,60 +1,37 @@
 """
 2597. The Number of Beautiful Subsets
-You are given an array nums of positive integers and a positive integer k.
-
-A subset of nums is beautiful if it does not contain two integers with an absolute difference equal to k.
-
-Return the number of non-empty beautiful subsets of the array nums.
-
-A subset of nums is an array that can be obtained by deleting some (possibly none) elements from nums. Two subsets are different if and only if the chosen indices to delete are different.
-
-Example1:
-Input: nums = [2,4,6], k = 2
-Output: 4
-Explanation: The beautiful subsets of the array nums are: [2], [4], [6], [2, 6].
-It can be proved that there are only 4 beautiful subsets in the array [2,4,6].
-
-Example2:
-Input: nums = [1], k = 1
-Output: 1
-Explanation: The beautiful subset of the array nums is [1].
-It can be proved that there is only 1 beautiful subset in the array [1].
-
-Constraints:
-1 <= nums.length <= 20
-1 <= nums[i], k <= 1000
+description: https://leetcode.com/problems/the-number-of-beautiful-subsets/description/
 """
 
 """
 Note:
-1. Backtracking: O(nlogn+2^n) time | O(n+1000) space - where n is the length of array nums
+1. Backtracking: O(nlogn+2^n) time | O(n) space - where n is the length of array nums
 """
 
+import collections
 from typing import List
 class Solution:
     def beautifulSubsets(self, nums: List[int], k: int) -> int:
-        n = len(nums)
-        current = [0] * 1001
-        container = [0]
-
         nums.sort()
-        def dfs(i, current, container):
+        n = len(nums)
+        container = [0]
+        currentCounter = collections.defaultdict(int)
+        def backtrack(i) -> int:
             if i == n:
                 container[0] += 1
                 return
+            
+            # skip
+            backtrack(i+1)
 
-            dfs(i+1, current, container)
-
-            if current[nums[i]] >= 0:
-                current[nums[i]] = 1
-                if nums[i] + k <= 1000:
-                    current[nums[i] + k] -= 1
-                dfs(i+1, current, container)
-                if nums[i] + k <= 1000:
-                    current[nums[i] + k] += 1
-                current[nums[i]] = 0
-        dfs(0, current, container)
-        return container[0] - 1
+            # include (if allow)
+            if currentCounter[nums[i]-k] == 0:
+                currentCounter[nums[i]] += 1
+                backtrack(i+1)
+                currentCounter[nums[i]] -= 1
+        
+        backtrack(0)
+        return container[0]-1
 
 # Unit Tests
 import unittest
