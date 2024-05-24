@@ -21,6 +21,7 @@ Note: This question is the same as 1081
 """
 Note:
 1. Monotonic increasing stack + HashTable: O(n) time | O(1) space
+2. Monotonic increasing stack + HashTable 2: O(n) time | O(1) space
 """
 
 import unittest
@@ -43,9 +44,34 @@ class Solution:
             used.add(char)
         return "".join(stack)
 
+class Solution2:
+    def removeDuplicateLetters(self, s: str) -> str:
+        lastCharIdx = {}
+        charSet = set()
+        for i, char in enumerate(s):
+            lastCharIdx[char] = i
+            charSet.add(char)
+
+        stack = [] # char
+        charIdxMap = {}
+        for i, char in enumerate(s):
+            if char in charIdxMap:
+                charIdxMap[char] = i
+                continue
+
+            while stack and ord(stack[-1]) >= ord(char):
+                c = stack[-1]
+                if charIdxMap[c] == lastCharIdx[c]:
+                    break
+                stack.pop()
+                del charIdxMap[c]
+
+            stack.append(char)
+            charIdxMap[char] = i
+        return "".join([char for char in stack[:len(charSet)]])
 
 # Unit Tests
-funcs = [Solution().removeDuplicateLetters]
+funcs = [Solution().removeDuplicateLetters, Solution2().removeDuplicateLetters]
 
 
 class TestRemoveDuplicateLetters(unittest.TestCase):
