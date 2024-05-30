@@ -8,6 +8,10 @@ description: https://leetcode.com/problems/count-triplets-that-can-form-two-arra
 Note:
 1. rangeXOR: O(n^3*32) time | O(32n) space - where n is the length of the input array
 TLE
+2. bitwise XOR: O(n^3) time | O(1) space - where n is the length of the input array
+ref: https://www.youtube.com/watch?v=e4Yx9KjqzQ8
+3. bitwise XOR 2: O(n^2) time | O(1) space - where n is the length of the input array
+ref: https://www.youtube.com/watch?v=e4Yx9KjqzQ8
 """
 
 from typing import List
@@ -44,9 +48,39 @@ class Solution:
                         triplets += 1
         return triplets
 
+class Solution2:
+    def countTriplets(self, arr: List[int]) -> int:
+        n = len(arr)
+        triplets = 0
+        for i in range(n-1):
+            a = 0
+            for j in range(i+1, n):
+                a ^= arr[j-1]
+                b = 0
+                for k in range(j, n):
+                    b ^= arr[k]
+                    if a == b:
+                        triplets += 1
+        return triplets
+    
+        return triplets
+
+class Solution3:
+    def countTriplets(self, arr: List[int]) -> int:
+        n = len(arr)
+        triplets = 0
+
+        runningXOR = 0
+        for i in range(n-1):
+            runningXOR = arr[i]
+            for k in range(i + 1, n):
+                runningXOR ^= arr[k]
+                if runningXOR == 0:
+                    triplets += k-i
+        return triplets
 # Unit Tests
 import unittest
-funcs = [Solution().countTriplets]
+funcs = [Solution().countTriplets, Solution2().countTriplets, Solution3().countTriplets]
 
 class TestCountTriplets(unittest.TestCase):
     def testCountTriplets1(self):
