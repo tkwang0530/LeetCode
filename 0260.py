@@ -1,7 +1,7 @@
 
 """
 260. Single Number III
-description: https://leetcode.com/problems/count-triplets-that-can-form-two-arrays-of-equal-xor/description/
+description: https://leetcode.com/problems/single-number-iii/description/
 """
 
 """
