@@ -1,30 +1,6 @@
 """
 75. Sort Colors
-Given an array nums with n objects colored red, white, or blue, sort them in-place so that objects of the same color are adjacent, with the colors in the order red, white, and blue.
-
-Example1:
-Input: nums = [2,0,2,1,1,0]
-Output: [0,0,1,1,2,2]
-
-
-Example2:
-Input: nums = [2,0,1]
-Output: [0,1,2]
-
-Example3:
-Input: nums = [0]
-Output: [0]
-
-Example4:
-Input: nums = [1]
-Output: [1]
-
-Constraints:
-n == nums.length
-1 <= n <= 300
-nums[i] is 0, 1, or 2
-
-Follow up: Could you come up with a one-pass algorithm using only constant extra space?
+description: https://leetcode.com/problems/sort-colors/description/
 """
 
 """
@@ -33,6 +9,8 @@ Note:
 (1) Focus on 0 and 2: move 0 to the left, move 2 to the right, so that if there is 1, it must be in the middle
 
 2. Count zero, one, two then reassign the value: O(n) time | O(1) space
+
+3. Counting Sort: O(n) time | O(1) space
 """
 
 import collections
@@ -47,16 +25,17 @@ class Solution:
         i = left
         while i <= right:
             if nums[i] == 2:
-                self.swap(nums, i, right)
+                nums[i], nums[right] = nums[right], nums[i]
                 right -= 1
             elif nums[i] == 0:
-                self.swap(nums, i, left)
+                nums[i], nums[left] = nums[left], nums[i]
                 left += 1
                 i += 1
             else:
                 i += 1
 
-    def sortColors2(self, nums: List[int]) -> None:
+class Solution2:
+    def sortColors(self, nums: List[int]) -> None:
         """
         Do not return anything, modify nums in-place instead.
         """
@@ -71,16 +50,21 @@ class Solution:
             elif numCount[2]:
                 nums[i] = 2
                 numCount[2] -= 1
-            
-    
-    def swap(self, nums: List[int], i: int, j: int) -> None:
-        nums[i], nums[j] = nums[j], nums[i]
 
-            
+class Solution3:
+    def sortColors(self, nums: List[int]) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        """
+        numCounter = collections.Counter(nums)
+        idx = 0
+        for num in range(3):
+            nums[idx:idx+numCounter[num]] = [num] * numCounter[num]
+            idx = idx+numCounter[num]
 
 # Unit Tests
 import unittest
-funcs = [Solution().sortColors, Solution().sortColors2]
+funcs = [Solution().sortColors, Solution2().sortColors, Solution3().sortColors]
 class TestSortColors(unittest.TestCase):
     def testSortColors1(self):
         for func in funcs:
