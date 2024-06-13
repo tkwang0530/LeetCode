@@ -29,12 +29,10 @@ class Solution:
         def dfs(city) -> Tuple[int]: # people, cars, fuels
             totalFuels = 0
             totalPeople = 1
-            totalCars = 1
             for childCity in graph[city]:
                 people, cars, fuels = dfs(childCity)
                 totalFuels += fuels + cars
                 totalPeople += people
-                totalCars += cars
 
             return totalPeople, totalPeople//seats + (totalPeople%seats>0), totalFuels
         
