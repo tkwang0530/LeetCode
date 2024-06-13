@@ -5,7 +5,7 @@ description: https://leetcode.com/problems/minimum-fuel-cost-to-report-to-the-ca
 
 """
 Note:
-1. dfs (post order traversal): O(n) time | O(n) space - where n is the number of cities
+1. dfs (preOrder +postOrder): O(n) time | O(n) space - where n is the number of cities
 """
 
 import collections
