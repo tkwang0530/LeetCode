@@ -6,6 +6,8 @@ description: https://leetcode.com/problems/longest-continuous-subarray-with-abso
 """
 Note:
 1. SortedList + queue: O(nlogn) time | O(n) space - where n is the length of the array nums
+2. Monotonic Queues: O(n) time | O(n) space - where n is the length of the array nums
+ref: Editorial
 """
 
 import collections
@@ -26,9 +28,37 @@ class Solution:
             longest = max(longest, len(bst))
         return longest
 
+class Solution2:
+    def longestSubarray(self, nums: List[int], limit: int) -> int:
+        maxQueue = collections.deque()
+        minQueue = collections.deque()
+        start = 0
+        longest = 0
+        n = len(nums)
+        for end in range(n):
+            # maintain the maxQueue in decreasing order
+            while maxQueue and maxQueue[-1] < nums[end]:
+                maxQueue.pop()
+            maxQueue.append(nums[end])
+
+            # maintain the minQueue in increasing order
+            while minQueue and minQueue[-1] > nums[end]:
+                minQueue.pop()
+            minQueue.append(nums[end])
+
+            while maxQueue[0] - minQueue[0] > limit:
+                # Remove the elements that are out of the current window
+                if maxQueue[0] == nums[start]:
+                    maxQueue.popleft()
+                if minQueue[0] == nums[start]:
+                    minQueue.popleft()
+                start += 1
+
+            longest = max(longest, end-start+1)
+        return longest
 # Unit Tests
 import unittest
-funcs = [Solution().longestSubarray]
+funcs = [Solution().longestSubarray, Solution2().longestSubarray]
 
 class TestLongestSubarray(unittest.TestCase):
     def testLongestSubarray1(self):
