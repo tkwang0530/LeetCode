@@ -15,17 +15,9 @@ class ListNode:
         self.next = next
 class Solution:
     def nodesBetweenCriticalPoints(self, head: Optional[ListNode]) -> List[int]:
-        maxCP = -float("inf")
-        minCP = float("inf")
         CPs = 0
         current = head.next
         prev = head
-        
-        def isLocalMax(prev, current):
-            return current.val > prev.val and current.val > current.next.val
-
-        def isLocalMin(prev, current):
-            return current.val < prev.val and current.val < current.next.val
 
         firstCPIdx = -1
         lastCPIdx = -1
@@ -33,7 +25,9 @@ class Solution:
         minDiff = float("inf")
         CPs = 0
         while current.next:
-            if isLocalMax(prev, current) or isLocalMin(prev, current):
+            isLocalMax = current.val > prev.val and current.val > current.next.val
+            isLocalMin = current.val < prev.val and current.val < current.next.val
+            if isLocalMax or isLocalMin:
                 CPs += 1
                 if firstCPIdx < 0:
                     firstCPIdx = idx
