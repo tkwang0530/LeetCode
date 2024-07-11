@@ -12,7 +12,6 @@ ref: https://www.youtube.com/watch?v=n_pCJmg-RyU
 import unittest
 class Solution:
     def reverseParentheses(self, s: str) -> str:
-        n = len(s)
         pair = {}
         stack = []
         for i, char in enumerate(s):
