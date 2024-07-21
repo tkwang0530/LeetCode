@@ -85,8 +85,8 @@ def checker(grid, rowConditions, colConditions):
 
     return True
 
-class TestMinIncrementForUnique(unittest.TestCase):
-    def testMinIncrementForUnique1(self):
+class TestBuildMatrix(unittest.TestCase):
+    def testBuildMatrix1(self):
         for func in funcs:
             k = 3
             rowConditions = [[1,2],[3,2]]
@@ -95,7 +95,7 @@ class TestMinIncrementForUnique(unittest.TestCase):
             self.assertTrue(checker(grid, rowConditions, colConditions))
 
 
-    def testMinIncrementForUnique2(self):
+    def testBuildMatrix2(self):
         for func in funcs:
             k = 3
             rowConditions = [[1,2],[2,3],[3,1],[2,3]]
