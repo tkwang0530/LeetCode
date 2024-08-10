@@ -5,6 +5,7 @@ description: https://leetcode.com/problems/regions-cut-by-slashes/description/
 
 """ 
 1. dfs + HashTable: O(mn) time | O(mn) space - where m is len(grid) and n is len(grid[0])
+ref: https://www.youtube.com/watch?v=j8KrBYIxHK8
 """
 from typing import List
 class Solution:
