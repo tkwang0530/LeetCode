@@ -5,7 +5,7 @@ description: https://leetcode.com/problems/continuous-subarrays/description/
 
 """
 Note:
-1. Backtrack: O(n) time | O(1) space - where n is the length of array nums
+1. Sliding Window + HashTable: O(n) time | O(1) space - where n is the length of array nums
 """
 
 import collections
