@@ -5,7 +5,7 @@ description: https://leetcode.com/problems/most-stones-removed-with-same-row-or-
 
 """
 Note:
-1. Union Find: O(n) time | O(n) space - where n is the number of stones
+1. Union Find: O(n^2) time | O(n) space - where n is the number of stones
 """
 
 
