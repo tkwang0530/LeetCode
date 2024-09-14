@@ -1,36 +1,12 @@
 """
 2419. Longest Subarray With Maximum Bitwise AND
-You are given an integer array nums of size n.
-Consider a non-empty subarray from nums that has the maximum possible bitwise AND.
-- In other words, let k be the maximum value of the bitwise AND of any subarray of nums. Then, only subarrays with a bitwise AND equal to k should be considered.
-
-Return the length of the longest such subarray.
-
-The bitwise AND of an array is the bitwise AND of all the numbers in it.
-A subarray is a consiguous sequence of elements within an array.
-
-Example1:
-Input: nums = [1,2,3,3,2,2]
-Output: 2
-Explanation:
-The maximum possible bitwise AND of a subarray is 3.
-The longest subarray with that value is [3,3], so we return 2.
-
-Example2:
-Input: nums = [1,2,3,4]
-Output: 1
-Explanation:
-The maximum possible bitwise AND of a subarray is 4.
-The longest subarray with that value is [4], so we return 1.
-
-Constraints:
-1 <= nums.length <= 10^5
-1 <= nums[i] <= 10^6
+description: https://leetcode.com/problems/longest-subarray-with-maximum-bitwise-and/description/
 """
 
 """
 Note:
 1. Sliding Window: O(n) time | O(1) space - where n is the length of array nums
+2. One pass: O(n) time | O(1) space - where n is the length of array nums
 """
 
 
@@ -53,9 +29,26 @@ class Solution:
                 maxCount = max(maxCount, count)
         return maxCount
 
+class Solution2:
+    def longestSubarray(self, nums: List[int]) -> int:
+        maxNum = 0
+        count = 0
+        maxLength = 0
+        for num in nums:
+            if num < maxNum:
+                count = 0
+            elif num > maxNum:
+                count = 1
+                maxNum = num
+                maxLength = 1
+            else:
+                count += 1
+                maxLength = max(maxLength, count)
+
+        return maxLength
 
 # Unit Tests
-funcs = [Solution().longestSubarray]
+funcs = [Solution().longestSubarray, Solution2().longestSubarray]
 
 
 class TestLongestSubarray(unittest.TestCase):
