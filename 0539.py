@@ -1,18 +1,6 @@
 """
 539. Minimum Time Difference
-Given a list of 24-hour clock time points in "HH:MM" format, return the minimum minutes difference between any two time-points in the list.
-
-Example1:
-Input: timePoints = ["23:59","00:00"]
-Output: 1
-
-Example2:
-Input: timePoints = ["00:00","23:59","00:00"]
-Output: 0
-
-Constraints:
-2 <= timePoints.length <= 2 * 10^4
-timePoints[i] is in the format "HH:MM".
+description: https://leetcode.com/problems/minimum-time-difference/description/
 """
 
 """
@@ -23,34 +11,25 @@ Note:
 from typing import List
 class Solution:
     def findMinDifference(self, timePoints: List[str]) -> int:
-        minutes = [0] * 1440
-        for timePoint in timePoints:
-            hourStr, minuteStr = timePoint.split(":")
-            hour, minute = int(hourStr), int(minuteStr)
-            mins = 60*hour + minute
-            if minutes[mins]:
+        timestamp = [0] * 1440
+        for tp in timePoints:
+            hourStr, minStr = tp.split(":")
+            hours, mins = int(hourStr), int(minStr)
+            timestamp[(hours*60+mins)%1440] += 1
+            if timestamp[(hours*60+mins)%1440] == 2:
                 return 0
-            minutes[mins] += 1
-    
-        n = len(minutes)
-        
-        # find the first unzero position and assign it to start
-        start = 0
-        while start < n and minutes[start] == 0:
-            start += 1
         
         minDiff = float("inf")
-        for i in range(start+1, 2*n):
-            end = i % n
-            if minutes[end] == 0:
+        prev = -1
+        for i in range(2 * 1440):
+            j = i % 1440
+            if not timestamp[j]:
                 continue
-            
-            minDiff = min(
-                minDiff,
-                abs(end-start),
-                abs(abs(end-start)-1440)
-            )
-            start = end
+            if prev == -1:
+                prev = i
+            else:
+                minDiff = min(minDiff, i-prev)
+                prev = i
         return minDiff
 
 # Unit Tests
