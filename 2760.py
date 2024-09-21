@@ -1,6 +1,6 @@
 """
-386. Lexicographical Numbers
-description: https://leetcode.com/problems/lexicographical-numbers/description/
+2760. Longest Even Odd Subarray With Threshold 
+description: https://leetcode.com/problems/longest-even-odd-subarray-with-threshold/description
 """
 
 """
@@ -11,7 +11,7 @@ Note:
 from typing import List
 class Solution:
     def longestAlternatingSubarray(self, nums: List[int], threshold: int) -> int:
-        n = len(nums)
+      n = len(nums)
         l = 0
         longest = 0
         
