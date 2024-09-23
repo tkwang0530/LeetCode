@@ -5,12 +5,13 @@ description: https://leetcode.com/problems/extra-characters-in-a-string/descript
 
 """
 Note:
-1. dfs+memo: O(n*d*w) time | O(n*d) space - where n is the length of string s, d is the length of array dictionary, w is the average length of words in dictionary
+1. dfs+memo: O(n*d*w) time | O(w*d+n) space - where n is the length of string s, d is the length of array dictionary, w is the average length of words in dictionary
 2. dp: O(n*d*w) time | O(n) space - where n is the length of string s, d is the length of array dictionary, w is the average length of words in dictionary
+3. dfs+memo (optimized): O(n*d*w) time |  O(w*d+n) space - where n is the length of string s, d is the length of array dictionary, w is the average length of words in dictionary
 """
 
 from typing import List
-import functools
+import functools, collections
 class Solution:
     def minExtraChar(self, s: str, dictionary: List[str]) -> int:
         n = len(s)
@@ -46,10 +47,34 @@ class Solution2:
             dp[i] = minLeftOver
         return dp[0]
 
+class Solution3:
+    def minExtraChar(self, s: str, dictionary: List[str]) -> int:
+        wordMap = collections.defaultdict(set) # <(headChar): [word]>
+        for word in dictionary:
+            headChar = word[0]
+            wordMap[headChar].add(word)
+        
+        n = len(s)
+        @functools.lru_cache(None)
+        def dfs(i):
+            if i == n:
+                return 0
+            minLeft = n-i
+            headChar = s[i]
+            for word in wordMap[headChar]:
+                wLen = len(word)
+                if wLen <= n-i and s[i:i+wLen] == word:
+                    minLeft = min(minLeft, dfs(i+wLen)) 
+
+            minLeft = min(minLeft, 1+dfs(i+1))
+            return minLeft
+
+        return dfs(0)
+
 # Unit Tests
 from typing import List
 import unittest
-funcs = [Solution().minExtraChar, Solution2().minExtraChar]
+funcs = [Solution().minExtraChar, Solution2().minExtraChar, Solution3().minExtraChar]
 
 
 class TestMinExtraChar(unittest.TestCase):
