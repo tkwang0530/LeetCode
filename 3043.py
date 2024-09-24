@@ -6,8 +6,10 @@ description: https://leetcode.com/problems/find-the-length-of-the-longest-common
 """
 Note:
 1. HashTable: O(m+n) time | O(m) space - where m is the length of array arr1 and n is the length of array arr2
+2. Trie: O(m+n) time | O(m) space - where m is the length of array arr1 and n is the length of array arr2
 """
 
+import collections
 from typing import List
 class Solution:
     def longestCommonPrefix(self, arr1: List[int], arr2: List[int]) -> int:
@@ -27,10 +29,49 @@ class Solution:
 
         return longest
 
+class Node:
+    def __init__(self):
+        self.children = collections.defaultdict(Node)
+
+class Trie:
+    def __init__(self):
+        self.root = Node()
+
+    def insert(self, num):
+        numStr = str(num)
+        current = self.root
+        for dChar in numStr:
+            current = current.children[dChar]
+
+    def search(self, num) -> int:
+        numStr = str(num)
+        count = 0
+        current = self.root
+        for dChar in numStr:
+            if dChar in current.children:
+                current = current.children[dChar]
+                count += 1
+            else:
+                break
+        return count
+
+
+class Solution2:
+    def longestCommonPrefix(self, arr1: List[int], arr2: List[int]) -> int:
+        trie = Trie()
+        for num in arr1:
+            trie.insert(num)
+
+        longest = 0
+        for num in arr2:
+            longest = max(longest, trie.search(num))
+
+        return longest
+
 # Unit Tests
 from typing import List
 import unittest
-funcs = [Solution().longestCommonPrefix]
+funcs = [Solution().longestCommonPrefix, Solution2().longestCommonPrefix]
 
 class TestLongestCommonPrefix(unittest.TestCase):
     def testLongestCommonPrefix1(self):
