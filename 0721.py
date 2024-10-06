@@ -1,41 +1,16 @@
 """
 721. Accounts Merge
-Given a list of accounts where each element accounts[i] is a list of strings, where the first element accounts[i][0] is a name, and the rest of the elements are emails representing emails of the account.
-
-Now, we would like to merge these accounts. Two accounts definitely belong to the same person if there is some common email to both accounts. Note that even if two accounts have the same name, they may belong to different people as people could have the same name. A person can have any number of accounts initially, but all of their accounts definitely have the same name.
-
-After merging the accounts, return the accounts in the following format:
-- The first element of each account is the name, and the rest of the elements are emails in sorted order.
-- The account themselves can be returned in any order.
-
-Example1:
-Input: accounts = [["John","johnsmith@mail.com","john_newyork@mail.com"],["John","johnsmith@mail.com","john00@mail.com"],["Mary","mary@mail.com"],["John","johnnybravo@mail.com"]]
-Output: [["John","john00@mail.com","john_newyork@mail.com","johnsmith@mail.com"],["Mary","mary@mail.com"],["John","johnnybravo@mail.com"]]
-Explanation:
-The first and second John's are the same person as they have the common email "johnsmith@mail.com".
-The third John and Mary are different people as none of their email addresses are used by other accounts.
-We could return these lists in any order, for example the answer [['Mary', 'mary@mail.com'], ['John', 'johnnybravo@mail.com'], 
-['John', 'john00@mail.com', 'john_newyork@mail.com', 'johnsmith@mail.com']] would still be accepted.
-
-Example2:
-Input: accounts = [["Gabe","Gabe0@m.co","Gabe3@m.co","Gabe1@m.co"],["Kevin","Kevin3@m.co","Kevin5@m.co","Kevin0@m.co"],["Ethan","Ethan5@m.co","Ethan4@m.co","Ethan0@m.co"],["Hanzo","Hanzo3@m.co","Hanzo1@m.co","Hanzo0@m.co"],["Fern","Fern5@m.co","Fern1@m.co","Fern0@m.co"]]
-Output: [["Ethan","Ethan0@m.co","Ethan4@m.co","Ethan5@m.co"],["Gabe","Gabe0@m.co","Gabe1@m.co","Gabe3@m.co"],["Hanzo","Hanzo0@m.co","Hanzo1@m.co","Hanzo3@m.co"],["Kevin","Kevin0@m.co","Kevin3@m.co","Kevin5@m.co"],["Fern","Fern0@m.co","Fern1@m.co","Fern5@m.co"]]
-
-Constraints:
-1 <= accounts.length <= 1000
-2 <= accounts[i].length <= 10
-1 <= accounts[i][j] <= 30
-accounts[i][0] consists of English letters.
-accounts[i][j] (for j > 0) is a valid email.
+description: https://leetcode.com/problems/accounts-merge/description/
 """
 
 """
 Note:
 1. Build a undirect email based graph and use DFS to check group: O(nm) time | O(nm) space - where n is the number of account and m is the max length of account
+2. UnionFind + HashTable + Sort: O(nm*log(nm)) time | O(nm) space - where n is the number of account and m is the max length of account
 """
 
-from collections import defaultdict
 from typing import List
+import collections
 class Solution:
     def accountsMerge(self, accounts: List[List[str]]) -> List[List[str]]:
         result = []
@@ -43,7 +18,7 @@ class Solution:
             return result
         
         emailToName = dict() # <email, name>
-        graph = defaultdict(set) # <email, emailSet>
+        graph = collections.defaultdict(set) # <email, emailSet>
         visited = set() # visited email set for dfs
 
         for account in accounts:
@@ -73,10 +48,85 @@ class Solution:
                 temp.append(neighbor)
                 self.dfs(neighbor, graph, visited, temp)
 
+class UnionFind:
+    def __init__(self, accounts: List[List[str]]):
+        n = sum(len(account) for account in accounts)
+        index = 0
+        self.idInfoMap = {} # <id, (name, len of emails)>
+        self.idEmailMap = {} # <id, email>
+        self.emailIdsMap = collections.defaultdict(list) # <email, [id0, id1, ...]>
+        for i, account in enumerate(accounts):
+            for j, ele in enumerate(account):
+                if j == 0:
+                    name = account[0]
+                    self.idInfoMap[index] = (name, len(account)-1)
+                else:
+                    self.idEmailMap[index+j] = ele
+                    self.emailIdsMap[ele].append(index+j)
+            index += len(account)
+
+        self.parents = [i for i in range(n)]
+        self.ranks = [1 for _ in range(n)]
+        
+    def merge(self):
+        for index, info in self.idInfoMap.items():
+            _, L = info
+            for i in range(index+1, index+L+1):
+                self.union(i, i-1)
+            for _, ids in self.emailIdsMap.items():
+                for j in range(1, len(ids)):
+                    self.union(ids[j-1], ids[j])
+    
+    def getName(self, id):
+        return self.idInfoMap[id][0]
+    
+    def find(self, u):
+        if self.parents[u] != u:
+            self.parents[u] = self.find(self.parents[u])
+        return self.parents[u]
+     
+    def union(self, u, v):
+        pu, pv = self.find(u), self.find(v)
+        if pu == pv:
+            return False
+        
+        if self.ranks[pu] < self.ranks[pv]:
+            self.parents[pu] = pv
+        elif self.ranks[pv] < self.ranks[pu]:
+            self.parents[pv] = pu
+        else:
+            self.parents[pv] = pu
+            self.ranks[pu] += 1
+        return True
+    
+    def getMembersMap(self):
+        members = collections.defaultdict(list)
+        for i in range(len(self.parents)):
+            members[self.find(i)].append(i)
+        return members
+
+class Solution2:
+    def accountsMerge(self, accounts: List[List[str]]) -> List[List[str]]:
+        output = []
+        uf = UnionFind(accounts)    
+        uf.merge()
+        members = uf.getMembersMap()
+        visited = set()
+        for i in uf.idInfoMap.keys():
+            name = uf.getName(i)
+            parentId = uf.find(i)
+            if parentId in visited:
+                continue
+            visited.add(parentId)
+
+            emails = set([uf.idEmailMap[mid] for mid in members[parentId] if mid in uf.idEmailMap])
+            output.append([name] + sorted(list(emails)))
+        return output
+
 
 # Unit Tests
 import unittest
-funcs = [Solution().accountsMerge]
+funcs = [Solution().accountsMerge, Solution2().accountsMerge]
 
 class TestAccountsMerge(unittest.TestCase):
     def testAccountsMerge1(self):
