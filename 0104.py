@@ -1,27 +1,15 @@
 """
 104. Maximum Depth of Binary Tree
-Given a binary tree, find its maximum depth.
-The maximum depth is the number of nodes along the longest path from the root node down to the farthest leaf node.
-
-Note: A leaf is a node with no children.
-
-Example1:
-Given binary tree [3, 9, 20, null, null, 15, 7]
-        3
-      /    \
-    9     20
-           /   \
-        15    7
-return its depth = 3.
+description: https://leetcode.com/problems/maximum-depth-of-binary-tree/description/
 """
 
 """
 Note:
-1. Recursion (stop at None): O(n) time | O(n) space
-2. Recursion (stop at leaf): O(n) time | O(n) space
-3. Iteration (DFS - PreOrder Traversal): O(n) time | O(n) space
+1. DFS (PostOrder Traversal): O(n) time | O(h) space - where n is the number of nodes and h is the height of the tree
+2. Iteration (DFS - PreOrder Traversal): O(n) time | O(n) space - where n is the number of nodes
 """
 
+from typing import Optional
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
         self.val = val
@@ -29,19 +17,23 @@ class TreeNode:
         self.right = right
 
 class Solution:
+    def maxDepth(self, root: Optional[TreeNode]) -> int:
+        if not root:
+            return 0
+
+        def dfs(node):
+            maxDepth = 1
+            if node.left:
+                maxDepth = max(maxDepth, 1+dfs(node.left))
+            if node.right:
+                maxDepth = max(maxDepth, 1+dfs(node.right))
+
+            return maxDepth
+
+        return dfs(root)
+
+class Solution2:
     def maxDepth(self, root: TreeNode) -> int:
-        if root is None:
-            return 0
-        return 1 + max(self.maxDepth(root.left), self.maxDepth(root.right))
-
-    def maxDepth2(self, root: TreeNode) -> int:
-        if root is None:
-            return 0
-        if root.left is None and root.right is None:
-            return 1
-        return 1 + max(self.maxDepth(root.left), self.maxDepth(root.right))
-
-    def maxDepth3(self, root: TreeNode) -> int:
         if not root:
             return 0
         stack = [(root, 1)]
@@ -56,7 +48,7 @@ class Solution:
         return maxDep
 # Unit Tests
 import unittest
-funcs = [Solution().maxDepth, Solution().maxDepth2, Solution().maxDepth3]
+funcs = [Solution().maxDepth, Solution2().maxDepth]
 
 class TestMaxDepth(unittest.TestCase):
     def testMaxDepth1(self):
