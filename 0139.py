@@ -1,30 +1,6 @@
 """
 139. Word Break
-Given a string s and a dictionary of strings wordDict, return true if s can be segmented into a space-separated sequence of one or more dictionary words.
-
-Note that the same word in the dictionary may be reused multiple times in the segmentation.
-
-Example1:
-Input: s = "leetcode", wordDict = ["leet","code"]
-Output: true
-Explanation: Return true because "leetcode" can be segmented as "leet code".
-
-Example2:
-Input: s = "applepenapple", wordDict = ["apple","pen"]
-Output: true
-Explanation: Return true because "applepenapple" can be segmented as "apple pen apple".
-Note that you are allowed to reuse a dictionary word.
-
-Example3:
-Input: s = "catsandog", wordDict = ["cats","dog","sand","and","cat"]
-Output: false
-
-Constraints:
-1 <= s.length <= 300
-1 <= wordDict.length <= 1000
-1 <= wordDict.length <= 20
-s and wordDict[i] consist only lowercase English letters.
-All the strings of wordDict are unique.
+description: https://leetcode.com/problems/word-break/description/
 """
 
 """
@@ -40,6 +16,11 @@ where m is the number of words in wordDict
 s[left : right] = s[left : left + len(word)]
 
 3. DP + KMP: O(w*(n+m+m) + n^2) time | O(n^2) - where n is the length of string s, w is the number of words, m is the average length of word
+
+4. dp + hashTable: O(wls * n * wl) time | O(n) space
+where wls is the number of distinct word lengths in wordDict
+where wl is the average length of word
+where n is the length of s
 """
 
 
@@ -58,7 +39,8 @@ class Solution:
                     dp[right] = True
         return dp[-1]
 
-    def wordBreak2(self, s: str, wordDict: List[str]) -> bool:
+class Solution2:
+    def wordBreak(self, s: str, wordDict: List[str]) -> bool:
         dp = [False] * (len(s) + 1) # dp[i] means s[:i] (exclusive) can be segmented into words in the wordDicts, so we can start trying to match from i if dp[i] is true
         dp[0] = True
         for left in range(len(s)):
@@ -69,7 +51,8 @@ class Solution:
                     dp[right] = True 
         return dp[-1]
 
-    def wordBreak3(self, s: str, wordDict: List[str]) -> bool:
+class Solution3:
+    def wordBreak(self, s: str, wordDict: List[str]) -> bool:
         def build(p: str) -> List[int]:
             m = len(p)
             next = [0, 0]
@@ -111,9 +94,28 @@ class Solution:
                 dp[m] = True
         return dp[-1]
 
+class Solution4:
+    def wordBreak(self, s: str, wordDict: List[str]) -> bool:
+        dp = collections.defaultdict(bool)
+        wordLengthWords = collections.defaultdict(set) # <length, set{word1, word2}>
+        for word in wordDict:
+            wordLength = len(word)
+            wordLengthWords[wordLength].add(word)
+
+        dp[0] = True
+        n = len(s)
+        for i in range(n):
+            if not dp[i]:
+                continue
+            for wordLength, words in wordLengthWords.items():
+                if i+wordLength <= len(s) and s[i:i+wordLength] in words:
+                    dp[i+wordLength] = True
+            
+        return dp[len(s)]
+
 # Unit Tests
 import unittest
-funcs = [Solution().wordBreak, Solution().wordBreak2, Solution().wordBreak3]
+funcs = [Solution().wordBreak, Solution2().wordBreak, Solution3().wordBreak, Solution4().wordBreak]
 
 class TestWordBreak(unittest.TestCase):
     def testWordBreak1(self):
