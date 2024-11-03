@@ -6,6 +6,7 @@ description: https://leetcode.com/problems/isomorphic-strings/description
 """
 Note:
 1. HashMap: O(n) time | O(256) space - where n is the length of string s
+2. Two HashMaps: O(n) time | O(256) space - where n is the length of string s
 """
 
 import collections
@@ -14,20 +15,37 @@ class Solution:
         if len(s) != len(t):
             return False
 
-        sCounter = collections.defaultdict(lambda: -1)
-        tCounter = collections.defaultdict(lambda: -1)
+        lastSeenS = collections.defaultdict(lambda: -1)
+        lastSeenT = collections.defaultdict(lambda: -1)
 
         for i in range(len(s)):
-            if sCounter[s[i]] != tCounter[t[i]]:
+            if lastSeenS[s[i]] != lastSeenT[t[i]]:
                 return False
 
-            sCounter[s[i]] = i
-            tCounter[t[i]] = i
+            lastSeenS[s[i]] = i
+            lastSeenT[t[i]] = i
+        return True
+
+class Solution2:
+    def isIsomorphic(self, s: str, t: str) -> bool:
+        if len(s) != len(t):
+            return False
+        replaceMap = {}
+        useCharInVal = set()
+        for i in range(len(s)):
+            if s[i] not in replaceMap:
+                if t[i] in useCharInVal:
+                    return False
+                useCharInVal.add(t[i])
+                replaceMap[s[i]] = t[i]
+            elif t[i] != replaceMap[s[i]]:
+                return False
+
         return True
 
 # Unit Tests
 import unittest
-funcs = [Solution().isIsomorphic]
+funcs = [Solution().isIsomorphic, Solution2().isIsomorphic]
 
 
 class TestIsIsomorphic(unittest.TestCase):
