@@ -1,25 +1,6 @@
 """
 49. Group Anagrams
-Given an array of strings, strs, group the anagrams together. You can return the answer in any order.
-
-An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.
-
-Example1:
-Input: strs = ["eat","tea","tan","ate","nat","bat"]
-Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
-
-Example2:
-Input: strs = [""]
-Output: [[""]]
-
-Example3:
-Input: strs = ["a"]
-Output: [["a"]]
-
-Constraints:
-1 <= strs.length <= 10^4
-0 <= strs[i].length <= 100
-strs[i] consists of lower-case English letters.
+description: https://leetcode.com/problems/group-anagrams/description/
 """
 
 """
@@ -34,19 +15,18 @@ m * nlogn: m is for string comparison of sorting
 
 
 from typing import List
-import unittest
+import unittest, collections
 class Solution:
     def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
-        anagrams = {}
+        patternWords = collections.defaultdict(list)
         for word in strs:
-            sortedWord = "".join(sorted(word))
-            if sortedWord in anagrams:
-                anagrams[sortedWord].append(word)
-            else:
-                anagrams[sortedWord] = [word]
-        return list(anagrams.values())
+            pattern = "".join(sorted(word))
+            patternWords[pattern].append(word)
 
-    def groupAnagrams2(self, strs: List[str]) -> List[List[str]]:
+        return list(patternWords.values())
+
+class Solution2:
+    def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
         sortedWords = ["".join(sorted(w)) for w in strs]
         indices = [i for i in range(len(strs))]
         indices.sort(key=lambda x: sortedWords[x])
@@ -68,7 +48,7 @@ class Solution:
 
 
 # Unit Tests
-funcs = [Solution().groupAnagrams, Solution().groupAnagrams2]
+funcs = [Solution().groupAnagrams, Solution2().groupAnagrams]
 
 
 class TestGroupAnagrams(unittest.TestCase):
